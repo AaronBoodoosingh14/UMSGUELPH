@@ -1,24 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
+<!-- Import necessary JavaFX components -->
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.ums.subject.Subject"
-            prefHeight="400.0" prefWidth="600.0">
+<!-- Main container (VBox) that organizes elements vertically -->
+<VBox spacing="10" alignment="CENTER" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.ums.controller.SubjectController">
 
-</AnchorPane>
+    <!-- Title Label -->
+    <Label text="Subjects Management" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
 
-<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.12" fx:controller="com.ums.controller.subjectController">
-<padding>
-    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-</padding>
+    <!-- TableView to display subjects -->
+    <TableView fx:id="subjectTable" prefWidth="300">
+        <columns>
+            <!-- Column for Subject Code -->
+            <TableColumn text="Subject Code" fx:id="colCode" />
+            <!-- Column for Subject Name -->
+            <TableColumn text="Subject Name" fx:id="colName" />
+        </columns>
+    </TableView>
 
-
-<Label text="Subject" />
+    <!-- Input Section: TextFields and Add Button inside an HBox (Horizontal Layout) -->
+    <HBox spacing="10">
+        <!-- Text field for entering the subject code -->
+        <TextField fx:id="txtCode" promptText="Enter Subject Code" />
+        <!-- Text field for entering the subject name -->
+        <TextField fx:id="txtName" promptText="Enter Subject Name" />
+        <!-- Button to add a new subject -->
+        <Button text="Add Subject" fx:id="btnAdd" />
+    </HBox>
 
 </VBox>

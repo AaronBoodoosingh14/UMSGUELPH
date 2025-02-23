@@ -1,20 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<!-- Import necessary JavaFX components -->
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.12" fx:controller="com.ums.controller.DashboardController">
-    <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-    </padding>
-    <Label text="Dashboard" />
+<!-- Main layout container (BorderPane) -->
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.12"
+            fx:controller="com.ums.controller.DashboardController">
 
-<!--
-//Divide this into left panel and right panel
-//left paenl will have expandable menu i.e module name
-//right panel will load the fxml dynamically
+    <!-- Left Panel (Sidebar Menu) -->
+    <left>
+        <VBox alignment="TOP_LEFT" spacing="10" style="-fx-background-color: #2C3E50; -fx-padding: 15;">
+            <!-- Sidebar title -->
+            <Label text="Menu" style="-fx-text-fill: white; -fx-font-size: 16px;" />
 
--->
+            <!-- Expandable Menu for Modules -->
+            <TitledPane text="Modules" expanded="false">
+                <content>
+                    <VBox spacing="5">
+                        <!-- Navigation Buttons -->
+                        <Button text="Subjects" fx:id="btnSubjects" prefWidth="150" />
+                        <Button text="Courses" fx:id="btnCourses" prefWidth="150" />
+                        <Button text="Students" fx:id="btnStudents" prefWidth="150" />
+                        <Button text="Faculty" fx:id="btnFaculty" prefWidth="150" />
+                        <Button text="Events" fx:id="btnEvents" prefWidth="150" />
+                        <Button text="Logout" fx:id="btnLogout" prefWidth="150"
+                                style="-fx-background-color: red; -fx-text-fill: white;" />
+                    </VBox>
+                </content>
+            </TitledPane>
+        </VBox>
+    </left>
 
-</VBox>
+    <!-- Right Panel (Dynamic Content Area) -->
+    <center>
+        <StackPane fx:id="mainContent" style="-fx-background-color: #ECF0F1; -fx-padding: 20;">
+            <!-- Default welcome message -->
+            <Label text="Welcome to the University Management System"
+                   style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+        </StackPane>
+    </center>
+
+</BorderPane>
