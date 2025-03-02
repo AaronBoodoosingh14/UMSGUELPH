@@ -31,7 +31,7 @@ public class DashboardController {
         btnCourses.setOnAction(e -> loadView("/com/ums/Courses.fxml"));  // Load Courses view
         btnStudents.setOnAction(e -> loadView("/com/ums/Students.fxml"));  // Load Students view
         btnFaculty.setOnAction(e -> loadView("/com/ums/Faculty.fxml"));  // Load Faculty view
-        btnEvents.setOnAction(e -> loadView("/com/ums/Events.fxml"));  // Load Events view
+        btnEvents.setOnAction(e -> loadView("/com/ums/Event.fxml"));  // Load Events view
         btnLogout.setOnAction(e -> logout());  // Handle logout
     }
 
@@ -65,4 +65,6 @@ public class DashboardController {
         System.out.println("Logging out...");
         // TODO: Implement logout logic (redirect to login screen)
     }
+
 }
+
