@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.control.Button;
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * DashboardController manages the main dashboard view.
@@ -46,7 +47,7 @@ public class DashboardController {
             System.out.println("Trying to load: " + fxmlPath); // Debugging: Print which file is being loaded
 
             // Load the FXML file and create the view
-            Parent view = FXMLLoader.load(getClass().getResource(fxmlPath));
+            Parent view = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(fxmlPath)));
 
             // Clear the previous content and add the new view
             mainContent.getChildren().clear();

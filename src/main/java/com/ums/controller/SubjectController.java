@@ -32,7 +32,7 @@ public class SubjectController {
     private Button btnAdd; // Button to add subjects (REMOVED btnLoadData)
 
     // ObservableList to store subjects (TableView updates automatically)
-    private ObservableList<Subject> subjects = FXCollections.observableArrayList();
+    private final ObservableList<Subject> subjects = FXCollections.observableArrayList();
 
     /**
      * This method is automatically called when the FXML file is loaded.
