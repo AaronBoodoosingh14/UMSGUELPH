@@ -8,14 +8,16 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Controller for the login screen.
- * Uses hardcoded credentials and redirects all users to the same Dashboard.
- * The role (Admin/Student) determines which module views are loaded.
+ * Reads user credentials from "Students " and "Faculties " sheets in Excel.
  */
 public class LoginController {
 
@@ -27,12 +29,12 @@ public class LoginController {
 
     private final Map<String, String[]> userDatabase = new HashMap<>();
 
+    /**
+     * Initializes the login system by reading credentials from Excel.
+     */
     @FXML
     public void initialize() {
-        // Hardcoded users with roles
-        userDatabase.put("admin", new String[]{"admin123", "Admin"});
-        userDatabase.put("student1", new String[]{"student123", "Student"});
-        userDatabase.put("student2", new String[]{"student456", "Student"});
+        loadLoginsFromExcel();  // ✅ Load credentials from Excel
 
         btnLogin.setOnAction(e -> handleLogin());
 
@@ -46,6 +48,68 @@ public class LoginController {
         });
     }
 
+    /**
+     * Reads login credentials from "Students " and "Faculties " sheets in Excel.
+     * Role is determined based on the sheet it comes from.
+     */
+    private void loadLoginsFromExcel() {
+        try {
+            InputStream file = getClass().getClassLoader().getResourceAsStream("UMS_Data.xlsx");
+
+            if (file == null) {
+                System.out.println("❌ Excel file not found! Check if 'UMS_Data.xlsx' is in 'src/main/resources/'");
+                return;
+            }
+
+            Workbook workbook = new XSSFWorkbook(file);
+
+            // ✅ Read "Students " sheet (Assigns "Student" role)
+            readLoginsFromSheet(workbook, "Students ", "Student", 0, 11);
+
+            // ✅ Read "Faculties " sheet (Assigns "Admin" role)
+            readLoginsFromSheet(workbook, "Faculties ", "Admin", 0, 7);
+
+            workbook.close();
+            System.out.println("✅ Logins loaded successfully from Excel!");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("❌ Error reading Excel file.");
+        }
+    }
+
+    /**
+     * Reads a specific sheet and extracts login credentials.
+     * @param workbook The Excel workbook.
+     * @param sheetName The name of the sheet (Students or Faculties).
+     * @param role The assigned role (Student or Admin).
+     * @param usernameCol The column index for Username.
+     * @param passwordCol The column index for Password.
+     */
+    private void readLoginsFromSheet(Workbook workbook, String sheetName, String role, int usernameCol, int passwordCol) {
+        Sheet sheet = workbook.getSheet(sheetName);
+        if (sheet == null) {
+            System.out.println("❌ Sheet '" + sheetName + "' not found!");
+            return;
+        }
+
+        for (Row row : sheet) {
+            if (row.getRowNum() == 0) continue; // Skip header row
+
+            Cell usernameCell = row.getCell(usernameCol);
+            Cell passwordCell = row.getCell(passwordCol);
+
+            if (usernameCell != null && passwordCell != null) {
+                String username = usernameCell.getStringCellValue().trim();
+                String password = passwordCell.getStringCellValue().trim();
+                userDatabase.put(username, new String[]{password, role});
+            }
+        }
+    }
+
+    /**
+     * Handles the login attempt by validating credentials.
+     */
     private void handleLogin() {
         String username = txtUsername.getText().trim();
         String password = txtPassword.getText().trim();
@@ -56,7 +120,7 @@ public class LoginController {
             String role = userInfo[1];
 
             if (password.equals(storedPassword)) {
-                loadDashboard(role);  // ✅ Pass role to Dashboard
+                loadDashboard(role); // Redirect based on role
             } else {
                 showAlert("Login Failed", "Incorrect password.");
             }
@@ -65,12 +129,14 @@ public class LoginController {
         }
     }
 
+    /**
+     * Loads the dashboard and passes the user's role.
+     */
     private void loadDashboard(String role) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/ums/Dashboard.fxml"));
             Parent root = loader.load();
 
-            // Pass role to DashboardController
             DashboardController dashboardController = loader.getController();
             dashboardController.setUserRole(role);
 
@@ -84,6 +150,9 @@ public class LoginController {
         }
     }
 
+    /**
+     * Displays an alert message.
+     */
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
