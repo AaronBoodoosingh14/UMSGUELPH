@@ -6,8 +6,8 @@ module com.ums {
     requires com.dlsc.formsfx;
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.bootstrapfx.core;
-    requires java.desktop;
     requires java.sql;
+    requires org.apache.poi.ooxml;
 
 
     opens com.ums to javafx.fxml;

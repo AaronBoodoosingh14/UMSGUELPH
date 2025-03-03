@@ -7,90 +7,83 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Controller for the login screen.
- * Uses hardcoded credentials and redirects users to the default dashboard.
+ * Uses hardcoded credentials and redirects all users to the same Dashboard.
+ * The role (Admin/Student) determines which module views are loaded.
  */
 public class LoginController {
 
     @FXML
-    private TextField txtUsername, txtPassword; // Username and password fields
+    private TextField txtUsername, txtPassword;
 
     @FXML
-    private Button btnLogin; // Login button
+    private Button btnLogin;
 
-    // Hardcoded user database (Username -> Password)
-    private final Map<String, String> userDatabase = new HashMap<>();
+    private final Map<String, String[]> userDatabase = new HashMap<>();
 
-    /**
-     * Initializes the login system with hardcoded credentials and key listeners.
-     */
     @FXML
     public void initialize() {
-        // Predefined users (temporary)
-        userDatabase.put("admin", "admin123");
-        userDatabase.put("student1", "student123");
-        userDatabase.put("faculty1", "faculty123");
+        // Hardcoded users with roles
+        userDatabase.put("admin", new String[]{"admin123", "Admin"});
+        userDatabase.put("student1", new String[]{"student123", "Student"});
+        userDatabase.put("student2", new String[]{"student456", "Student"});
 
-        // Handle login button click
         btnLogin.setOnAction(e -> handleLogin());
 
-        // Enable pressing "Enter" to log in
+        // Enable Enter key login
         txtUsername.setOnKeyPressed(e -> {
-            if (e.getCode() == KeyCode.ENTER) {
-                txtPassword.requestFocus(); // Move to password field when Enter is pressed
-            }
+            if (e.getCode().toString().equals("ENTER")) txtPassword.requestFocus();
         });
 
         txtPassword.setOnKeyPressed(e -> {
-            if (e.getCode() == KeyCode.ENTER) {
-                handleLogin(); // Attempt login when Enter is pressed in password field
-            }
+            if (e.getCode().toString().equals("ENTER")) handleLogin();
         });
     }
 
-    /**
-     * Handles the login attempt by validating credentials.
-     */
     private void handleLogin() {
         String username = txtUsername.getText().trim();
         String password = txtPassword.getText().trim();
 
-        if (userDatabase.containsKey(username) && userDatabase.get(username).equals(password)) {
-            // Redirect to the default dashboard
-            loadDashboard("/com/ums/Dashboard.fxml");
+        if (userDatabase.containsKey(username)) {
+            String[] userInfo = userDatabase.get(username);
+            String storedPassword = userInfo[0];
+            String role = userInfo[1];
+
+            if (password.equals(storedPassword)) {
+                loadDashboard(role);  // ✅ Pass role to Dashboard
+            } else {
+                showAlert("Login Failed", "Incorrect password.");
+            }
         } else {
-            showAlert("Login Failed", "Invalid username or password.");
+            showAlert("Login Failed", "User not found.");
         }
     }
 
-    /**
-     * Loads the default dashboard after login.
-     * @param fxmlPath The path to the Dashboard.fxml file.
-     */
-    private void loadDashboard(String fxmlPath) {
+    private void loadDashboard(String role) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/ums/Dashboard.fxml"));
+            Parent root = loader.load();
+
+            // Pass role to DashboardController
+            DashboardController dashboardController = loader.getController();
+            dashboardController.setUserRole(role);
+
             Stage window = (Stage) btnLogin.getScene().getWindow();
-            window.setScene(new Scene(root, 900, 600));
+            window.setScene(new Scene(root));
+            window.setMaximized(true);
+            window.show();
         } catch (IOException e) {
             e.printStackTrace();
             showAlert("Error", "Failed to load dashboard.");
         }
     }
 
-    /**
-     * Displays an alert message.
-     * @param title Title of the alert.
-     * @param message Message to display.
-     */
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);

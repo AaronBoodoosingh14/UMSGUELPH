@@ -1,4 +1,4 @@
-package com.ums.controller; // Package location for SubjectController
+package com.ums.controller;
 
 import com.ums.data.Subject;
 import javafx.collections.FXCollections;
@@ -9,10 +9,18 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
 
 /**
  * Controller for Subject Management.
- * Handles user interactions, adding subjects, and displaying data in TableView.
+ * Handles user interactions, adding subjects, and importing from Excel.
  */
 public class SubjectController {
 
@@ -29,10 +37,9 @@ public class SubjectController {
     private TextField txtCode, txtName; // Input fields for subject details
 
     @FXML
-    private Button btnAdd; // Button to add subjects (REMOVED btnLoadData)
+    private Button btnAdd, btnImportExcel; // Buttons for adding and importing subjects
 
-    // ObservableList to store subjects (TableView updates automatically)
-    private final ObservableList<Subject> subjects = FXCollections.observableArrayList();
+    private final ObservableList<Subject> subjects = FXCollections.observableArrayList(); // Stores subjects
 
     /**
      * This method is automatically called when the FXML file is loaded.
@@ -49,6 +56,9 @@ public class SubjectController {
 
         // Handle "Add Subject" button click
         btnAdd.setOnAction(e -> addSubject());
+
+        // Handle "Import from Excel" button click
+        btnImportExcel.setOnAction(e -> importSubjectsFromExcel());
     }
 
     /**
@@ -58,7 +68,6 @@ public class SubjectController {
         String code = txtCode.getText().trim();
         String name = txtName.getText().trim();
 
-        // Check if input fields are not empty and subject is not a duplicate
         if (!code.isEmpty() && !name.isEmpty() && !isDuplicate(code)) {
             subjects.add(new Subject(code, name)); // Add to list
             txtCode.clear(); // Clear input fields
@@ -79,4 +88,46 @@ public class SubjectController {
         }
         return false;
     }
+
+    /**
+     * Reads Subject data from an Excel file and adds it to the TableView.
+     */
+    private void importSubjectsFromExcel() {
+        try {
+            // Ensure Excel file is inside "resources/"
+            InputStream file = getClass().getResourceAsStream("/UMS_Data.xlsx");
+
+            if (file == null) {
+                System.out.println("Excel file not found in resources!");
+                return;
+            }
+
+            Workbook workbook = new XSSFWorkbook(file);
+            Sheet sheet = workbook.getSheetAt(0); // Read first sheet
+
+            for (Row row : sheet) {
+                if (row.getRowNum() == 0) continue; // Skip header row
+
+                Cell codeCell = row.getCell(0); // Column 1: Subject Code
+                Cell nameCell = row.getCell(1); // Column 2: Subject Name
+
+                if (codeCell != null && nameCell != null) {
+                    String code = codeCell.getStringCellValue().trim();
+                    String name = nameCell.getStringCellValue().trim();
+
+                    if (!code.isEmpty() && !name.isEmpty() && !isDuplicate(code)) {
+                        subjects.add(new Subject(code, name)); // Add subject to table
+                    }
+                }
+            }
+            workbook.close();
+            System.out.println("✅ Excel imported successfully!");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("❌ Error reading Excel file.");
+        }
+    }
+
+
 }

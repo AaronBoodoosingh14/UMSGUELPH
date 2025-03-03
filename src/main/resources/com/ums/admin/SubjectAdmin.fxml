@@ -24,12 +24,11 @@
 
     <!-- Input Section: TextFields and Add Button inside an HBox (Horizontal Layout) -->
     <HBox spacing="10">
-        <!-- Text field for entering the subject code -->
         <TextField fx:id="txtCode" promptText="Enter Subject Code" />
-        <!-- Text field for entering the subject name -->
         <TextField fx:id="txtName" promptText="Enter Subject Name" />
-        <!-- Button to add a new subject -->
         <Button text="Add Subject" fx:id="btnAdd" />
+        <Button text="Import from Excel" fx:id="btnImportExcel" /> <!-- New Button -->
     </HBox>
+
 
 </VBox>
