@@ -1,23 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.ums.subject.Subject"
-            prefHeight="400.0" prefWidth="600.0">
+<VBox spacing="10" alignment="CENTER" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.ums.controller.StudentController">
 
-</AnchorPane>
+    <Label text="Student Management" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
 
-<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.12" fx:controller="com.ums.controller.subjectController">
-<padding>
-    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-</padding>
-<Label text="Student" />
+    <TableView fx:id="studentTable" prefWidth="450">
+        <columns>
+            <TableColumn text="Student ID" fx:id="colStudentID" />
+            <TableColumn text="Name" fx:id="colName" />
+            <TableColumn text="Email" fx:id="colEmail" />
+            <TableColumn text="Academic Level" fx:id="colAcademicLevel" />
+        </columns>
+    </TableView>
 
+    <HBox spacing="10">
+        <TextField fx:id="txtStudentID" promptText="Student ID" />
+        <TextField fx:id="txtName" promptText="Full Name" />
+        <TextField fx:id="txtEmail" promptText="Email" />
+        <TextField fx:id="txtAcademicLevel" promptText="Academic Level" />
+    </HBox>
+
+    <HBox spacing="10">
+        <Button text="Add Student" fx:id="btnAdd" />
+        <Button text="Edit Student" fx:id="btnEdit" />
+        <Button text="Delete Student" fx:id="btnDelete" />
+        <Button text="Import from Excel" fx:id="btnImportExcel" />
+    </HBox>
 
 </VBox>
