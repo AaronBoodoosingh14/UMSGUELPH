@@ -121,11 +121,11 @@ public class SubjectController {
                 }
             }
             workbook.close();
-            System.out.println("✅ Excel imported successfully!");
+            System.out.println("Excel imported successfully!");
 
         } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("❌ Error reading Excel file.");
+            //e.printStackTrace();
+            System.out.println("Error reading Excel file.");
         }
     }
 
