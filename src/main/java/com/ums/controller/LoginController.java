@@ -34,7 +34,7 @@ public class LoginController {
      */
     @FXML
     public void initialize() {
-        loadLoginsFromExcel();  // ✅ Load credentials from Excel
+        loadLoginsFromExcel();  // Load credentials from Excel
 
         btnLogin.setOnAction(e -> handleLogin());
 
@@ -50,31 +50,31 @@ public class LoginController {
 
     /**
      * Reads login credentials from "Students " and "Faculties " sheets in Excel.
-     * Role is determined based on the sheet it comes from.
+     * Role is determined based on the sheet it comes from (Student sheet is user, Faculty sheet is admin.
      */
     private void loadLoginsFromExcel() {
         try {
             InputStream file = getClass().getClassLoader().getResourceAsStream("UMS_Data.xlsx");
 
             if (file == null) {
-                System.out.println("❌ Excel file not found! Check if 'UMS_Data.xlsx' is in 'src/main/resources/'");
+                System.out.println("Excel file not found");
                 return;
             }
 
             Workbook workbook = new XSSFWorkbook(file);
 
-            // ✅ Read "Students " sheet (Assigns "Student" role)
+            // Read "Students " sheet (Assigns "Student" role)
             readLoginsFromSheet(workbook, "Students ", "Student", 0, 11);
 
-            // ✅ Read "Faculties " sheet (Assigns "Admin" role)
+            // Read "Faculties " sheet (Assigns "Admin" role)
             readLoginsFromSheet(workbook, "Faculties ", "Admin", 0, 7);
 
             workbook.close();
-            System.out.println("✅ Logins loaded successfully from Excel!");
+            System.out.println("Logins loaded successfully from Excel!");
 
         } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("❌ Error reading Excel file.");
+            //e.printStackTrace();
+            System.out.println("Error reading Excel file.");
         }
     }
 
@@ -89,7 +89,7 @@ public class LoginController {
     private void readLoginsFromSheet(Workbook workbook, String sheetName, String role, int usernameCol, int passwordCol) {
         Sheet sheet = workbook.getSheet(sheetName);
         if (sheet == null) {
-            System.out.println("❌ Sheet '" + sheetName + "' not found!");
+            System.out.println("Sheet '" + sheetName + "' not found!");
             return;
         }
 
@@ -145,7 +145,7 @@ public class LoginController {
             window.setMaximized(true);
             window.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             showAlert("Error", "Failed to load dashboard.");
         }
     }

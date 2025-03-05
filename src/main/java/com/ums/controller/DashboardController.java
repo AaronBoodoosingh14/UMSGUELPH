@@ -3,8 +3,11 @@ package com.ums.controller;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.scene.control.Button;
+import javafx.stage.Stage;
+
 import java.io.IOException;
 
 /**
@@ -60,12 +63,32 @@ public class DashboardController {
             mainContent.getChildren().add(view);
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("❌ Error loading FXML: " + fxmlPath);
+            System.out.println("Error loading FXML: " + fxmlPath);
         }
     }
 
     private void logout() {
-        System.out.println("🔴 Logging out...");
-        // TODO: Implement logout logic
+        try {
+            System.out.println("Logging out...");
+
+            // Load the Login screen
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/ums/Login.fxml"));
+            Parent loginRoot = loader.load();
+
+            // Get the current stage using any existing UI component
+            Stage stage = (Stage) btnLogout.getScene().getWindow();
+
+            // Replace scene with Login screen
+            stage.setScene(new Scene(loginRoot));
+            stage.sizeToScene();
+            stage.centerOnScreen(); // Center the login window
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Error loading Login screen.");
+        }
     }
+
+
 }
