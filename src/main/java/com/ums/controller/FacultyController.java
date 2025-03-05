@@ -3,6 +3,7 @@ package com.ums.controller;
 import com.ums.data.Faculty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -111,5 +112,14 @@ public class FacultyController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    public void handleAssignCourses() {
+    }
+
+    public void handleDeleteFaculty(ActionEvent actionEvent) {
+    }
+
+    public void handleViewProfile(ActionEvent actionEvent) {
     }
 }

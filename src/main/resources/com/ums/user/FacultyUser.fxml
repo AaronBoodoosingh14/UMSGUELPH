@@ -9,29 +9,11 @@
 <AnchorPane prefHeight="600" prefWidth="1000" style="-fx-background-color: #f4f4f4;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ums.controller.FacultyviewController">
 
     <!-- Sidebar Navigation -->
-    <VBox layoutX="14.0" prefHeight="600.0" prefWidth="200" style="-fx-background-color: #2c3e50; -fx-padding: 20;">
-        <Label style="-fx-text-fill: white; -fx-font-size: 20; -fx-font-weight: bold;" text="Faculty Portal" />
-
-        <VBox spacing="15" style="-fx-padding: 15 0 0 0;">
-            <Button fx:id="btnProfile" onAction="#showProfile" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER_LEFT;" text="📝 Profile">
-                <padding><Insets left="10" right="10" /></padding>
-            </Button>
-
-            <Button fx:id="btnCourses" onAction="#showCourses" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER_LEFT;" text="📚 Courses">
-                <padding><Insets left="10" right="10" /></padding>
-            </Button>
-
-            <Button fx:id="btnStudents" onAction="#showStudents" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER_LEFT;" text="👨🎓 Students">
-                <padding><Insets left="10" right="10" /></padding>
-            </Button>
-        </VBox>
-
-        <Region VBox.vgrow="ALWAYS" />
-        <Button fx:id="btnLogout" onAction="#handleLogout" style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold;" text="Logout" />
-    </VBox>
+    <VBox layoutX="14.0" prefHeight="600.0" prefWidth="200" style="-fx-background-color: #2c3e50; -fx-padding: 20;" />
 
     <!-- Main Content Area -->
     <VBox layoutX="200" prefHeight="600" prefWidth="800" spacing="20" style="-fx-padding: 30;">
+        <Label style="-fx-font-size: 20; -fx-font-weight: bold;" text="Faculty Portal" />
         <!-- Profile Header Section -->
         <HBox alignment="CENTER_LEFT" spacing="30">
             <!-- Profile Image Container -->
@@ -91,6 +73,26 @@
                     <PasswordField fx:id="newPasswordField" promptText="New Password" style="-fx-pref-width: 300;" />
                     <Button onAction="#handleUpdatePassword" style="-fx-background-color: #2ecc71; -fx-text-fill: white;" text="Update Password" />
                 </VBox>
+      
+              <VBox spacing="15" style="-fx-padding: 15 0 0 0;">
+                  <Button fx:id="btnProfile" onAction="#showProfile" text="📝 Profile">
+                      <padding>
+                     <Insets left="10" right="10" />
+                  </padding>
+                  </Button>
+      
+                  <Button fx:id="btnCourses" onAction="#showCourses" text="📚 Courses">
+                      <padding>
+                     <Insets left="10" right="10" />
+                  </padding>
+                  </Button>
+      
+                  <Button fx:id="btnStudents" onAction="#showStudents" text="👨🎓 Students">
+                      <padding>
+                     <Insets left="10" right="10" />
+                  </padding>
+                  </Button>
+              </VBox>
             </VBox>
 
             <!-- Courses Section -->
