@@ -59,10 +59,13 @@ public class DashboardController {
             System.out.println("📂 Loading: " + fxmlPath);
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent view = loader.load();
+
+            CourseController controller = loader.getController();
+            controller.setUserRole(userRole);
             mainContent.getChildren().clear();
             mainContent.getChildren().add(view);
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace(System.out);
             System.out.println("Error loading FXML: " + fxmlPath);
         }
     }

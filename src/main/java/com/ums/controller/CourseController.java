@@ -31,7 +31,7 @@ public class CourseController {
 
     // Buttons for handling various actions
     @FXML
-    private Button btnAddCourse, btnEditCourse, btnDeleteCourse, btnAssignFaculty, btnManageEnrollments, btnImportExcel;
+    private Button btnAddCourse, btnEditCourse, btnDeleteCourse, btnAssignFaculty, btnManageEnrollments;
 
     // Text fields for user input to add/edit courses
     @FXML
@@ -40,6 +40,12 @@ public class CourseController {
     // List to store course data dynamically
     private final ObservableList<Course> courses = FXCollections.observableArrayList();
 
+    private String userRole = "Student";
+
+    public void setUserRole(String role) {
+        this.userRole = role;
+        configureUIForRole();
+    }
     /**
      * Initializes the controller. Sets up column-cell mappings and binds data to the TableView.
      */
@@ -53,11 +59,23 @@ public class CourseController {
         teacherNameColumn.setCellValueFactory(new PropertyValueFactory<>("teacherName"));
         lectureTimeColumn.setCellValueFactory(new PropertyValueFactory<>("lectureTime"));
         locationColumn.setCellValueFactory(new PropertyValueFactory<>("location"));
-
+        handleImportExcel();
         // Binding the observable list to the TableView
         courseTable.setItems(courses);
     }
 
+    private void configureUIForRole() {
+        if ("Student".equalsIgnoreCase(userRole)){
+            txtCourseName.setDisable(true);
+            txtCourseCode.setDisable(true);
+            txtSubjectName.setDisable(true);
+            txtSectionNumber.setDisable(true);
+            txtTeacherName.setDisable(true);
+            txtLectureTime.setDisable(true);
+            txtLocation.setDisable(true);
+
+        }
+    }
     /**
      * Handles adding a new course based on user input from text fields.
      */

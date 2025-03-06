@@ -47,7 +47,6 @@ courses, and buttons to manage courses.
         <Button fx:id="btnAddCourse" text="Add Course" onAction="#handleAddCourse"/>
         <Button fx:id="btnEditCourse" text="Edit Course" onAction="#handleEditCourse"/>
         <Button fx:id="btnDeleteCourse" text="Delete Course" onAction="#handleDeleteCourse"/>
-        <Button fx:id="btnImportExcel" text="Import from Excel" onAction="#handleImportExcel"/>
     </HBox>
 
 </VBox>

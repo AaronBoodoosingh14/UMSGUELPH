@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+FXML file for the Course Management UI in the University Management System.
+This layout includes a table to display courses, input fields for adding/editing
+courses, and buttons to manage courses.
+-->
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<!-- Root container: VBox (Vertical Box) to organize elements in a column -->
+<VBox spacing="10" alignment="CENTER" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.ums.controller.CourseController">
+
+    <!-- Title Label for the UI -->
+    <Label text="Course Management" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+
+    <!-- TableView for displaying the list of courses -->
+    <TableView fx:id="courseTable" prefWidth="900">
+        <columns>
+            <!-- Columns for different course attributes -->
+            <TableColumn fx:id="courseNameColumn" text="Course Name"/>
+            <TableColumn fx:id="courseCodeColumn" text="Course Code"/>
+            <TableColumn fx:id="subjectNameColumn" text="Subject"/>
+            <TableColumn fx:id="sectionNumberColumn" text="Section"/>
+            <TableColumn fx:id="teacherNameColumn" text="Teacher"/>
+            <TableColumn fx:id="lectureTimeColumn" text="Lecture Time"/>
+            <TableColumn fx:id="locationColumn" text="Location"/>
+        </columns>
+    </TableView>
+
+    <!-- Input Section: TextFields inside an HBox for entering course details -->
+    <HBox spacing="10">
+        <TextField fx:id="txtCourseName" promptText="Course Name" prefWidth="150" disable="true"/>
+        <TextField fx:id="txtCourseCode" promptText="Course Code" prefWidth="120" disable="true"/>
+        <TextField fx:id="txtSubjectName" promptText="Subject" prefWidth="120" disable="true"/>
+        <TextField fx:id="txtSectionNumber" promptText="Section" prefWidth="100" disable="true"/>
+        <TextField fx:id="txtTeacherName" promptText="Teacher" prefWidth="150" disable="true"/>
+        <TextField fx:id="txtLectureTime" promptText="Lecture Time" prefWidth="150" disable="true"/>
+        <TextField fx:id="txtLocation" promptText="Location" prefWidth="120" disable="true"/>
+    </HBox>
+
+    <!-- Buttons Section inside an HBox for managing course actions -->
+    <HBox spacing="10">
+        <Button fx:id="btnAddCourse" text="Add Course" onAction="#handleAddCourse" disable="true"/>
+        <Button fx:id="btnEditCourse" text="Edit Course" onAction="#handleEditCourse" disable="true"/>
+        <Button fx:id="btnDeleteCourse" text="Delete Course" onAction="#handleDeleteCourse" disable="true"/>
+    </HBox>
+
+</VBox>
