@@ -77,7 +77,7 @@ public class StudentController {
              Workbook workbook = new XSSFWorkbook(fis)) {
 
             // Get the "Students" sheet from the Excel file
-            Sheet sheet = workbook.getSheet("Students ");
+            Sheet sheet = workbook.getSheet("Students");
             if (sheet == null) {
                 showAlert("Sheet Not Found", "The 'Students' sheet is missing in UMS_Data.xlsx!");
                 return;
