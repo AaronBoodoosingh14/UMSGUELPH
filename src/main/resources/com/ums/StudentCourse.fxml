@@ -1,12 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+FXML file for displaying student courses in the University Management System.
+This layout consists of a TableView inside an AnchorPane to list all available courses.
+-->
+
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<!-- Root container: AnchorPane, which allows flexible UI positioning -->
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ums.controller.CourseController">
     <children>
+        <!-- VBox ensures that elements are stacked vertically and centered -->
         <VBox spacing="10" alignment="CENTER">
+
+            <!-- TableView for displaying the list of student courses -->
             <TableView fx:id="courseTable">
                 <columns>
+                    <!-- Columns for different course attributes -->
                     <TableColumn text="Course Name" fx:id="courseNameColumn" />
                     <TableColumn text="Course Code" fx:id="courseCodeColumn" />
                     <TableColumn text="Subject" fx:id="subjectNameColumn" />
@@ -16,6 +27,7 @@
                     <TableColumn text="Location" fx:id="locationColumn" />
                 </columns>
             </TableView>
+
         </VBox>
     </children>
 </AnchorPane>
