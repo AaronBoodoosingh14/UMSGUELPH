@@ -17,10 +17,10 @@ import java.io.IOException;
 public class DashboardController {
 
     @FXML
-    private StackPane mainContent;
+    private StackPane mainContent;  // Main screen
 
     @FXML
-    private Button btnSubjects, btnCourses, btnStudents, btnFaculty, btnEvents, btnLogout;
+    private Button btnSubjects, btnCourses, btnStudents, btnFaculty, btnEvents, btnLogout;  // Setting up modules
 
     private String userRole = "Student"; // Default to Student if no role is set
 
@@ -28,9 +28,10 @@ public class DashboardController {
      * Sets the user role and applies role-based module selection.
      * @param role The user's role (Admin or Student).
      */
+
     public void setUserRole(String role) {
         this.userRole = role;
-        System.out.println("🔹 Logged in as: " + role);
+        System.out.println("Logged in as: " + role);
     }
 
     @FXML
@@ -49,19 +50,28 @@ public class DashboardController {
      */
     private void loadModule(String moduleName) {
         String fxmlPath;
+
         if ("Admin".equalsIgnoreCase(userRole)) {
-            fxmlPath = "/com/ums/admin/" + moduleName + "Admin.fxml";  // Admin module
+            fxmlPath = "/com/ums/admin/" + moduleName + "Admin.fxml";
         } else {
-            fxmlPath = "/com/ums/user/" + moduleName + "User.fxml";  // Student module
+            fxmlPath = "/com/ums/user/" + moduleName + "User.fxml";
         }
 
         try {
-            System.out.println("📂 Loading: " + fxmlPath);
+            System.out.println("Loading: " + fxmlPath);
+
+            if (getClass().getResource(fxmlPath) == null) {
+                System.out.println("ERROR: FXML file not found at: " + fxmlPath);
+                return;
+            }
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent view = loader.load();
 
-            CourseController controller = loader.getController();
+            // Pass user role to SubjectController
+            SubjectController controller = loader.getController();
             controller.setUserRole(userRole);
+
             mainContent.getChildren().clear();
             mainContent.getChildren().add(view);
         } catch (IOException e) {
@@ -69,6 +79,8 @@ public class DashboardController {
             System.out.println("Error loading FXML: " + fxmlPath);
         }
     }
+
+
 
     private void logout() {
         try {
@@ -88,10 +100,11 @@ public class DashboardController {
             stage.show();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace(System.out);
             System.out.println("Error loading Login screen.");
         }
     }
+
 
 
 }

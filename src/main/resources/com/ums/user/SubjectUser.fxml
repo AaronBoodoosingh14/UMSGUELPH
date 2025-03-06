@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<VBox spacing="10" alignment="CENTER"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.ums.controller.SubjectController">
+
+    <Label text="Subjects Management" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+
+    <TableView fx:id="subjectTable" prefWidth="400">
+        <columns>
+            <TableColumn text="Subject Code" fx:id="colCode" />
+            <TableColumn text="Subject Name" fx:id="colName" />
+        </columns>
+    </TableView>
+
+    <HBox spacing="10">
+        <TextField fx:id="txtCode" promptText="Enter Subject Code" disable="true"/>
+        <TextField fx:id="txtName" promptText="Enter Subject Name" disable="true"/>
+        <Button text="Add Subject" fx:id="btnAdd" disable="true"/>
+        <Button fx:id="btnEdit" text="Edit" disable="true" />
+
+    </HBox>
+
+</VBox>
