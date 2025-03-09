@@ -67,10 +67,17 @@ public class DashboardController {
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent view = loader.load();
+if("Events".equals(moduleName)) {
 
-            // Pass user role to SubjectController
-            SubjectController controller = loader.getController();
-            controller.setUserRole(userRole);
+    EventController controller = loader.getController();
+    controller.setUserRole(userRole);
+}else if("Subject".equals(moduleName)) {
+    // Pass user role to SubjectController
+    SubjectController controller = loader.getController();
+    controller.setUserRole(userRole);
+}
+
+
 
             mainContent.getChildren().clear();
             mainContent.getChildren().add(view);

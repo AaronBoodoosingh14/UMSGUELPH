@@ -43,7 +43,16 @@
       <TextField fx:id="txtEventRegisteredStudents" promptText="Enter Registered Students" />
 
 
-      <Button text="Add Event" fx:id="btnAdd" />
-   </HBox>
 
+   </HBox>
+   <HBox spacing="10">
+
+      <Button text="Add Event" fx:id="btnAdd" />
+      <Button text="Edit Event" fx:id="btnEdit" />
+      <Button text="Delete" fx:id="btnDelete" />
+
+
+
+
+   </HBox>
 </VBox>

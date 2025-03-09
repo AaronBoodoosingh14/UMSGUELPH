@@ -14,6 +14,8 @@ public class Event {
     private String headerImage;
     private String registeredStudents;
 
+
+
     // Constructors
     public Event() {
     }
