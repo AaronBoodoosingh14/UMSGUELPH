@@ -19,7 +19,7 @@
             <ToolBar>
                 <Button text="Add Faculty" onAction="#handleAddFaculty" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
                 <Button text="Edit Faculty" onAction="#handleEditFaculty" style="-fx-background-color: #2196F3; -fx-text-fill: white;"/>
-                <Button text="Delete Faculty" onAction="#handleDeleteFaculty" style="-fx-background-color: #f44336; -fx-text-fill: white;"/>
+                <Button text="Delete Faculty" onAction="#handleDeleteFaculty" style="-fx-background-color: #f44336; -fx-text-fill: white;"/>//
                 <Button text="View Profile" onAction="#handleViewProfile" style="-fx-background-color: #9C27B0; -fx-text-fill: white;"/>
                 <Button text="Assign Courses" onAction="#handleAssignCourses" style="-fx-background-color: #FF9800; -fx-text-fill: white;"/>
             </ToolBar>

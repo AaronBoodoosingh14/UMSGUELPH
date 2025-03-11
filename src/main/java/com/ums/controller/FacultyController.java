@@ -1,13 +1,16 @@
 package com.ums.controller;
 
 import com.ums.data.Faculty;
+import com.ums.database.DatabaseManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import java.util.Arrays;
+import java.sql.*;
+import java.sql.SQLException;
+import java.util.Scanner;
+
 
 public class FacultyController {
 
@@ -22,44 +25,70 @@ public class FacultyController {
 
     private ObservableList<Faculty> facultyList = FXCollections.observableArrayList();
 
-    @FXML
+
     public void initialize() {
-        // Initialize table columns
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("facultyName"));
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
         degreeColumn.setCellValueFactory(new PropertyValueFactory<>("degree"));
         researchColumn.setCellValueFactory(new PropertyValueFactory<>("research"));
         officeColumn.setCellValueFactory(new PropertyValueFactory<>("officeLocation"));
-
-        // Custom cell factory for courses list
         coursesColumn.setCellValueFactory(cellData -> {
-            Faculty faculty = cellData.getValue();
-            return new javafx.beans.property.SimpleStringProperty(
-                    String.join(", ", faculty.getCourses())
-            );
+            return null;
         });
-
-        facultyTable.setItems(facultyList);
-
-        // Add sample data
-        facultyList.add(new Faculty(
-                "Dr. Sarah Johnson",
-                "PhD in Computer Science",
-                "Machine Learning",
-                Arrays.asList("CS501", "AI201"),
-                "s.johnson@uni.edu",
-                "Building A, Room 305"
-        ));
+        loadFacultyData();
     }
 
-    // Updated event handlers
-    @FXML
-    private void handleAddFaculty() {
-        Faculty newFaculty = new Faculty();
-        newFaculty.setFacultyName("New Faculty Member");
-        newFaculty.setEmail(generateDefaultEmail());
-        showFacultyDialog(newFaculty, "Add New Faculty Member");
+    private void insertFacultyIntoDatabase(Faculty newFaculty) throws Exception {
+        String insertStatement = "INSERT INTO faculty_info (id, name, goon) VALUES (?, ?, ?)";
+        Connection connection  = DatabaseManager.getConnection();
+        var ps  = connection.prepareStatement(insertStatement);
+        Scanner sc = new Scanner(System.in);
+
+
+
+        //ps.setInt(1,FacultyID);
+        //ps.setString(2,Name);
+        //ps.setString(3,Degree);
+        //ps.setString(4,ResearchInterest);
+        //ps.setString(5,Email);
+        //ps.setString(6,OfficeLocation);
+        //ps.setString(7,password);
+
+        ps.executeUpdate();
     }
+
+
+    private void loadFacultyData() {
+        facultyList.clear(); // Clear existing list before fetching data
+
+        String query = "SELECT * FROM faculty_info";
+
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Faculty faculty = new Faculty();
+                faculty.setFacultyName(rs.getString("Name"));
+                faculty.setEmail(rs.getString("Email"));
+                faculty.setDegree(rs.getString("Degree"));
+                faculty.setResearch(rs.getString("ResearchInterest"));
+                faculty.setOfficeLocation(rs.getString("OfficeLocation"));
+
+
+                facultyList.add(faculty);
+            }
+
+            facultyTable.setItems(facultyList);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert("Database Error", "Failed to load faculty data.");
+        }
+    }
+
+
+
 
     @FXML
     private void handleEditFaculty() {
@@ -117,9 +146,9 @@ public class FacultyController {
     public void handleAssignCourses() {
     }
 
-    public void handleDeleteFaculty(ActionEvent actionEvent) {
-    }
 
-    public void handleViewProfile(ActionEvent actionEvent) {
+
+    public void handleViewProfile() {
+
     }
 }
