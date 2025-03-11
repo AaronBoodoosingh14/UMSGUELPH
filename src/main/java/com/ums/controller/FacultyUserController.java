@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class FacultyviewController { // Fixed class name to match FXML
+public class FacultyUserController { // Fixed class name to match FXML
 
     @FXML private ImageView profileImage;
     @FXML private Label profileLetter;
