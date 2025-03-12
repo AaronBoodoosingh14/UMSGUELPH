@@ -54,9 +54,9 @@ public class FacultyAdmin {
         loadFacultyData();
     }
 
-    public void handleAddfaculty(ActionEvent event) throws Exception {
+    public void handleAddfaculty() throws Exception {
         Stage popup = new Stage();
-        popup.setTitle("Add Facuilty");
+        popup.setTitle("Add Faculty");
         AtomicReference<String> input = new AtomicReference<>();
 
         TextField Add = new TextField();
