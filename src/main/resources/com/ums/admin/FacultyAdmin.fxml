@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
@@ -11,17 +10,16 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.ums.controller.FacultyController">
+<BorderPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ums.controller.FacultyAdmin">
     <top>
         <VBox spacing="10" style="-fx-padding: 10;">
-            <Label text="Faculty Management System" style="-fx-font-size: 20; -fx-font-weight: bold;"/>
+            <Label style="-fx-font-size: 20; -fx-font-weight: bold;" text="Faculty Management System" />
             <ToolBar>
-                <Button text="Add Faculty" onAction="#handleAddFaculty" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
-                <Button text="Edit Faculty" onAction="#handleEditFaculty" style="-fx-background-color: #2196F3; -fx-text-fill: white;"/>
-                <Button text="Delete Faculty" onAction="#handleDeleteFaculty" style="-fx-background-color: #f44336; -fx-text-fill: white;"/>
-                <Button text="View Profile" onAction="#handleViewProfile" style="-fx-background-color: #9C27B0; -fx-text-fill: white;"/>
-                <Button text="Assign Courses" onAction="#handleAssignCourses" style="-fx-background-color: #FF9800; -fx-text-fill: white;"/>
+            <Button accessibleRole="TOOL_BAR" onAction="#handleAddfaculty" style="-fx-background-color: #90EE90;" text="Add Faculty" textFill="WHITE" />
+            <Button mnemonicParsing="false" style="-fx-background-color: #FF0000;" text="Delete Faculty" textFill="WHITE" />
+                <Button accessibleRole="TOOL_BAR" onAction="#handleEditFaculty" style="-fx-background-color: #2196F3; -fx-text-fill: white;" text="Edit Faculty" />
+                <Button accessibleRole="TOOL_BAR" onAction="#handleViewProfile" style="-fx-background-color: #9C27B0; -fx-text-fill: white;" text="View Profile" />
+                <Button accessibleRole="TOOL_BAR" onAction="#handleAssignCourses" style="-fx-background-color: #FF9800; -fx-text-fill: white;" text="Assign Courses" />
             </ToolBar>
         </VBox>
     </top>
@@ -29,21 +27,24 @@
     <center>
         <TableView fx:id="facultyTable" style="-fx-padding: 10;">
             <columns>
-                <TableColumn fx:id="nameColumn" text="Faculty Name" prefWidth="200"/>
-                <TableColumn fx:id="emailColumn" text="Email" prefWidth="250"/>
-                <TableColumn fx:id="degreeColumn" text="Degree" prefWidth="150"/>
-                <TableColumn fx:id="researchColumn" text="Research Area" prefWidth="200"/>
-                <TableColumn fx:id="officeColumn" text="Office" prefWidth="150"/>
-                <TableColumn fx:id="coursesColumn" text="Courses" prefWidth="300"/>
+                <TableColumn fx:id="nameColumn" prefWidth="200" text="Faculty Name" />
+                <TableColumn fx:id="emailColumn" prefWidth="250" text="Email" />
+                <TableColumn fx:id="degreeColumn" prefWidth="150" text="Degree" />
+                <TableColumn fx:id="researchColumn" prefWidth="200" text="Research Area" />
+                <TableColumn fx:id="officeColumn" prefWidth="150" text="Office" />
+                <TableColumn fx:id="coursesColumn" prefWidth="300" text="Courses" />
             </columns>
         </TableView>
     </center>
 
     <bottom>
         <HBox spacing="10" style="-fx-padding: 10; -fx-alignment: center-right;">
-            <Label text="Search:"/>
-            <TextField fx:id="searchField" promptText="Search faculty..." prefWidth="300"/>
-            <Button text="Search" onAction="#handleSearch"/>
+            <Label text="Search:" />
+            <TextField fx:id="searchField" prefWidth="300" promptText="Search faculty..." />
+            <Button onAction="#handleSearch" text="Search" />
         </HBox>
     </bottom>
+   <left>
+      <HBox prefHeight="400.0" prefWidth="0.0" BorderPane.alignment="CENTER" />
+   </left>
 </BorderPane>

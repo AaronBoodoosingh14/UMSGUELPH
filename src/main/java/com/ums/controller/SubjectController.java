@@ -1,6 +1,7 @@
 package com.ums.controller;
 
 import com.ums.data.Subject;
+import com.ums.database.DatabaseManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -14,6 +15,10 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  * Controller for Subject Management.
@@ -53,7 +58,7 @@ public class SubjectController {
         colCode.setCellValueFactory(new PropertyValueFactory<>("subjectCode"));
         colName.setCellValueFactory(new PropertyValueFactory<>("subjectName"));
         subjectTable.setItems(subjects);
-        importSubjectsFromExcel();
+        importSubjectsFromSQL();
         btnAdd.setOnAction(e -> addSubject());
         btnEdit.setOnAction(e -> editSubject()); // Bind edit button action
     }
@@ -82,7 +87,7 @@ public class SubjectController {
             return;
         }
 
-        Subject newSubject = new Subject(code, name);
+        Subject newSubject = new Subject();
         subjects.add(newSubject); // Add new subject to the list
 
         txtCode.clear();
@@ -94,39 +99,32 @@ public class SubjectController {
         return subjects.stream().anyMatch(s -> s.getSubjectCode().equalsIgnoreCase(code));
     }
 
-    private void importSubjectsFromExcel() {
-        try {
-            InputStream file = getClass().getResourceAsStream("/UMS_Data.xlsx");
+    private void importSubjectsFromSQL() {
+        subjects.clear();
 
-            if (file == null) {
-                System.out.println("Excel file not found!");
-                return;
+        String query = "SELECT * FROM Subjects";
+
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Subject subject = new Subject();
+                subject.setSubjectCode(rs.getString("Code"));
+                subject.setSubjectName(rs.getString("Name"));
+
+
+                subjects.add(subject);
             }
 
-            Workbook workbook = new XSSFWorkbook(file);
-            Sheet sheet = workbook.getSheetAt(0);
+            subjectTable.setItems(subjects);
 
-            for (Row row : sheet) {
-                if (row.getRowNum() == 0) continue;
-
-                Cell codeCell = row.getCell(0);
-                Cell nameCell = row.getCell(1);
-
-                if (codeCell != null && nameCell != null) {
-                    String code = codeCell.getStringCellValue().trim();
-                    String name = nameCell.getStringCellValue().trim();
-
-                    if (!code.isEmpty() && !name.isEmpty() && !isDuplicate(code)) {
-                        subjects.add(new Subject(code, name));
-                    }
-                }
-            }
-            workbook.close();
-
-        } catch (IOException e) {
-            System.out.println("Error reading Excel file.");
+        } catch (SQLException e) {
+            e.printStackTrace(System.out);
         }
+
     }
+
     @FXML
     private void editSubject() {
         Subject selectedSubject = subjectTable.getSelectionModel().getSelectedItem();

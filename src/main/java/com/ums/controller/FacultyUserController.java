@@ -9,18 +9,19 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class FacultyviewController { // Fixed class name to match FXML
+public class FacultyUserController { // Fixed class name to match FXML
 
     @FXML private ImageView profileImage;
     @FXML private Label profileLetter;
     @FXML private Label facultyNameLabel;
-    @FXML private Label degreeLabel;  // Fixed from degreetLabel
+    @FXML private Label degreeLabel;
     @FXML private Label researchLabel;
     @FXML private Label emailLabel;
     @FXML private Label officeLabel;
@@ -30,6 +31,11 @@ public class FacultyviewController { // Fixed class name to match FXML
     @FXML private VBox profileSection;
     @FXML private VBox coursesSection;
     @FXML private VBox studentsSection;
+
+    private Circle mycircle;
+    public void showprofilepic(){
+        mycircle = new Circle();
+    }
 
     private Faculty loggedFaculty;
     private final Map<String, List<String>> courseStudentsMap = new HashMap<>();
@@ -135,25 +141,6 @@ public class FacultyviewController { // Fixed class name to match FXML
         newPasswordField.clear();
     }
 
-    @FXML
-    private void showProfile() {
-        setVisibleSection(profileSection);
-    }
-
-    @FXML
-    private void showCourses() {
-        setVisibleSection(coursesSection);
-    }
-
-    @FXML
-    private void showStudents() {
-        setVisibleSection(studentsSection);
-    }
-
-    @FXML
-    private void handleLogout() {
-        showAlert("Logout", "Successfully logged out", Alert.AlertType.INFORMATION);
-    }
 
     private void setVisibleSection(VBox section) {
         profileSection.setVisible(section == profileSection);

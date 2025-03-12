@@ -9,12 +9,8 @@ public class Subject {
     private String subjectCode; // Unique identifier for the subject (e.g., "MATH101")
     private String subjectName; // Name of the subject (e.g., "Calculus")
 
-    /**
-     * Constructor to initialize a subject with a code and name.
-     * @param subjectCode Unique subject code
-     * @param subjectName Name of the subject
-     */
-    public Subject(String subjectCode, String subjectName) {
+
+    public Subject() {
         this.subjectCode = subjectCode;
         this.subjectName = subjectName;
     }
