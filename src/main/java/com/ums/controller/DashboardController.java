@@ -48,7 +48,7 @@ public class DashboardController {
      * Loads the correct module FXML file based on user role.
      * @param moduleName The module name (Subjects, Courses, etc.).
      */
-    private void loadModule(String moduleName) {
+    public void loadModule(String moduleName) {
         String fxmlPath;
 
         if ("Admin".equalsIgnoreCase(userRole)) {

@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="university@googleSQL" uuid="5acf53f7-7e4b-4c30-8469-c7099ea64f69">
+    <data-source source="LOCAL" name="university" uuid="c063902f-dd31-4dbf-863d-c99eded40529">
       <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
-      <remarks>google cloud sql for university database</remarks>
       <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
       <jdbc-url>jdbc:mysql://34.42.142.37:3306</jdbc-url>
       <jdbc-additional-properties>

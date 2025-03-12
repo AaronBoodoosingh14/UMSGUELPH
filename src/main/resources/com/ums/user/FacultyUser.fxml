@@ -1,117 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
 
 <AnchorPane prefHeight="600" prefWidth="1000" style="-fx-background-color: #f4f4f4;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ums.controller.FacultyUserController">
-
-    <!-- Main Content Area -->
-    <VBox layoutX="200" prefHeight="600" prefWidth="800" spacing="20" style="-fx-padding: 30;">
-        <Label style="-fx-font-size: 20; -fx-font-weight: bold;" text="Faculty Portal" />
-        <!-- Profile Header Section -->
-        <HBox alignment="CENTER_LEFT" spacing="30">
-            <!-- Profile Image Container -->
-            <StackPane>
-                <Circle fill="#3498db" radius="60" />
-                <ImageView fx:id="profileImage" fitHeight="120" fitWidth="120" preserveRatio="true" visible="false">
-                    <viewport>
-                        <Rectangle2D>
-                            <minX>0</minX>
-                            <minY>0</minY>
-                            <width>120</width>
-                            <height>120</height>
-                        </Rectangle2D>
-                    </viewport>
-                    <clip>
-                        <Circle centerX="60" centerY="60" radius="60" />
-                    </clip>
-                </ImageView>
-                <Label fx:id="profileLetter" style="-fx-font-size: 48; -fx-text-fill: white;" visible="false" />
-            </StackPane>
-
-            <!-- Profile Information -->
-            <VBox spacing="8">
-                <Label fx:id="facultyNameLabel" style="-fx-font-size: 24; -fx-font-weight: bold;" />
-                <Label fx:id="degreeLabel" style="-fx-text-fill: #666;" />
-                <Label fx:id="researchLabel" style="-fx-text-fill: #666;" />
-                <Button onAction="#handleUploadPhoto" style="-fx-background-color: #2ecc71; -fx-text-fill: white;" text="Upload Photo" />
-            </VBox>
-        </HBox>
-
-        <!-- Content Sections -->
-        <StackPane>
-            <!-- Profile Details Section -->
-            <VBox fx:id="profileSection" spacing="15">
-                <GridPane hgap="20" vgap="15">
-                    <columnConstraints>
-                        <ColumnConstraints prefWidth="150" />
-                        <ColumnConstraints prefWidth="400" />
-                    </columnConstraints>
-                    <rowConstraints>
-                        <RowConstraints prefHeight="35.0" />
-                        <RowConstraints prefHeight="35.0" />
-                  <RowConstraints prefHeight="35.0" />
-                    </rowConstraints>
-
-                    <Label style="-fx-font-weight: bold;" text="Email:" GridPane.rowIndex="1" />
-                    <Label fx:id="emailLabel" GridPane.columnIndex="1" />
-
-                    <Label style="-fx-font-weight: bold;" text="Office:" GridPane.rowIndex="2" />
-                    <Label fx:id="officeLabel" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-               <Label />
-               <Label />
-                </GridPane>
-
-                <Separator />
-
-                <!-- Password Change Section -->
-                <VBox spacing="10">
-                    <Label style="-fx-font-size: 16; -fx-font-weight: bold;" text="Change Password" />
-                    <PasswordField fx:id="newPasswordField" promptText="New Password" style="-fx-pref-width: 300;" />
-                    <Button onAction="#handleUpdatePassword" style="-fx-background-color: #2ecc71; -fx-text-fill: white;" text="Update Password" />
-                </VBox>
-      
-              <VBox spacing="15" style="-fx-padding: 15 0 0 0;">
-                  <Button fx:id="btnProfile" onAction="#showProfile" text="📝 Profile">
-                      <padding>
-                     <Insets left="10" right="10" />
-                  </padding>
-                  </Button>
-
-      
-                  <Button fx:id="btnCourses" onAction="#showCourses" text="📚 Courses">
-                      <padding>
-                     <Insets left="10" right="10" />
-                  </padding>
-                  </Button>
-      
-                  <Button fx:id="btnStudents" onAction="#showStudents" text="👨🎓 Students">
-                      <padding>
-                     <Insets left="10" right="10" />
-                  </padding>
-                  </Button>
-              </VBox>
-            <Label text="Label" />
-            </VBox>
-
-            <!-- Courses Section -->
-            <VBox fx:id="coursesSection" spacing="15" visible="false">
-                <Label style="-fx-font-size: 20; -fx-font-weight: bold;" text="Assigned Courses" />
-                <ListView fx:id="coursesListView" prefHeight="300" />
-            </VBox>
-
-            <!-- Students Section -->
-            <VBox fx:id="studentsSection" spacing="15" visible="false">
-                <Label style="-fx-font-size: 20; -fx-font-weight: bold;" text="Enrolled Students" />
-                <ListView fx:id="studentsListView" prefHeight="300">
-                    <placeholder>
-                        <Label text="Select a course to view enrolled students" />
-                    </placeholder>
-                </ListView>
-            </VBox>
-        </StackPane>
-    </VBox>
+     <Label layoutX="17.0" layoutY="14.0" prefHeight="40.0" prefWidth="146.0" style="-fx-font-size: 20; -fx-font-weight: bold;" text="Faculty Profile">
+      <font>
+         <Font size="44.0" />
+      </font>
+   </Label>
+       <Circle fill="#3498db" layoutX="98.0" layoutY="135.0" radius="81.0" />
+   <ImageView fitHeight="162.0" fitWidth="212.0" layoutX="14.0" layoutY="54.0" pickOnBounds="true" preserveRatio="true" />
 </AnchorPane>

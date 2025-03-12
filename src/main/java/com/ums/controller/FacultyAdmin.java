@@ -4,15 +4,33 @@ import com.ums.data.Faculty;
 import com.ums.database.DatabaseManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+
+import java.io.IOException;
 import java.sql.*;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicReference;
 
 
-public class FacultyController {
+public class FacultyAdmin {
+
+    private Stage stage;
+    private Scene scene;
+    private Parent root;
 
     @FXML private TableView<Faculty> facultyTable;
     @FXML private TableColumn<Faculty, String> nameColumn;
@@ -32,34 +50,70 @@ public class FacultyController {
         degreeColumn.setCellValueFactory(new PropertyValueFactory<>("degree"));
         researchColumn.setCellValueFactory(new PropertyValueFactory<>("research"));
         officeColumn.setCellValueFactory(new PropertyValueFactory<>("officeLocation"));
-        coursesColumn.setCellValueFactory(cellData -> {
-            return null;
-        });
+        coursesColumn.setCellValueFactory(cellData -> null);
         loadFacultyData();
     }
 
-    private void insertFacultyIntoDatabase(Faculty newFaculty) throws Exception {
-        String insertStatement = "INSERT INTO faculty_info (id, name, goon) VALUES (?, ?, ?)";
+    public void handleAddfaculty(ActionEvent event) throws Exception {
+        Stage popup = new Stage();
+        popup.setTitle("Add Facuilty");
+        AtomicReference<String> input = new AtomicReference<>();
+
+        TextField Add = new TextField();
+        Add.setPromptText("Enter Faculty INFO");
+
+        Button button = new Button("Submit");
+
+        VBox layout = new VBox(20);
+        layout.getChildren().addAll(Add, button);
+        layout.setAlignment(Pos.CENTER);
+
+        button.setOnAction(e->{popup.close();   input.set(Add.getText());});
+
+
+        Scene scene = new Scene(layout, 500, 300);
+        popup.setScene(scene);
+        popup.showAndWait();
+        System.out.println(input);
+        insertFacultyIntoDatabase(String.valueOf(input));
+
+    }
+    private void insertFacultyIntoDatabase(String input) throws Exception {
+
+        String[] arr = input.split(",");
+        System.out.println(Arrays.toString(arr));
+        String FacultyID = arr[0];
+        String Name = arr[1];
+        String Degree = arr[2];
+        String ResearchInterest = arr[3];
+        String Email = arr[4];
+        String OfficeLocation = arr[5];
+
+
+
+        String insertStatement = "INSERT INTO faculty_info (FacultyID,Name,Degree,ResearchInterest,Email,OfficeLocation) VALUES (?, ?, ?,?,?,?)";
         Connection connection  = DatabaseManager.getConnection();
         var ps  = connection.prepareStatement(insertStatement);
-        Scanner sc = new Scanner(System.in);
 
 
 
-        //ps.setInt(1,FacultyID);
-        //ps.setString(2,Name);
-        //ps.setString(3,Degree);
-        //ps.setString(4,ResearchInterest);
-        //ps.setString(5,Email);
-        //ps.setString(6,OfficeLocation);
-        //ps.setString(7,password);
+        ps.setString(1,FacultyID);
+        ps.setString(2,Name);
+        ps.setString(3,Degree);
+        ps.setString(4,ResearchInterest);
+        ps.setString(5,Email);
+        ps.setString(6,OfficeLocation);
+
 
         ps.executeUpdate();
+
+        facultyTable.refresh();
+
     }
 
 
     private void loadFacultyData() {
-        facultyList.clear(); // Clear existing list before fetching data
+        facultyList.clear();
 
         String query = "SELECT * FROM faculty_info";
 
@@ -89,36 +143,14 @@ public class FacultyController {
 
 
 
-
     @FXML
     private void handleEditFaculty() {
-        Faculty selectedFaculty = facultyTable.getSelectionModel().getSelectedItem();
-        if (selectedFaculty != null) {
-            showFacultyDialog(selectedFaculty, "Edit Faculty Member");
-        } else {
-            showAlert("No Selection", "Please select a faculty member to edit.");
-        }
+
+
     }
 
-    // Other handlers remain similar with Faculty type adjustments
-    // ... [keep other handlers mostly same, adjusting for Faculty properties]
 
-    private String generateDefaultEmail() {
-        // Implement email generation logic based on faculty name
-        return "new.faculty@uni.edu";
-    }
 
-    private void showFacultyDialog(Faculty faculty, String title) {
-        // Implementation for add/edit dialog
-        // Would need to create a form for all Faculty properties
-    }
-
-    private void showCourseAssignmentDialog(Faculty faculty) {
-        // Implementation for course assignment
-        // Should modify the courses list directly
-    }
-
-    // Updated search handler
     @FXML
     private void handleSearch() {
         String searchTerm = searchField.getText().toLowerCase();
@@ -148,7 +180,17 @@ public class FacultyController {
 
 
 
-    public void handleViewProfile() {
+    public void handleViewProfile(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/ums/Dashboard.fxml"));
+        Parent root = loader.load();
 
+        DashboardController dashboard = loader.getController();
+        dashboard.loadModule("Faculty");
+
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
     }
+
 }
