@@ -3,7 +3,9 @@ package com.ums.controller;
 import com.ums.UMSApplication;
 import com.ums.data.Event;
 
+import com.ums.data.Faculty;
 import com.ums.data.Subject;
+import com.ums.database.DatabaseManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -21,6 +23,10 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 
 public class EventController {
@@ -81,9 +87,9 @@ public class EventController {
         //events.add(e); //later call excelUtil.getEvents and add to here (events.add (e))
         // Bind list to TableView
         eventTable.setItems(events);
-        importEventsFromExcel();
+        importEventsFromSQL();
         if(null != btnAdd ) {
-            btnAdd.setOnAction(eventAction -> addEvent());
+            //btnAdd.setOnAction(eventAction -> addEvent());
         }
         if(null != btnDelete ) {
             btnDelete.setOnAction(eventAction -> removeRow());
@@ -97,7 +103,7 @@ public class EventController {
      * This method  will  validate the user input for duplicate code and
      * also for required fields ( must fill all fields), Also save the event.
      */
-    private void addEvent() {
+    /*private void addEvent() {
         String eventCode = txtEventCode.getText().trim();
         String eventName = txtEventName.getText().trim();
         String description = txtEventDescription.getText().trim();
@@ -153,59 +159,37 @@ public class EventController {
         return false;
     }
 
-    private void importEventsFromExcel() {
-        try {
-          //  InputStream file = getClass().getResourceAsStream("/UMS_Data.xlsx");
-            InputStream file = new FileInputStream("C:/test/UMS_Data.xlsx");
+    private void importEventsFromSQL() {
+        events.clear();
 
-            if (file == null) {
-                System.out.println("Excel file not found!");
-                return;
+        String query = "SELECT * FROM events";
+
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Event event = new Event();
+                event.setEventCode(rs.getString("eventCode"));
+                event.setEventName(rs.getString("eventName"));
+                event.setDescription(rs.getString("description")    );
+                event.setLocation(rs.getString("location"));
+                event.setDateTime(rs.getDate("dateTime"));
+                event.setCapacity(rs.getString("capacity"));
+                event.setCost(rs.getString("cost"));
+                event.setHeaderImage(rs.getString("headerImage"));
+                event.setRegisteredStudents(FXCollections.singletonObservableList(rs.getString("registeredStudents")));
+
+
+                events.add(event);
             }
 
-            Workbook workbook = new XSSFWorkbook(file);
-            Sheet eventSheet = workbook.getSheetAt(4);
+            eventTable.setItems(events);
 
-            for (Row row : eventSheet) {
-                if (row.getRowNum() == 0) continue;
-
-                Cell eventCodeCell = row.getCell(0);
-                Cell eventNameCell = row.getCell(1);
-                Cell eventDescriptionCell = row.getCell(2);
-                Cell eventLocationCell = row.getCell(3);
-                Cell eventDateTimeCell = row.getCell(4);
-                Cell eventCapacityCell = row.getCell(5);
-                Cell eventCostCell = row.getCell(6);
-                Cell eventHeaderImageCell = row.getCell(7);
-                Cell eventRegisteredStudentsCell = row.getCell(8);
-
-                if (eventCodeCell != null && eventNameCell != null && eventDescriptionCell != null && eventLocationCell != null && eventDateTimeCell != null
-                && eventCapacityCell != null && eventCostCell != null && eventHeaderImageCell != null && eventRegisteredStudentsCell != null) {
-
-                    String eventCode = eventCodeCell.getStringCellValue().trim();
-                    String eventName = eventNameCell.getStringCellValue().trim();
-                    String description = eventDescriptionCell.getStringCellValue().trim();
-                    String location = eventLocationCell.getStringCellValue().trim();
-                    DataFormatter formatter = new DataFormatter();
-                    String dateTime = formatter.formatCellValue(eventDateTimeCell);
-                    String capacity = formatter.formatCellValue(eventCapacityCell);
-
-                    String cost = eventCostCell.getStringCellValue().trim();
-                    String headerImage = eventHeaderImageCell.getStringCellValue().trim();
-                    String registeredStudents =eventRegisteredStudentsCell.getStringCellValue().trim();
-
-                    //if (!code.isEmpty() && !name.isEmpty() && !isDuplicate(code)) {
-                        events.add(new Event(eventCode, eventName,description,location,
-                                dateTime, capacity, cost, headerImage, registeredStudents));
-                    //}
-                }
-            }
-            file.close();
-            workbook.close();
-
-        } catch (IOException e) {
-            System.out.println("Error reading Excel file.");
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+
     }
 
     private void removeRow() {
@@ -242,7 +226,7 @@ public class EventController {
             System.out.println("Row deleted and file updated successfully.");
 
             events.clear();
-            importEventsFromExcel();
+            importEventsFromSQL();
         } catch (Exception ex) {
             System.out.println("Error when removing Excel file." + ex.getMessage());
         }
