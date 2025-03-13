@@ -2,19 +2,17 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.geometry.*?>
 
-<VBox spacing="10" alignment="CENTER" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.ums.controller.StudentController">
+<VBox alignment="CENTER" spacing="10" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.12" fx:controller="com.ums.controller.StudentController">
 
-    <Label text="Student Management" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+    <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Student Management" />
 
     <TableView fx:id="studentTable" prefWidth="450">
         <columns>
-            <TableColumn text="Student ID" fx:id="colStudentID" />
-            <TableColumn text="Name" fx:id="colName" />
-            <TableColumn text="Email" fx:id="colEmail" />
-            <TableColumn text="Academic Level" fx:id="colAcademicLevel" />
+            <TableColumn fx:id="colStudentID" text="Student ID" />
+            <TableColumn fx:id="colName" text="Name" />
+            <TableColumn fx:id="colEmail" text="Email" />
+            <TableColumn fx:id="colAcademicLevel" text="Academic Level" />
         </columns>
     </TableView>
 
@@ -26,10 +24,9 @@
     </HBox>
 
     <HBox spacing="10">
-        <Button text="Add Student" fx:id="btnAdd" />
-        <Button text="Edit Student" fx:id="btnEdit" />
-        <Button text="Delete Student" fx:id="btnDelete" />
-        <Button text="Import from Excel" fx:id="btnImportExcel" />
+        <Button fx:id="btnAdd" text="Add Student" />
+        <Button fx:id="btnEdit" text="Edit Student" />
+        <Button fx:id="btnDelete" text="Delete Student" />
     </HBox>
 
 </VBox>

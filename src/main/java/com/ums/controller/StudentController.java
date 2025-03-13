@@ -1,6 +1,8 @@
 package com.ums.controller;
 
+import com.ums.data.Faculty;
 import com.ums.data.Student;
+import com.ums.database.DatabaseManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -12,7 +14,12 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -32,7 +39,7 @@ public class StudentController {
     private TextField txtStudentID, txtName, txtEmail, txtAcademicLevel;
 
     @FXML
-    private Button btnAdd, btnEdit, btnDelete, btnImportExcel;
+    private Button btnAdd, btnEdit, btnDelete;
 
     // ObservableList to hold student data and update TableView in real-time
     private final ObservableList<Student> students = FXCollections.observableArrayList();
@@ -54,10 +61,12 @@ public class StudentController {
         studentTable.setItems(students);
 
         // Set button actions
-        btnAdd.setOnAction(e -> addStudent());
+        //btnAdd.setOnAction(e -> addStudent());
         btnEdit.setOnAction(e -> editStudent());
         btnDelete.setOnAction(e -> deleteStudent());
-        btnImportExcel.setOnAction(e -> importStudentsFromExcel());
+
+        importStudentsFromSql();
+
     }
 
     /**
@@ -66,55 +75,37 @@ public class StudentController {
      * - Extracts Student ID, Name, Email, and Academic Level.
      * - Prevents duplicate Student IDs.
      */
-    private void importStudentsFromExcel() {
-        File file = new File("src/main/resources/UMS_Data.xlsx"); // Excel file path
-        if (!file.exists()) {
-            showAlert("File Not Found", "The Excel file (UMS_Data.xlsx) is missing!");
-            return;
-        }
+    private void importStudentsFromSql() {
+        students.clear();
 
-        try (FileInputStream fis = new FileInputStream(file);
-             Workbook workbook = new XSSFWorkbook(fis)) {
+        String query = "SELECT * FROM students_info";
 
-            // Get the "Students" sheet from the Excel file
-            Sheet sheet = workbook.getSheet("Students");
-            if (sheet == null) {
-                showAlert("Sheet Not Found", "The 'Students' sheet is missing in UMS_Data.xlsx!");
-                return;
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Student student = new Student();
+                student.setStudentId(rs.getString("StudentId"));
+                student.setName(rs.getString("Name"));
+                student.setAddress(rs.getString("Address"));
+                student.setTelephone(rs.getString("Telephone"));
+                student.setEmail(rs.getString("Email"));
+                student.setAcademicLevel(rs.getString("AcademicLevel"));
+                student.setSubjectsRegistered(Collections.singletonList(rs.getString("SubjectsRegistered")));
+                student.setThesisTitle(rs.getString("ThesisTitle"));
+                student.setProgress(rs.getString("Progress"));
+                student.setPassword(rs.getString("Password"));
+
+
+                students.add(student);
             }
 
-            // Iterate through each row in the Excel sheet
-            for (Row row : sheet) {
-                if (row.getRowNum() == 0) continue; // Skip header row
+            studentTable.setItems(students);
 
-                // Retrieve cell values from the row
-                org.apache.poi.ss.usermodel.Cell idCell = row.getCell(0);
-                org.apache.poi.ss.usermodel.Cell nameCell = row.getCell(1);
-                org.apache.poi.ss.usermodel.Cell emailCell = row.getCell(4);
-                org.apache.poi.ss.usermodel.Cell academicLevelCell = row.getCell(5);
-
-                // Ensure that all required cells are present
-                if (idCell != null && nameCell != null && emailCell != null && academicLevelCell != null) {
-                    String studentID = idCell.getStringCellValue().trim();
-                    String name = nameCell.getStringCellValue().trim();
-                    String email = emailCell.getStringCellValue().trim();
-                    String academicLevel = academicLevelCell.getStringCellValue().trim();
-
-                    // Validate that no fields are empty and prevent duplicate entries
-                    if (!studentID.isEmpty() && !name.isEmpty() && !email.isEmpty() && !academicLevel.isEmpty()) {
-                        if (!isDuplicate(studentID)) {
-                            students.add(new Student(studentID, name, "", "", email, academicLevel, "", "", new ArrayList<>(), "", "", "default123"));
-                        }
-                    }
-                }
-            }
-
-            studentTable.refresh(); // Refresh the TableView to display imported data
-            showAlert("Success", "Student data imported successfully!");
-
-        } catch (IOException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
-            showAlert("Error", "Failed to read UMS_Data.xlsx!");
+            showAlert("Database Error", "Failed to load faculty data.");
         }
     }
 
@@ -131,7 +122,7 @@ public class StudentController {
      * - Ensures all fields are filled.
      * - Checks for duplicate Student ID.
      */
-    private void addStudent() {
+  /*private void addStudent() {
         String studentID = txtStudentID.getText().trim();
         String name = txtName.getText().trim();
         String email = txtEmail.getText().trim();
@@ -152,7 +143,7 @@ public class StudentController {
         } else {
             showAlert("Invalid Input", "Please fill in all fields.");
         }
-    }
+    } */
 
     /**
      * Edits the selected student in the TableView.
