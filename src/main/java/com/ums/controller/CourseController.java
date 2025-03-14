@@ -26,7 +26,10 @@ public class CourseController {
 
     // Table columns representing course details
     @FXML
-    private TableColumn<Course, String> courseNameColumn, courseCodeColumn, subjectNameColumn, sectionNumberColumn, teacherNameColumn, lectureTimeColumn, locationColumn;
+    private TableColumn<Course, String> courseNameColumn, subjectNameColumn, sectionNumberColumn,
+            teacherNameColumn, lectureTimeColumn, locationColumn, finalexamColumn;
+    @FXML
+    private TableColumn<Course, Integer> coursecodeColumn, capacityColumn;
 
     // Buttons for handling various actions
     @FXML
@@ -52,12 +55,14 @@ public class CourseController {
     public void initialize() {
         // Mapping TableColumn to corresponding Course object properties
         courseNameColumn.setCellValueFactory(new PropertyValueFactory<>("courseName"));
-        courseCodeColumn.setCellValueFactory(new PropertyValueFactory<>("courseCode"));
+        coursecodeColumn.setCellValueFactory(new PropertyValueFactory<>("courseCode"));
         subjectNameColumn.setCellValueFactory(new PropertyValueFactory<>("subjectName"));
         sectionNumberColumn.setCellValueFactory(new PropertyValueFactory<>("sectionNumber"));
-        teacherNameColumn.setCellValueFactory(new PropertyValueFactory<>("teacherName"));
+        capacityColumn.setCellValueFactory(new PropertyValueFactory<>("capacity"));
         lectureTimeColumn.setCellValueFactory(new PropertyValueFactory<>("lectureTime"));
+        finalexamColumn.setCellValueFactory(new PropertyValueFactory<>("finalExam"));
         locationColumn.setCellValueFactory(new PropertyValueFactory<>("location"));
+        teacherNameColumn.setCellValueFactory(new PropertyValueFactory<>("teacherName"));
         handleImportSQL();
 
     }
@@ -78,7 +83,7 @@ public class CourseController {
      * Handles adding a new course based on user input from text fields.
      */
     @FXML
-    private void handleAddCourse() {
+    /*private void handleAddCourse() {
         // Retrieving input from user fields and trimming extra spaces
         String courseName = txtCourseName.getText().trim();
         int courseCode = Integer.parseInt(txtCourseCode.getText().trim());
@@ -95,7 +100,7 @@ public class CourseController {
         }
 
         // Creating a new Course object and adding it to the list
-        Course newCourse = new Course(courseName, courseCode, subjectName, sectionNumber, teacherName, lectureTime, location);
+        Course newCourse = new Course(courseName, courseCode, subjectName, sectionNumber, teacherName, lectureTime, location,capacity,finalexam);
         courses.add(newCourse);
         refreshTable(); // Refresh the table to reflect changes
 
@@ -112,7 +117,6 @@ public class CourseController {
     /**
      * Handles editing an existing course selected from the TableView.
      */
-    @FXML
     private void handleEditCourse() {
 
     }
@@ -147,32 +151,35 @@ public class CourseController {
 
     private void handleImportSQL() {
         courses.clear();
-        String insert = "SELECT * FROM courses";
+        String query = "SELECT * FROM courses"; // Ensure 'courses' is the correct table name
 
         try (Connection conn = DatabaseManager.getConnection();
-        PreparedStatement stmt = conn.prepareStatement(insert);
-        ResultSet rs = stmt.executeQuery()){
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-            Course course = new Course();
-            course.courseNameProperty(rs.getString("Course Name"));
-            course.courseCodeProperty(rs.getInt("CourseCode"));
-            course.subjectNameProperty(rs.getString("SubjectName"));
-            course.sectionNumberProperty(rs.getString("Section Number"));
-            course.teacherNameProperty(rs.getString("Teacher Name"));
-            course.lectureTimeProperty(rs.getString("Lecture Time"));
-            course.locationProperty(rs.getString("Location"));
+                Course course = new Course();
+                course.setCourseCode(rs.getInt("Course Code")); // Adjust column names as needed
+                course.setCourseName(rs.getString("Course Name"));
+                course.setSubjectName(rs.getString("Subject Code"));
+                course.setSectionNumber(rs.getString("Section Number"));
+                course.setCapacity(rs.getInt("Capacity"));
+                course.setLectureTime(rs.getString("Lecture Time"));
+                course.setFinalExam(rs.getString("Final Exam Date/Time"));
+                course.setLocation(rs.getString("Location"));
+                course.setTeacherName(rs.getString("Teacher Name"));
 
+                courses.add(course);
+            }
 
-            courses.add(course); }
-            courseTable.setItems(courses);
-        }
-
-        catch (SQLException e){
-            System.out.println("no good");
-
+            courseTable.setItems(courses); // Ensure the table is updated with new data
+        } catch (SQLException e) {
+            e.printStackTrace(); // Log SQL exception
+            showAlert("Database Error", "Failed to load courses from database.");
         }
     }
+
+
 
 
     /**

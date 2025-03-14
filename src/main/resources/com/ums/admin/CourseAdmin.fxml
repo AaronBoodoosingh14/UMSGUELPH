@@ -22,9 +22,11 @@ courses, and buttons to manage courses.
         <columns>
             <!-- Columns for different course attributes -->
             <TableColumn fx:id="courseNameColumn" text="Course Name"/>
-            <TableColumn fx:id="courseCodeColumn" text="Course Code"/>
+            <TableColumn fx:id="coursecodeColumn" text="Course Code"/>
             <TableColumn fx:id="subjectNameColumn" text="Subject"/>
             <TableColumn fx:id="sectionNumberColumn" text="Section"/>
+            <TableColumn fx:id="capacityColumn" text = "Capacity"/>
+            <TableColumn fx:id="finalexamColumn" text = "Final Exam Date"/>
             <TableColumn fx:id="teacherNameColumn" text="Teacher"/>
             <TableColumn fx:id="lectureTimeColumn" text="Lecture Time"/>
             <TableColumn fx:id="locationColumn" text="Location"/>
@@ -44,7 +46,7 @@ courses, and buttons to manage courses.
 
     <!-- Buttons Section inside an HBox for managing course actions -->
     <HBox spacing="10">
-        <Button fx:id="btnAddCourse" text="Add Course" onAction="#handleAddCourse"/>
+        <Button fx:id="btnAddCourse" text="Add Course"/>
         <Button fx:id="btnEditCourse" text="Edit Course" onAction="#handleEditCourse"/>
         <Button fx:id="btnDeleteCourse" text="Delete Course" onAction="#handleDeleteCourse"/>
     </HBox>
