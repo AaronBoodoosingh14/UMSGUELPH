@@ -1,6 +1,7 @@
 package com.ums.controller;
 
 // Import required JavaFX and Apache POI libraries for UI components and Excel handling
+import com.ums.database.DatabaseManager;
 import org.apache.poi.ss.usermodel.Cell;
 import com.ums.data.Course;
 import javafx.collections.FXCollections;
@@ -8,11 +9,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.sql.*;
 
 /**
  * Controller class for managing courses in the University Management System (UMS).
@@ -20,6 +17,8 @@ import java.io.InputStream;
  * adding, editing, deleting, and importing courses from an Excel file.
  */
 public class CourseController {
+
+
 
     // TableView UI component for displaying courses
     @FXML
@@ -59,9 +58,8 @@ public class CourseController {
         teacherNameColumn.setCellValueFactory(new PropertyValueFactory<>("teacherName"));
         lectureTimeColumn.setCellValueFactory(new PropertyValueFactory<>("lectureTime"));
         locationColumn.setCellValueFactory(new PropertyValueFactory<>("location"));
-        handleImportExcel();
-        // Binding the observable list to the TableView
-        courseTable.setItems(courses);
+        handleImportSQL();
+
     }
 
     private void configureUIForRole() {
@@ -83,7 +81,7 @@ public class CourseController {
     private void handleAddCourse() {
         // Retrieving input from user fields and trimming extra spaces
         String courseName = txtCourseName.getText().trim();
-        String courseCode = txtCourseCode.getText().trim();
+        int courseCode = Integer.parseInt(txtCourseCode.getText().trim());
         String subjectName = txtSubjectName.getText().trim();
         String sectionNumber = txtSectionNumber.getText().trim();
         String teacherName = txtTeacherName.getText().trim();
@@ -91,7 +89,7 @@ public class CourseController {
         String location = txtLocation.getText().trim();
 
         // Validation: Ensure no fields are empty
-        if (courseName.isEmpty() || courseCode.isEmpty() || subjectName.isEmpty() || sectionNumber.isEmpty() || teacherName.isEmpty() || lectureTime.isEmpty() || location.isEmpty()) {
+        if (courseName.isEmpty() || subjectName.isEmpty() || sectionNumber.isEmpty() || teacherName.isEmpty() || lectureTime.isEmpty() || location.isEmpty()) {
             System.out.println("⚠️ ERROR: All fields must be filled before adding a course.");
             return;
         }
@@ -116,44 +114,7 @@ public class CourseController {
      */
     @FXML
     private void handleEditCourse() {
-        // Get the selected course from the table
-        Course selectedCourse = courseTable.getSelectionModel().getSelectedItem();
 
-        if (selectedCourse != null) {
-            // Retrieve new values from text fields
-            String newCourseName = txtCourseName.getText().trim();
-            String newCourseCode = txtCourseCode.getText().trim();
-            String newSubjectName = txtSubjectName.getText().trim();
-            String newSectionNumber = txtSectionNumber.getText().trim();
-            String newTeacherName = txtTeacherName.getText().trim();
-            String newLectureTime = txtLectureTime.getText().trim();
-            String newLocation = txtLocation.getText().trim();
-
-            // Update only if new values are provided (don't overwrite with empty values)
-            if (!newCourseName.isEmpty()) selectedCourse.courseNameProperty().set(newCourseName);
-            if (!newCourseCode.isEmpty()) selectedCourse.courseCodeProperty().set(newCourseCode);
-            if (!newSubjectName.isEmpty()) selectedCourse.subjectNameProperty().set(newSubjectName);
-            if (!newSectionNumber.isEmpty()) selectedCourse.sectionNumberProperty().set(newSectionNumber);
-            if (!newTeacherName.isEmpty()) selectedCourse.teacherNameProperty().set(newTeacherName);
-            if (!newLectureTime.isEmpty()) selectedCourse.lectureTimeProperty().set(newLectureTime);
-            if (!newLocation.isEmpty()) selectedCourse.locationProperty().set(newLocation);
-
-            // Force update TableView by resetting the list
-            courseTable.refresh();
-
-            // Clear input fields after editing
-            txtCourseName.clear();
-            txtCourseCode.clear();
-            txtSubjectName.clear();
-            txtSectionNumber.clear();
-            txtTeacherName.clear();
-            txtLectureTime.clear();
-            txtLocation.clear();
-
-            showAlert("Success", "Course details updated successfully!");
-        } else {
-            showAlert("No Selection", "Please select a course to edit.");
-        }
     }
 
     private void showAlert(String title, String message) {
@@ -182,48 +143,34 @@ public class CourseController {
     /**
      * Handles importing course data from an Excel file.
      */
-    @FXML
-    private void handleImportExcel() {
-        String filePath = "src/main/resources/UMS_Data.xlsx"; // Path to Excel file
-        System.out.println("✅ Import button clicked! Attempting to load: " + filePath);
 
-        try (InputStream fileStream = new FileInputStream(filePath);
-             Workbook workbook = new XSSFWorkbook(fileStream)) {
 
-            Sheet sheet = workbook.getSheet("Courses"); // Get the "Courses" sheet
-            if (sheet == null) {
-                System.out.println("❌ ERROR: 'Courses' sheet not found in the Excel file.");
-                return;
-            }
+    private void handleImportSQL() {
+        courses.clear();
+        String insert = "SELECT * FROM courses";
 
-            System.out.println("📋 Courses sheet found! Reading data...");
-            courses.clear(); // Clear existing data before importing
+        try (Connection conn = DatabaseManager.getConnection();
+        PreparedStatement stmt = conn.prepareStatement(insert);
+        ResultSet rs = stmt.executeQuery()){
 
-            boolean headerSkipped = false;
+            while (rs.next()) {
+            Course course = new Course();
+            course.courseNameProperty(rs.getString("Course Name"));
+            course.courseCodeProperty(rs.getInt("CourseCode"));
+            course.subjectNameProperty(rs.getString("SubjectName"));
+            course.sectionNumberProperty(rs.getString("Section Number"));
+            course.teacherNameProperty(rs.getString("Teacher Name"));
+            course.lectureTimeProperty(rs.getString("Lecture Time"));
+            course.locationProperty(rs.getString("Location"));
 
-            for (Row row : sheet) {
-                if (!headerSkipped) {
-                    headerSkipped = true; // Skip header row
-                    continue;
-                }
-                // Ensure no empty values are added
-                String courseName = getCellValue(row.getCell(1));
-                String courseCode = getCellValue(row.getCell(0));
-                String subjectName = getCellValue(row.getCell(2));
-                String sectionNumber = getCellValue(row.getCell(3));
-                String teacherName = getCellValue(row.getCell(8));
-                String lectureTime = getCellValue(row.getCell(5));
-                String location = getCellValue(row.getCell(7));
 
-                if (!courseName.isEmpty() && !courseCode.isEmpty()) {  // Prevent blank rows
-                    courses.add(new Course(courseName, courseCode, subjectName, sectionNumber, teacherName, lectureTime, location));
-                }
-            }
-            System.out.println("✅ Successfully imported courses!");
-            refreshTable();
-        } catch (IOException e) {
-            System.out.println("❌ ERROR: Could not read the Excel file.");
-            e.printStackTrace();
+            courses.add(course); }
+            courseTable.setItems(courses);
+        }
+
+        catch (SQLException e){
+            System.out.println("no good");
+
         }
     }
 

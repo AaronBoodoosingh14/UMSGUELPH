@@ -103,7 +103,6 @@ public class LoginController{
             window.setMaximized(true);
             window.show();
         } catch (IOException e) {
-            //e.printStackTrace();
             showAlert("Failed to load dashboard.");
         }
     }
