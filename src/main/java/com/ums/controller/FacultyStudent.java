@@ -1,6 +1,6 @@
 package com.ums.controller;
 
-public class FacultyStudent {
+class FacultyStudent extends FacultyAdmin{
 
-    public FacultyStudent() {}
+
 }

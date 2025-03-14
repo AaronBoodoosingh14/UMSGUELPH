@@ -19,7 +19,6 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.*;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Scanner;
@@ -76,6 +75,7 @@ public class FacultyAdmin {
         popup.showAndWait();
         System.out.println(input);
         insertFacultyIntoDatabase(String.valueOf(input));
+        loadFacultyData();
 
     }
     private void insertFacultyIntoDatabase(String input) throws Exception {
