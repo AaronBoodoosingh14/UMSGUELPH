@@ -10,8 +10,7 @@ public class DatabaseManager {
     private static final String PASSWORD = "gtwxbhq8";
 
     public static Connection getConnection() throws SQLException {
-        var connection = DriverManager.getConnection(URL, USER, PASSWORD);
-        return connection;
+        return DriverManager.getConnection(URL, USER, PASSWORD);
 
     }
 

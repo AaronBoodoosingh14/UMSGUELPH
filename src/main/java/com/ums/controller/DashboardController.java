@@ -1,9 +1,11 @@
 package com.ums.controller;
 
+import com.ums.UMSApplication;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
@@ -90,27 +92,16 @@ if("Events".equals(moduleName)) {
 
 
     private void logout() {
-        try {
-            System.out.println("Logging out...");
+        System.out.println("Logging out...");
+        Stage stage = (Stage) btnLogout.getScene().getWindow();
+        stage.close();
 
-            // Load the Login screen
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/ums/Login.fxml"));
-            Parent loginRoot = loader.load();
+        UMSApplication.restart();
 
-            // Get the current stage using any existing UI component
-            Stage stage = (Stage) btnLogout.getScene().getWindow();
 
-            // Replace scene with Login screen
-            stage.setScene(new Scene(loginRoot));
-            stage.sizeToScene();
-            stage.centerOnScreen(); // Center the login window
-            stage.show();
-
-        } catch (IOException e) {
-            e.printStackTrace(System.out);
-            System.out.println("Error loading Login screen.");
-        }
     }
+
+
 
 
 
