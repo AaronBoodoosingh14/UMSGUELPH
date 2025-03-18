@@ -22,6 +22,8 @@
         <TextField fx:id="txtName" promptText="Enter Subject Name" disable="true"/>
         <Button text="Add Subject" fx:id="btnAdd" disable="true"/>
         <Button fx:id="btnEdit" text="Edit" disable="true" />
+        <Button fx:id="btnDelete" text="Delete" disable="true" />
+
 
     </HBox>
 

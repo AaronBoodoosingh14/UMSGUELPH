@@ -28,6 +28,8 @@
         <TextField fx:id="txtName" promptText="Enter Subject Name" />
         <Button text="Add Subject" fx:id="btnAdd" />
         <Button text="Edit Subject" fx:id="btnEdit" />
+        <Button fx:id="btnDelete" text="Delete" />
+
 
     </HBox>
 
