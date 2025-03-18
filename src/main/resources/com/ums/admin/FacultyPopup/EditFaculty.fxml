@@ -18,7 +18,7 @@
                     <ColumnConstraints minWidth="250.0" />
                 </columnConstraints>
                 <Label text="Name:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                <TextField GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                <TextField id ="" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
                 <Label text="Faculty ID:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
                 <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" />

@@ -21,10 +21,9 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.sql.*;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.Scanner;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 
@@ -155,10 +154,64 @@ public class FacultyAdmin {
     }
 
     @FXML
-    private void columnSelect(){
+    private void  handleDeleteFaculty(ActionEvent event) throws Exception {
+        ArrayList<String> selection = new ArrayList<String>(columnSelect());
+        String FacultyID = selection.get(0);
+        String  FacultyName = selection.get(1);
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirm Delete");
+        alert.setHeaderText("Are you sure you want to delete " + FacultyName + " from the database");
+        alert.setContentText("This action cannot be reversed");
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK){
+            String sql = "DELETE FROM faculty_info WHERE FacultyID = ?";
+            Connection connection  = DatabaseManager.getConnection();
+            PreparedStatement statement = connection.prepareStatement(sql);
+            var ps  = connection.prepareStatement(sql);
+            ps.setString(1, FacultyID);
+            ps.executeUpdate();
+            Alert alert2 = new Alert(Alert.AlertType.INFORMATION);
+            alert2.setTitle("Successful Delete");
+            alert2.setHeaderText(FacultyName + " was deleted from the database");
+            alert2.setContentText("");
+            Optional<ButtonType> result2 = alert2.showAndWait();
+
+        } else {
+            Alert alert1 = new Alert(Alert.AlertType.INFORMATION);
+            alert1.setTitle("Delete confirm");
+            alert1.setHeaderText(FacultyName + " was not deleted");
+            alert1.setContentText("Either the faculty was not found or the user cancelled");
+            Optional<ButtonType> result1 = alert1.showAndWait();
+
+        }
+
+
+
+
+
+
+
+
+
+    }
+
+    @FXML
+    private ArrayList<String> columnSelect(){
         Faculty selectedFaculty = facultyTable.getSelectionModel().getSelectedItem();
+        String FacultyID = selectedFaculty.getFacultyID();
+        String Facultyname = selectedFaculty.getFacultyName();
+
 
         System.out.println(selectedFaculty);
+        System.out.println(FacultyID);
+
+        ArrayList<String> selection = new ArrayList<String>();
+
+        selection.add(FacultyID);
+        selection.add(Facultyname);
+
+        return selection;
 
 
     }
@@ -185,7 +238,7 @@ public class FacultyAdmin {
 
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle(title);
+        alert.setTitle("Ar");
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
