@@ -39,6 +39,8 @@ courses, and buttons to manage courses.
         <TextField fx:id="txtCourseCode" promptText="Course Code" prefWidth="120"/>
         <TextField fx:id="txtSubjectName" promptText="Subject" prefWidth="120"/>
         <TextField fx:id="txtSectionNumber" promptText="Section" prefWidth="100"/>
+        <TextField fx:id="txtCapacity" promptText="Capacity" prefWidth="120"/>
+        <TextField fx:id="txtFinalExamDate" promptText="Final Exam Date" prefWidth="150"/>
         <TextField fx:id="txtTeacherName" promptText="Teacher" prefWidth="150"/>
         <TextField fx:id="txtLectureTime" promptText="Lecture Time" prefWidth="150"/>
         <TextField fx:id="txtLocation" promptText="Location" prefWidth="120"/>
@@ -47,7 +49,7 @@ courses, and buttons to manage courses.
     <!-- Buttons Section inside an HBox for managing course actions -->
     <HBox spacing="10">
         <Button fx:id="btnAddCourse" text="Add Course"/>
-        <Button fx:id="btnEditCourse" text="Edit Course" onAction="#handleEditCourse"/>
+        <!--<Button fx:id="btnEditCourse" text="Edit Course" onAction="#handleEditCourse"/> -->
         <Button fx:id="btnDeleteCourse" text="Delete Course" onAction="#handleDeleteCourse"/>
     </HBox>
 

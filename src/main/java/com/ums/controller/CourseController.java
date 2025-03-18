@@ -37,7 +37,7 @@ public class CourseController {
 
     // Text fields for user input to add/edit courses
     @FXML
-    private TextField txtCourseName, txtCourseCode, txtSubjectName, txtSectionNumber, txtTeacherName, txtLectureTime, txtLocation;
+    private TextField txtCourseName, txtCourseCode, txtSubjectName, txtSectionNumber, txtTeacherName, txtLectureTime, txtLocation, txtFinalExamDate, txtCapacity;
 
     // List to store course data dynamically
     private final ObservableList<Course> courses = FXCollections.observableArrayList();
@@ -64,18 +64,22 @@ public class CourseController {
         locationColumn.setCellValueFactory(new PropertyValueFactory<>("location"));
         teacherNameColumn.setCellValueFactory(new PropertyValueFactory<>("teacherName"));
         handleImportSQL();
+        btnAddCourse.setOnAction(e -> {addCourse();});
 
     }
 
     private void configureUIForRole() {
         if ("Student".equalsIgnoreCase(userRole)){
-            txtCourseName.setDisable(true);
-            txtCourseCode.setDisable(true);
-            txtSubjectName.setDisable(true);
-            txtSectionNumber.setDisable(true);
-            txtTeacherName.setDisable(true);
-            txtLectureTime.setDisable(true);
-            txtLocation.setDisable(true);
+            txtCourseName.setVisible(true);
+            txtCourseCode.setVisible(true);
+            txtSubjectName.setVisible(true);
+            txtSectionNumber.setVisible(true);
+            txtTeacherName.setVisible(true);
+            txtLectureTime.setVisible(true);
+            txtLocation.setVisible(true);
+            txtFinalExamDate.setVisible(true);
+            txtCapacity.setVisible(true);
+
 
         }
     }
@@ -117,9 +121,81 @@ public class CourseController {
     /**
      * Handles editing an existing course selected from the TableView.
      */
-    private void handleEditCourse() {
+
+
+    private void addCourse() {
+        String insertStatement = "INSERT INTO courses VALUES(?,?,?,?,?,?,?,?,?)";
+        String CourseCode = txtCourseCode.getText().trim();
+        String CourseName = txtCourseName.getText().trim();
+        String SubjectName = txtSubjectName.getText().trim();
+        String SectionNumber = txtSectionNumber.getText().trim();
+        String TeacherName = txtTeacherName.getText().trim();
+        String LectureTime = txtLectureTime.getText().trim();
+        String Location = txtLocation.getText().trim();
+        String FinalExam = txtFinalExamDate.getText().trim();
+        String Capacity = txtCapacity.getText().trim();
+
+        if (CourseCode.isEmpty() || CourseName.isEmpty() || SubjectName.isEmpty() || SectionNumber.isEmpty()){
+            System.out.println("All fields must be filled before adding a course.");
+            return;
+        }
+
+        //Add funtion later
+        //if (isDuplicate(code)){
+            //System.out.println("Course code already exists.");
+        //}
+
+        try (Connection conn = DatabaseManager.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(insertStatement)) {
+
+            stmt.setString(1, CourseCode);
+            stmt.setString(2,CourseName);
+            stmt.setString(3,SubjectName);
+            stmt.setString(4,SectionNumber);
+            stmt.setString(5,Capacity);
+            stmt.setString(6,LectureTime);
+            stmt.setString(7,FinalExam);
+            stmt.setString(8,Location);
+            stmt.setString(9,TeacherName);
+
+
+            int rowsInserted = stmt.executeUpdate();
+
+            if (rowsInserted > 0) {
+                System.out.println("Course added successfully.");
+
+                Course course = new Course();
+                course.setCourseCode(Integer.parseInt(CourseCode));
+                course.setCourseName(CourseName);
+                course.setSubjectName(SubjectName);
+                course.setSectionNumber(SectionNumber);
+                course.setTeacherName(TeacherName);
+                course.setLectureTime(LectureTime);
+                course.setLocation(Location);
+                course.setCapacity(Integer.parseInt(Capacity));
+                course.setFinalExam(FinalExam);
+                courses.add(course);
+
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        txtCourseCode.clear();
+        txtCourseName.clear();
+        txtSubjectName.clear();
+        txtSectionNumber.clear();
+        txtTeacherName.clear();
+        txtLectureTime.clear();
+        txtLocation.clear();
+        txtFinalExamDate.clear();
+        txtCapacity.clear();
 
     }
+
+
+    //private void handleEditCourse() {
+
+    //}
 
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
