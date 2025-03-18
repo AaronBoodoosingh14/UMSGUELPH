@@ -47,7 +47,7 @@ courses, and buttons to manage courses.
     <!-- Buttons Section inside an HBox for managing course actions -->
     <HBox spacing="10">
         <Button fx:id="btnAddCourse" text="Add Course"/>
-        <Button fx:id="btnEditCourse" text="Edit Course" onAction="#handleEditCourse"/>
+        <!--<Button fx:id="btnEditCourse" text="Edit Course" onAction="#handleEditCourse"/> -->
         <Button fx:id="btnDeleteCourse" text="Delete Course" onAction="#handleDeleteCourse"/>
     </HBox>
 
