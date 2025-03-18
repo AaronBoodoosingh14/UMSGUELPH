@@ -34,7 +34,9 @@ public class FacultyAdmin {
     private Scene scene;
     private Parent root;
 
+
     @FXML private TableView<Faculty> facultyTable;
+    @FXML private TableColumn<Faculty, String> IDcolumn;
     @FXML private TableColumn<Faculty, String> nameColumn;
     @FXML private TableColumn<Faculty, String> emailColumn;
     @FXML private TableColumn<Faculty, String> degreeColumn;
@@ -47,40 +49,36 @@ public class FacultyAdmin {
 
 
     public void initialize() {
+        IDcolumn.setCellValueFactory(new PropertyValueFactory<>("FacultyID"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("facultyName"));
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
         degreeColumn.setCellValueFactory(new PropertyValueFactory<>("degree"));
         researchColumn.setCellValueFactory(new PropertyValueFactory<>("research"));
         officeColumn.setCellValueFactory(new PropertyValueFactory<>("officeLocation"));
-        coursesColumn.setCellValueFactory(new PropertyValueFactory<>("courses"));
+        coursesColumn.setCellValueFactory(new  PropertyValueFactory<>("courses"));
         loadFacultyData();
     }
 
-    public void handleAddfaculty() throws Exception {
-        Stage popup = new Stage();
-        popup.setTitle("Add Faculty");
-        AtomicReference<String> input = new AtomicReference<>();
 
-        TextField Add = new TextField();
-        Add.setPromptText("Enter Faculty INFO");
+    @FXML
+    private void handleEditFaculty(ActionEvent event) throws Exception {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/ums/admin/FacultyPopup/EditFaculty.fxml"));
+            Parent root = loader.load();
 
-        Button button = new Button("Submit");
+            EditFaculty controller = loader.getController();
 
-        VBox layout = new VBox(20);
-        layout.getChildren().addAll(Add, button);
-        layout.setAlignment(Pos.CENTER);
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Edit Faculty");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        button.setOnAction(e->{popup.close();   input.set(Add.getText());});
-
-
-        Scene scene = new Scene(layout, 500, 300);
-        popup.setScene(scene);
-        popup.showAndWait();
-        System.out.println(input);
-        insertFacultyIntoDatabase(String.valueOf(input));
-        loadFacultyData();
 
     }
+
     private void insertFacultyIntoDatabase(String input) throws Exception {
 
         String[] arr = input.split(",");
@@ -126,6 +124,7 @@ public class FacultyAdmin {
 
             while (rs.next()) {
                 Faculty faculty = new Faculty();
+                faculty.setFacultyID(rs.getString("FacultyID"));
                 faculty.setFacultyName(rs.getString("Name"));
                 faculty.setEmail(rs.getString("Email"));
                 faculty.setDegree(rs.getString("Degree"));
@@ -137,6 +136,7 @@ public class FacultyAdmin {
                 facultyList.add(faculty);
             }
 
+            System.out.println(facultyList);
             facultyTable.setItems(facultyList);
 
         } catch (SQLException e) {
@@ -145,7 +145,6 @@ public class FacultyAdmin {
         }
     }
 
-
     @FXML
     private void handleRefresh(){
         facultyTable.getItems().clear();
@@ -153,22 +152,18 @@ public class FacultyAdmin {
         Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0.25), event ->{loadFacultyData();}));
         timeline.setCycleCount(1);
         timeline.play();
-
-
     }
-
 
     @FXML
-    private void handleEditFaculty() {
-        facultyTable.getSelectionModel().selectedItemProperty().
-                addListener((observable, oldValue, newValue) -> {
+    private void columnSelect(){
+        Faculty selectedFaculty = facultyTable.getSelectionModel().getSelectedItem();
 
-                });
-
-
+        System.out.println(selectedFaculty);
 
 
     }
+
+
 
 
 

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="350" prefWidth="500" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ums.controller.EditFaculty">
+    <children>
+        <VBox alignment="CENTER" layoutX="50.0" layoutY="20.0" spacing="10">
+            <Label text="Edit Faculty">
+                <font>
+                    <Font size="18.0" />
+                </font>
+            </Label>
+            <GridPane hgap="10" vgap="10">
+                <columnConstraints>
+                    <ColumnConstraints halignment="RIGHT" minWidth="100.0" />
+                    <ColumnConstraints minWidth="250.0" />
+                </columnConstraints>
+                <Label text="Name:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                <TextField GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+                <Label text="Faculty ID:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                <Label text="Degree:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+                <Label text="Research Interest:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                <TextField GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+                <Label text="Email:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                <TextField GridPane.columnIndex="1" GridPane.rowIndex="4" />
+
+                <Label text="Office Location:" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+                <TextField GridPane.columnIndex="1" GridPane.rowIndex="5" />
+
+                <Label text="Courses:" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+                <TextField GridPane.columnIndex="1" GridPane.rowIndex="6" />
+            <rowConstraints>
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+            </rowConstraints>
+            </GridPane>
+
+            <HBox alignment="CENTER" spacing="10">
+                <Button text="Save" />
+                <Button text="Cancel" />
+            </HBox>
+        </VBox>
+    </children>
+</AnchorPane>

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Faculty {
+    private String FacultyID;
     private String facultyName;
     private String degree;
     private String research;
@@ -18,15 +19,16 @@ public class Faculty {
     }
 
     // Updated parameterized constructor
-    public Faculty(String facultyName, String degree, String research,
+    public Faculty(String FacultyID, String facultyName, String degree, String research,
                    String courses, String email, String officeLocation) {
-        this(facultyName, degree, research, courses, email, officeLocation, "");
+        this( facultyName,FacultyID, degree, research, courses, email, officeLocation, "");
     }
 
     // New full constructor
-    public Faculty(String facultyName, String degree, String research,
+    public Faculty(String FacultyID, String facultyName, String degree, String research,
                    String courses, String email, String officeLocation,
                    String profilePhotoPath) {
+        this.FacultyID = FacultyID;
         this.facultyName = facultyName;
         this.degree = degree;
         this.research = research;
@@ -37,6 +39,9 @@ public class Faculty {
     }
 
     // New getter and setter
+    public String getFacultyID() {return FacultyID;}
+    public void setFacultyID(String FacultyID) {this.FacultyID = FacultyID;}
+
     public String getProfilePhotoPath() {
         return profilePhotoPath;
     }
@@ -55,8 +60,8 @@ public class Faculty {
     public String getResearch() { return research; }
     public void setResearch(String research) { this.research = research; }
 
-    public String getCourses(){return courses;}
-    public void setCourses(String courses){this.courses = courses;}
+    public String getCourses() { return courses; }
+    public void setCourses(String courses) { this.courses = courses; }
 
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
@@ -68,6 +73,7 @@ public class Faculty {
     @Override
     public String toString() {
         return "Faculty{" +
+                "FacultyID ='" + FacultyID + '\'' +
                 "Name='" + facultyName + '\'' +
                 ", Degree='" + degree + '\'' +
                 ", Research='" + research + '\'' +
