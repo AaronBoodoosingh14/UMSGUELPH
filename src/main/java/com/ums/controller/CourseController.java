@@ -37,7 +37,7 @@ public class CourseController {
 
     // Text fields for user input to add/edit courses
     @FXML
-    private TextField txtCourseName, txtCourseCode, txtSubjectName, txtSectionNumber, txtTeacherName, txtLectureTime, txtLocation;
+    private TextField txtCourseName, txtCourseCode, txtSubjectName, txtSectionNumber, txtTeacherName, txtLectureTime, txtLocation, txtFinalExamDate, txtCapacity;
 
     // List to store course data dynamically
     private final ObservableList<Course> courses = FXCollections.observableArrayList();
@@ -64,18 +64,22 @@ public class CourseController {
         locationColumn.setCellValueFactory(new PropertyValueFactory<>("location"));
         teacherNameColumn.setCellValueFactory(new PropertyValueFactory<>("teacherName"));
         handleImportSQL();
+        btnAddCourse.setOnAction(e -> {addCourse();});
 
     }
 
     private void configureUIForRole() {
         if ("Student".equalsIgnoreCase(userRole)){
-            txtCourseName.setDisable(true);
-            txtCourseCode.setDisable(true);
-            txtSubjectName.setDisable(true);
-            txtSectionNumber.setDisable(true);
-            txtTeacherName.setDisable(true);
-            txtLectureTime.setDisable(true);
-            txtLocation.setDisable(true);
+            txtCourseName.setVisible(true);
+            txtCourseCode.setVisible(true);
+            txtSubjectName.setVisible(true);
+            txtSectionNumber.setVisible(true);
+            txtTeacherName.setVisible(true);
+            txtLectureTime.setVisible(true);
+            txtLocation.setVisible(true);
+            txtFinalExamDate.setVisible(true);
+            txtCapacity.setVisible(true);
+
 
         }
     }
@@ -128,6 +132,8 @@ public class CourseController {
         String TeacherName = txtTeacherName.getText().trim();
         String LectureTime = txtLectureTime.getText().trim();
         String Location = txtLocation.getText().trim();
+        String FinalExam = txtFinalExamDate.getText().trim();
+        String Capacity = txtCapacity.getText().trim();
 
         if (CourseCode.isEmpty() || CourseName.isEmpty() || SubjectName.isEmpty() || SectionNumber.isEmpty()){
             System.out.println("All fields must be filled before adding a course.");
@@ -146,9 +152,11 @@ public class CourseController {
             stmt.setString(2,CourseName);
             stmt.setString(3,SubjectName);
             stmt.setString(4,SectionNumber);
-            stmt.setString(5,TeacherName);
+            stmt.setString(5,Capacity);
             stmt.setString(6,LectureTime);
-            stmt.setString(7,Location);
+            stmt.setString(7,FinalExam);
+            stmt.setString(8,Location);
+            stmt.setString(9,TeacherName);
 
 
             int rowsInserted = stmt.executeUpdate();
@@ -164,6 +172,8 @@ public class CourseController {
                 course.setTeacherName(TeacherName);
                 course.setLectureTime(LectureTime);
                 course.setLocation(Location);
+                course.setCapacity(Integer.parseInt(Capacity));
+                course.setFinalExam(FinalExam);
                 courses.add(course);
 
             }
@@ -177,6 +187,8 @@ public class CourseController {
         txtTeacherName.clear();
         txtLectureTime.clear();
         txtLocation.clear();
+        txtFinalExamDate.clear();
+        txtCapacity.clear();
 
     }
 
