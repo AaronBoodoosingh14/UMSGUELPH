@@ -15,17 +15,18 @@
         <VBox spacing="10" style="-fx-padding: 10;">
             <Label style="-fx-font-size: 20; -fx-font-weight: bold;" text="Faculty Management System" />
             <ToolBar>
-            <Button accessibleRole="TOOL_BAR" onAction="#handleAddfaculty" style="-fx-background-color: #90EE90;" text="Add Faculty" textFill="WHITE" />
+            <Button accessibleRole="TOOL_BAR" onAction="#handleAddfaculty" style="-fx-background-color: #1fd655;" text="Add Faculty" textFill="WHITE" />
             <Button mnemonicParsing="false" style="-fx-background-color: #FF0000;" text="Delete Faculty" textFill="WHITE" />
                 <Button accessibleRole="TOOL_BAR" onAction="#handleEditFaculty" style="-fx-background-color: #2196F3; -fx-text-fill: white;" text="Edit Faculty" />
                 <Button accessibleRole="TOOL_BAR" onAction="#handleViewProfile" style="-fx-background-color: #9C27B0; -fx-text-fill: white;" text="View Profile" />
                 <Button accessibleRole="TOOL_BAR" onAction="#handleAssignCourses" style="-fx-background-color: #FF9800; -fx-text-fill: white;" text="Assign Courses" />
+            <Button mnemonicParsing="false" onAction="#handleRefresh" style="-fx-background-color: #E77471;" text="Refresh Table" textFill="WHITE" />
             </ToolBar>
         </VBox>
     </top>
 
     <center>
-        <TableView fx:id="facultyTable" style="-fx-padding: 10;">
+        <TableView fx:id="facultyTable" onMouseClicked="#handleEditFaculty" style="-fx-padding: 10;">
             <columns>
                 <TableColumn fx:id="nameColumn" prefWidth="200" text="Faculty Name" />
                 <TableColumn fx:id="emailColumn" prefWidth="250" text="Email" />

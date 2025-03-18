@@ -2,6 +2,8 @@ package com.ums.controller;
 
 import com.ums.data.Faculty;
 import com.ums.database.DatabaseManager;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -16,6 +18,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.io.IOException;
 import java.sql.*;
@@ -49,7 +52,7 @@ public class FacultyAdmin {
         degreeColumn.setCellValueFactory(new PropertyValueFactory<>("degree"));
         researchColumn.setCellValueFactory(new PropertyValueFactory<>("research"));
         officeColumn.setCellValueFactory(new PropertyValueFactory<>("officeLocation"));
-        coursesColumn.setCellValueFactory(cellData -> null);
+        coursesColumn.setCellValueFactory(new PropertyValueFactory<>("courses"));
         loadFacultyData();
     }
 
@@ -128,6 +131,7 @@ public class FacultyAdmin {
                 faculty.setDegree(rs.getString("Degree"));
                 faculty.setResearch(rs.getString("ResearchInterest"));
                 faculty.setOfficeLocation(rs.getString("OfficeLocation"));
+                faculty.setCourses(rs.getString("courses"));
 
 
                 facultyList.add(faculty);
@@ -142,9 +146,26 @@ public class FacultyAdmin {
     }
 
 
+    @FXML
+    private void handleRefresh(){
+        facultyTable.getItems().clear();
+
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0.25), event ->{loadFacultyData();}));
+        timeline.setCycleCount(1);
+        timeline.play();
+
+
+    }
+
 
     @FXML
     private void handleEditFaculty() {
+        facultyTable.getSelectionModel().selectedItemProperty().
+                addListener((observable, oldValue, newValue) -> {
+
+                });
+
+
 
 
     }
