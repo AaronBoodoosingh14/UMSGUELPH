@@ -46,13 +46,14 @@
 
    </HBox>
    <HBox spacing="10">
-
       <Button text="Add Event" fx:id="btnAdd" />
-      <Button text="Edit Event" fx:id="btnEdit" />
       <Button text="Delete" fx:id="btnDelete" />
-
-
-
-
    </HBox>
+
+   <HBox spacing="10">
+      <Button text="Edit Event" fx:id="btnEdit" />
+      <Button text="Save Edited Event" fx:id="btnSaveEdit" />
+      <Button text="Cancel Edit" fx:id="btnCancelEdit" />
+   </HBox>
+
 </VBox>
