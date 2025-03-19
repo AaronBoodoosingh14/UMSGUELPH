@@ -1,6 +1,7 @@
 package com.ums.controller;
 
 // Import required JavaFX and Apache POI libraries for UI components and Excel handling
+import com.ums.data.Subject;
 import com.ums.database.DatabaseManager;
 import org.apache.poi.ss.usermodel.Cell;
 import com.ums.data.Course;
@@ -41,6 +42,9 @@ public class CourseController {
 
     // List to store course data dynamically
     private final ObservableList<Course> courses = FXCollections.observableArrayList();
+
+    private final ObservableList<Subject> subjects = FXCollections.observableArrayList();
+
 
     private String userRole = "Student";
 
@@ -86,45 +90,10 @@ public class CourseController {
     /**
      * Handles adding a new course based on user input from text fields.
      */
-    @FXML
-    /*private void handleAddCourse() {
-        // Retrieving input from user fields and trimming extra spaces
-        String courseName = txtCourseName.getText().trim();
-        int courseCode = Integer.parseInt(txtCourseCode.getText().trim());
-        String subjectName = txtSubjectName.getText().trim();
-        String sectionNumber = txtSectionNumber.getText().trim();
-        String teacherName = txtTeacherName.getText().trim();
-        String lectureTime = txtLectureTime.getText().trim();
-        String location = txtLocation.getText().trim();
-
-        // Validation: Ensure no fields are empty
-        if (courseName.isEmpty() || subjectName.isEmpty() || sectionNumber.isEmpty() || teacherName.isEmpty() || lectureTime.isEmpty() || location.isEmpty()) {
-            System.out.println("⚠️ ERROR: All fields must be filled before adding a course.");
-            return;
-        }
-
-        // Creating a new Course object and adding it to the list
-        Course newCourse = new Course(courseName, courseCode, subjectName, sectionNumber, teacherName, lectureTime, location,capacity,finalexam);
-        courses.add(newCourse);
-        refreshTable(); // Refresh the table to reflect changes
-
-        // Clearing input fields after adding
-        txtCourseName.clear();
-        txtCourseCode.clear();
-        txtSubjectName.clear();
-        txtSectionNumber.clear();
-        txtTeacherName.clear();
-        txtLectureTime.clear();
-        txtLocation.clear();
-    }
-
-    /**
-     * Handles editing an existing course selected from the TableView.
-     */
-
 
     private void addCourse() {
         String insertStatement = "INSERT INTO courses VALUES(?,?,?,?,?,?,?,?,?)";
+        String insertSubjectStatement = "INSERT INTO subjects VALUES(?,?)";
         String CourseCode = txtCourseCode.getText().trim();
         String CourseName = txtCourseName.getText().trim();
         String SubjectName = txtSubjectName.getText().trim();
@@ -140,7 +109,7 @@ public class CourseController {
             return;
         }
 
-        //Add funtion later
+        //Add function later
         //if (isDuplicate(code)){
             //System.out.println("Course code already exists.");
         //}
@@ -180,6 +149,28 @@ public class CourseController {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(insertSubjectStatement)) {
+
+            stmt.setInt(1, Integer.parseInt(CourseCode));
+            stmt.setString(2, CourseName);
+
+            int rowsInserted = stmt.executeUpdate();
+
+            if (rowsInserted > 0) {
+                System.out.println("Subject added successfully.");
+
+                // ✅ Add to local list of subjects
+                Subject subject = new Subject();
+                subject.setSubjectCode(String.valueOf(Integer.parseInt(CourseCode)));
+                subject.setSubjectName(CourseName);
+                subjects.add(subject);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace(System.out);
+        }
+
         txtCourseCode.clear();
         txtCourseName.clear();
         txtSubjectName.clear();
