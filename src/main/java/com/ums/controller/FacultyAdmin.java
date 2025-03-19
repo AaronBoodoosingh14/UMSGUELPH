@@ -210,8 +210,8 @@ public class FacultyAdmin {
         String Facultyname = selectedFaculty.getFacultyName();
         String degree = selectedFaculty.getDegree();
         String research = selectedFaculty.getResearch();
-        String officeLocation = selectedFaculty.getOfficeLocation();
-        String courses = selectedFaculty.getCourses();
+        String officeLocation = selectedFaculty.getCourses();
+        String courses = selectedFaculty.getOfficeLocation();
         String email = selectedFaculty.getEmail();
 
 
