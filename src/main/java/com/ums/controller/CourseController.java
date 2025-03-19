@@ -217,7 +217,7 @@ public class CourseController {
 
             try (Connection conn = DatabaseManager.getConnection();
                  PreparedStatement stmt = conn.prepareStatement(
-                         "UPDATE courses SET coursecode = ?, coursename = ?, subjectname = ?, sectionnumber = ?, capacity = ?, lecturetime = ?, finalexamdateortime = ?, location = ?, teacherName = ? WHERE coursecode = ?")) {
+                         "UPDATE courses SET CourseCode = ?, CourseName = ?, SubjectCode = ?, SectionNumber = ?, Capacity = ?, LectureTime = ?, FinalExamDate = ?, Location = ?, TeacherName = ? WHERE CourseCode = ?")) {
 
                 stmt.setString(1, newCourseCode);
                 stmt.setString(2, newCourseName);
@@ -307,15 +307,15 @@ public class CourseController {
 
             while (rs.next()) {
                 Course course = new Course();
-                course.setCourseCode(rs.getInt("Course Code")); // Adjust column names as needed
-                course.setCourseName(rs.getString("Course Name"));
-                course.setSubjectName(rs.getString("Subject Code"));
-                course.setSectionNumber(rs.getString("Section Number"));
+                course.setCourseCode(rs.getInt("CourseCode")); // Adjust column names as needed
+                course.setCourseName(rs.getString("CourseName"));
+                course.setSubjectName(rs.getString("SubjectCode"));
+                course.setSectionNumber(rs.getString("SectionNumber"));
                 course.setCapacity(rs.getInt("Capacity"));
-                course.setLectureTime(rs.getString("Lecture Time"));
-                course.setFinalExam(rs.getString("Final Exam Date/Time"));
+                course.setLectureTime(rs.getString("LectureTime"));
+                course.setFinalExam(rs.getString("FinalExamDate"));
                 course.setLocation(rs.getString("Location"));
-                course.setTeacherName(rs.getString("Teacher Name"));
+                course.setTeacherName(rs.getString("TeacherName"));
 
                 courses.add(course);
             }
