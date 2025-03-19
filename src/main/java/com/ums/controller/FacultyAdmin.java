@@ -75,48 +75,39 @@ public class FacultyAdmin {
                 stage.setScene(new Scene(root));
                 stage.setTitle("Edit Faculty");
                 stage.show();
+
+
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+        handleRefresh();
         }
 
 
+    public void handleAddFaculty(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/ums/admin/FacultyPopup/AddFaculty.fxml"));
+            Parent root = loader.load();
+
+            AddFaculty addFacultyController = loader.getController();
 
 
+            Stage stage = new Stage();
+            stage.setTitle("Add Faculty");
+            stage.setScene(new Scene(root));
+            stage.show();
 
 
-    private void insertFacultyIntoDatabase(String input) throws Exception {
-
-        String[] arr = input.split(",");
-        System.out.println(Arrays.toString(arr));
-        String FacultyID = arr[0];
-        String Name = arr[1];
-        String Degree = arr[2];
-        String ResearchInterest = arr[3];
-        String Email = arr[4];
-        String OfficeLocation = arr[5];
-
-
-
-        String insertStatement = "INSERT INTO faculty_info (FacultyID,Name,Degree,ResearchInterest,Email,OfficeLocation) VALUES (?, ?, ?,?,?,?)";
-        Connection connection  = DatabaseManager.getConnection();
-        var ps  = connection.prepareStatement(insertStatement);
-
-
-
-        ps.setString(1,FacultyID);
-        ps.setString(2,Name);
-        ps.setString(3,Degree);
-        ps.setString(4,ResearchInterest);
-        ps.setString(5,Email);
-        ps.setString(6,OfficeLocation);
-
-
-        ps.executeUpdate();
-
-        facultyTable.refresh();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
+
+
+
 
 
     private void loadFacultyData() {
@@ -155,7 +146,7 @@ public class FacultyAdmin {
     public void handleRefresh(){
         facultyTable.getItems().clear();
 
-        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0.25), event ->{loadFacultyData();}));
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0.15), event ->{loadFacultyData();}));
         timeline.setCycleCount(1);
         timeline.play();
     }

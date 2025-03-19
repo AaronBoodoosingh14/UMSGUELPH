@@ -18,23 +18,23 @@ import java.util.Optional;
 public class EditFaculty extends Faculty {
 
     @FXML
-    private Button btnsave;
+    protected Button btnsave;
     @FXML
-    private Button btncancel;
+    protected Button btncancel;
     @FXML
-    private TextField nameField;
+    protected TextField nameField;
     @FXML
-    private TextField facultyIDField;
+    protected TextField facultyIDField;
     @FXML
-    private TextField degreeField;
+    protected TextField degreeField;
     @FXML
-    private TextField researchInterestField;
+    protected TextField researchInterestField;
     @FXML
-    private TextField emailField;
+    protected TextField emailField;
     @FXML
-    private TextField officeLocationField;
+    protected TextField officeLocationField;
     @FXML
-    private TextField coursesField;
+    protected TextField coursesField;
 
 
     public EditFaculty() {
@@ -59,7 +59,7 @@ public class EditFaculty extends Faculty {
         });
     }
 
-    private void getFacultyData(String OGname, String permID) {
+    public void getFacultyData(String OGname, String permID) {
         btncancel.setOnAction(e -> {
             Stage stage = (Stage) btncancel.getScene().getWindow();
             stage.close();

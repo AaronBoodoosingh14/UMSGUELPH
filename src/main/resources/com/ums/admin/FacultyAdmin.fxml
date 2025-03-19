@@ -15,7 +15,7 @@
         <VBox spacing="10" style="-fx-padding: 10;">
             <Label style="-fx-font-size: 20; -fx-font-weight: bold;" text="Faculty Management System" />
             <ToolBar>
-            <Button accessibleRole="TOOL_BAR" onAction="#handleEditFaculty" style="-fx-background-color: #1fd655;" text="Add Faculty" textFill="WHITE" />
+            <Button accessibleRole="TOOL_BAR" onAction="#handleAddFaculty" style="-fx-background-color: #1fd655;" text="Add Faculty" textFill="WHITE" />
                 <Button accessibleRole="TOOL_BAR" onAction="#handleEditFaculty" style="-fx-background-color: #2196F3; -fx-text-fill: white;" text="Edit Faculty" />
                 <Button accessibleRole="TOOL_BAR" onAction="#handleDeleteFaculty" style="-fx-background-color: #FF0000; -fx-text-fill: white;" text="Delete Faculty" />
                 <Button accessibleRole="TOOL_BAR" onAction="#handleViewProfile" style="-fx-background-color: #9C27B0; -fx-text-fill: white;" text="View Profile" />
