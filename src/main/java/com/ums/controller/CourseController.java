@@ -184,9 +184,90 @@ public class CourseController {
     }
 
 
-    //private void handleEditCourse() {
+    @FXML
+    private void editCourse() {
+        Course selectedCourse = courseTable.getSelectionModel().getSelectedItem();
+        if (selectedCourse == null) {
+            System.out.println("No course selected.");
+            return;
+        }
 
-    //}
+        txtCourseCode.setText(String.valueOf(selectedCourse.getCourseCode())); // Ensure it's a string
+        txtCourseName.setText(selectedCourse.getCourseName());
+        txtSubjectName.setText(selectedCourse.getSubjectName());
+        txtSectionNumber.setText(selectedCourse.getSectionNumber());
+        txtCapacity.setText(String.valueOf(selectedCourse.getCapacity())); // Convert to string
+        txtLectureTime.setText(selectedCourse.getLectureTime());
+        txtFinalExamDate.setText(selectedCourse.getFinalExam());
+        txtLocation.setText(selectedCourse.getLocation());
+        txtTeacherName.setText(selectedCourse.getTeacherName());
+
+        btnAddCourse.setDisable(true);
+
+        btnEditCourse.setOnAction(e -> {
+            String newCourseCode = txtCourseCode.getText().trim();
+            String newCourseName = txtCourseName.getText().trim();
+            String newSubjectName = txtSubjectName.getText().trim();
+            String newSectionNumber = txtSectionNumber.getText().trim();
+            String newCapacity = txtCapacity.getText().trim();
+            String newLectureTime = txtLectureTime.getText().trim();
+            String newFinalExam = txtFinalExamDate.getText().trim();
+            String newLocation = txtLocation.getText().trim();
+            String newTeacherName = txtTeacherName.getText().trim();
+
+            try (Connection conn = DatabaseManager.getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(
+                         "UPDATE courses SET coursecode = ?, coursename = ?, subjectname = ?, sectionnumber = ?, capacity = ?, lecturetime = ?, finalexamdateortime = ?, location = ?, teacherName = ? WHERE coursecode = ?")) {
+
+                stmt.setString(1, newCourseCode);
+                stmt.setString(2, newCourseName);
+                stmt.setString(3, newSubjectName);
+                stmt.setString(4, newSectionNumber);
+                stmt.setString(5, newCapacity);
+                stmt.setString(6, newLectureTime);
+                stmt.setString(7, newFinalExam);
+                stmt.setString(8, newLocation);
+                stmt.setString(9, newTeacherName);
+                stmt.setString(10, String.valueOf(selectedCourse.getCourseCode()));
+
+                int rowsUpdated = stmt.executeUpdate();
+
+                if (rowsUpdated > 0) {
+                    System.out.println("Course updated successfully.");
+
+                    selectedCourse.setCourseCode(Integer.parseInt(newCourseCode));
+                    selectedCourse.setCourseName(newCourseName);
+                    selectedCourse.setSubjectName(newSubjectName);
+                    selectedCourse.setSectionNumber(newSectionNumber);
+                    selectedCourse.setCapacity(Integer.parseInt(newCapacity));
+                    selectedCourse.setLectureTime(newLectureTime);
+                    selectedCourse.setFinalExam(newFinalExam);
+                    selectedCourse.setLocation(newLocation);
+                    selectedCourse.setTeacherName(newTeacherName);
+
+                    courseTable.refresh();
+                } else {
+                    System.out.println("Course not updated successfully.");
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+
+            // Clear text fields after editing
+            txtCourseCode.clear();
+            txtCourseName.clear();
+            txtSubjectName.clear();
+            txtSectionNumber.clear();
+            txtCapacity.clear();
+            txtLectureTime.clear();
+            txtFinalExamDate.clear();
+            txtLocation.clear();
+            txtTeacherName.clear();
+
+            btnAddCourse.setDisable(false);
+        });
+    }
+
 
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
