@@ -7,31 +7,22 @@ import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.sql.*;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
 
 
 public class FacultyAdmin {
-
-    private Stage stage;
-    private Scene scene;
-    private Parent root;
 
 
     @FXML private TableView<Faculty> facultyTable;
@@ -45,6 +36,7 @@ public class FacultyAdmin {
     @FXML private TextField searchField;
 
     private ObservableList<Faculty> facultyList = FXCollections.observableArrayList();
+    private String title;
 
 
     public void initialize() {
@@ -55,28 +47,43 @@ public class FacultyAdmin {
         researchColumn.setCellValueFactory(new PropertyValueFactory<>("research"));
         officeColumn.setCellValueFactory(new PropertyValueFactory<>("officeLocation"));
         coursesColumn.setCellValueFactory(new  PropertyValueFactory<>("courses"));
+        searchField.setOnKeyReleased(e -> {handleSearch();});
+
         loadFacultyData();
     }
 
 
     @FXML
     private void handleEditFaculty(ActionEvent event) throws Exception {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/ums/admin/FacultyPopup/EditFaculty.fxml"));
-            Parent root = loader.load();
+        ArrayList<String> selection = new ArrayList<>(columnSelect());
+        String facultyID = selection.get(0);
+        String facultyName = selection.get(1);
+        String degree = selection.get(2);
+        String researchInterest = selection.get(3);
+        String email = selection.get(4);
+        String office = selection.get(5);
+        String courses = selection.get(6);
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/ums/admin/FacultyPopup/EditFaculty.fxml"));
+                Parent root = loader.load();
 
-            EditFaculty controller = loader.getController();
+                EditFaculty editFacultycontroller = loader.getController();
 
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Edit Faculty");
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
+                editFacultycontroller.setFacultyData(facultyName,facultyID,degree,researchInterest,email,office,courses);
+
+                Stage stage = new Stage();
+                stage.setScene(new Scene(root));
+                stage.setTitle("Edit Faculty");
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
 
-    }
+
+
+
 
     private void insertFacultyIntoDatabase(String input) throws Exception {
 
@@ -140,12 +147,12 @@ public class FacultyAdmin {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            showAlert("Database Error", "Failed to load faculty data.");
+            showAlert("Database Error");
         }
     }
 
     @FXML
-    private void handleRefresh(){
+    public void handleRefresh(){
         facultyTable.getItems().clear();
 
         Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0.25), event ->{loadFacultyData();}));
@@ -175,7 +182,7 @@ public class FacultyAdmin {
             alert2.setTitle("Successful Delete");
             alert2.setHeaderText(FacultyName + " was deleted from the database");
             alert2.setContentText("");
-            Optional<ButtonType> result2 = alert2.showAndWait();
+            
 
         } else {
             Alert alert1 = new Alert(Alert.AlertType.INFORMATION);
@@ -201,6 +208,11 @@ public class FacultyAdmin {
         Faculty selectedFaculty = facultyTable.getSelectionModel().getSelectedItem();
         String FacultyID = selectedFaculty.getFacultyID();
         String Facultyname = selectedFaculty.getFacultyName();
+        String degree = selectedFaculty.getDegree();
+        String research = selectedFaculty.getResearch();
+        String officeLocation = selectedFaculty.getOfficeLocation();
+        String courses = selectedFaculty.getCourses();
+        String email = selectedFaculty.getEmail();
 
 
         System.out.println(selectedFaculty);
@@ -210,6 +222,12 @@ public class FacultyAdmin {
 
         selection.add(FacultyID);
         selection.add(Facultyname);
+        selection.add(degree);
+        selection.add(research);
+        selection.add(email);
+        selection.add(officeLocation);
+        selection.add(courses);
+
 
         return selection;
 
@@ -227,6 +245,7 @@ public class FacultyAdmin {
             facultyTable.setItems(facultyList);
         } else {
             ObservableList<Faculty> filteredList = facultyList.filtered(faculty ->
+                    faculty.getFacultyID().toLowerCase().contains(searchTerm)||
                     faculty.getFacultyName().toLowerCase().contains(searchTerm) ||
                             faculty.getEmail().toLowerCase().contains(searchTerm) ||
                             faculty.getDegree().toLowerCase().contains(searchTerm) ||
@@ -236,11 +255,12 @@ public class FacultyAdmin {
         }
     }
 
-    private void showAlert(String title, String message) {
+    private void showAlert(String title) {
+        this.title = title;
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Ar");
         alert.setHeaderText(null);
-        alert.setContentText(message);
+        alert.setContentText("Failed to load faculty data.");
         alert.showAndWait();
     }
 
