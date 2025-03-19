@@ -3,30 +3,48 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox alignment="CENTER" spacing="10" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.12" fx:controller="com.ums.controller.StudentController">
+<BorderPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ums.controller.StudentController">
 
-    <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Student Management" />
+    <top>
+        <VBox spacing="10" style="-fx-padding: 10;">
+            <Label style="-fx-font-size: 20; -fx-font-weight: bold;" text="Student Management System" />
+            <ToolBar>
+                <Button fx:id="btnAdd" onAction="#handleAddStudent" style="-fx-background-color: #1fd655;" text="Add Student" textFill="WHITE" />
+                <Button fx:id="btnDelete" onAction="#deleteStudent" style="-fx-background-color: #FF0000;" text="Delete Student" textFill="WHITE" />
+                <Button fx:id="btnEdit" onAction="#handleEditStudent" style="-fx-background-color: #2196F3; -fx-text-fill: white;" text="Edit Student" />
+                <Button fx:id="btnRefresh" onAction="#handleRefresh" style="-fx-background-color: #E77471;" text="Refresh Table" textFill="WHITE" />
+            </ToolBar>
+        </VBox>
+    </top>
 
-    <TableView fx:id="studentTable" prefWidth="450">
-        <columns>
-            <TableColumn fx:id="colStudentID" text="Student ID" />
-            <TableColumn fx:id="colName" text="Name" />
-            <TableColumn fx:id="colEmail" text="Email" />
-            <TableColumn fx:id="colAcademicLevel" text="Academic Level" />
-        </columns>
-    </TableView>
+    <center>
+        <TableView fx:id="studentTable" onMousePressed="#columnSelect" style="-fx-padding: 10;">
+            <columns>
+                <TableColumn fx:id="colStudentID" prefWidth="150" text="Student ID" />
+                <TableColumn fx:id="colName" prefWidth="200" text="Name" />
+                <TableColumn fx:id="colAddress" prefWidth="200" text="Address" />
+                <TableColumn fx:id="colTelephone" prefWidth="150" text="Telephone" />
+                <TableColumn fx:id="colEmail" prefWidth="200" text="Email" />
+                <TableColumn fx:id="colAcademicLevel" prefWidth="150" text="Academic Level" />
+                <TableColumn fx:id="colCurrentSemester" prefWidth="150" text="Current Semester" />
+                <TableColumn fx:id="colSubjectsRegistered" prefWidth="250" text="Subjects Registered" />
+                <TableColumn fx:id="colThesisTitle" prefWidth="200" text="Thesis Title" />
+                <TableColumn fx:id="colProgress" prefWidth="150" text="Progress" />
+                <TableColumn fx:id="colTuition" prefWidth="150" text="Tuition" />
+            </columns>
+        </TableView>
+    </center>
 
-    <HBox spacing="10">
-        <TextField fx:id="txtStudentID" promptText="Student ID" />
-        <TextField fx:id="txtName" promptText="Full Name" />
-        <TextField fx:id="txtEmail" promptText="Email" />
-        <TextField fx:id="txtAcademicLevel" promptText="Academic Level" />
-    </HBox>
+    <bottom>
+        <HBox spacing="10" style="-fx-padding: 10; -fx-alignment: center-right;">
+            <Label text="Search:" />
+            <TextField fx:id="searchField" prefWidth="300" promptText="Search student..." />
+            <Button onAction="#handleSearch" text="Search" />
+        </HBox>
+    </bottom>
 
-    <HBox spacing="10">
-        <Button fx:id="btnAdd" text="Add Student" />
-        <Button fx:id="btnEdit" text="Edit Student" />
-        <Button fx:id="btnDelete" text="Delete Student" />
-    </HBox>
+    <left>
+        <HBox prefHeight="400.0" prefWidth="0.0" BorderPane.alignment="CENTER" />
+    </left>
 
-</VBox>
+</BorderPane>

@@ -16,13 +16,14 @@ public class Student {
     private String thesisTitle;
     private String progress;
     private String password;
+    private String tuition;
 
     public Student() {
         this.subjectsRegistered = new ArrayList<>();
         this.profilePhotoPath = "";
     }
 
-    public Student(String studentId, String name, String address, String telephone, String email,
+    public Student(String tuition, String studentId, String name, String address, String telephone, String email,
                    String academicLevel, String currentSemester, List<String> subjectsRegistered,
                    String thesisTitle, String progress, String password) {
         this(studentId, name, address, telephone, email, academicLevel, currentSemester,
@@ -43,6 +44,7 @@ public class Student {
         this.thesisTitle = thesisTitle;
         this.progress = progress;
         this.password = password;
+        this.tuition = tuition;
         this.profilePhotoPath = profilePhotoPath;
     }
 
@@ -89,6 +91,9 @@ public class Student {
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
 
+    public String getTuition() { return tuition; }
+    public void setTuition(String tuition) { this.tuition = tuition; }
+
     @Override
     public String toString() {
         return "Student{" +
@@ -103,6 +108,7 @@ public class Student {
                 ", subjectsRegistered=" + subjectsRegistered +
                 ", thesisTitle='" + thesisTitle + '\'' +
                 ", progress='" + progress + '\'' +
+                ", tuition='" + tuition + '\'' +
                 '}';
     }
 }
