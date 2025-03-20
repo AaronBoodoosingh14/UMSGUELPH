@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="435.0" prefWidth="686.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ums.controller.FacultyUser">
+   <children>
+      <Circle fill="DODGERBLUE" layoutX="82.0" layoutY="118.0" radius="71.0" stroke="BLACK" strokeType="INSIDE" />
+      <Label layoutX="6.0" layoutY="7.0" text="Faculty Profile">
+         <font>
+            <Font name="HelveticaNeueLTStd-Bd" size="22.0" />
+         </font>
+      </Label>
+      <Label fx:id="Name" layoutX="28.0" layoutY="192.0" prefHeight="23.0" prefWidth="206.0">
+         <font>
+            <Font name="HelveticaNeueLTStd-Bd" size="18.0" />
+         </font></Label>
+      <Label layoutX="296.0" layoutY="47.0" prefHeight="17.0" prefWidth="59.0" text="Faculty ID:" />
+      <Label layoutX="295.0" layoutY="130.0" text="Email:" />
+      <Label layoutX="295.0" layoutY="201.0" prefHeight="17.0" prefWidth="84.0" text="Office Location:" />
+      <Label layoutX="295.0" layoutY="89.0" text="Degree:" />
+      <Label layoutX="293.0" layoutY="166.0" text="Research Ineterest:" />
+      <Button layoutX="22.0" layoutY="232.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="105.0" text="Edit Password" />
+      <Button layoutX="20.0" layoutY="275.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="109.0" text="Edit Profile Picture" />
+      <Button layoutX="22.0" layoutY="316.0" mnemonicParsing="false" text="View Student list" />
+      <Button layoutX="22.0" layoutY="361.0" mnemonicParsing="false" text="View Assinged Courses" />
+      <Label fx:id="FacultyID" layoutX="355.0" layoutY="47.0" />
+      <Label fx:id="Degree" layoutX="341.0" layoutY="89.0" />
+      <Label fx:id="Email" layoutX="327.0" layoutY="130.0" />
+      <Label fx:id="Research" layoutX="393.0" layoutY="166.0" />
+      <Label fx:id="Office" layoutX="379.0" layoutY="201.0" />
+   </children>
+</AnchorPane>

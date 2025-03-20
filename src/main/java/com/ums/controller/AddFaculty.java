@@ -49,9 +49,10 @@ public class AddFaculty extends EditFaculty {
             alert.setHeaderText("Are you sure you want to add faculty: " + name);
             alert.setContentText("This action cannot be reversed");
             Optional<ButtonType> result = alert.showAndWait();
+            String password = "default123";
 
             if (result.isPresent() && result.get() == ButtonType.OK) {
-                String sql = "INSERT INTO faculty_info (FacultyID, Name, Degree, ResearchInterest, Email, OfficeLocation, courses) VALUES (?, ?, ?, ?, ?, ?, ?)";
+                String sql = "INSERT INTO faculty_info (FacultyID, Name, Degree, ResearchInterest, Email, OfficeLocation, courses,password) VALUES (?, ?, ?, ?, ?, ?, ?,?)";
                 try (Connection connection = DatabaseManager.getConnection();
                      var ps = connection.prepareStatement(sql)){
 
@@ -62,6 +63,7 @@ public class AddFaculty extends EditFaculty {
                     ps.setString(5, email);
                     ps.setString(6, office);
                     ps.setString(7, courses);
+                    ps.setString(8, password);
 
                     ps.executeUpdate();
 
@@ -72,7 +74,6 @@ public class AddFaculty extends EditFaculty {
                     exception.printStackTrace();
                 }
                 String sql2 = "INSERT INTO loginInfo (username, password, role) VALUES (?, ?, ?);";
-                String password = "default123";
                 String role = "Admin";
                 try(Connection connection = DatabaseManager.getConnection();
                     var login = connection.prepareStatement(sql2)){

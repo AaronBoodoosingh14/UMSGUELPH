@@ -22,9 +22,11 @@ public class DashboardController {
     private StackPane mainContent;  // Main screen
 
     @FXML
-    private Button btnSubjects, btnCourses, btnStudents, btnFaculty, btnEvents, btnLogout;  // Setting up modules
+    private Button btnSubjects, btnCourses, btnStudents, btnFaculty, btnEvents, btnLogout, btnView;  // Setting up modules
 
-    private String userRole = "Student"; // Default to Student if no role is set
+    private String userRole;// Default to Student if no role is set
+    private String username;
+
 
     /**
      * Sets the user role and applies role-based module selection.
@@ -43,8 +45,17 @@ public class DashboardController {
         btnStudents.setOnAction(e -> loadModule("Student"));
         btnFaculty.setOnAction(e -> loadModule("Faculty"));
         btnEvents.setOnAction(e -> loadModule("Events"));
+        btnView.setOnAction(e -> loadModule("FacultyUser"));
         btnLogout.setOnAction(e -> logout());
     }
+
+    public void setUsername(String username){
+        this.username = username;
+    }
+    private String getUsername(){
+        return username;
+    }
+
 
     /**
      * Loads the correct module FXML file based on user role.
@@ -77,6 +88,12 @@ if("Events".equals(moduleName)) {
     // Pass user role to SubjectController
     SubjectController controller = loader.getController();
     controller.setUserRole(userRole);
+}else if ("FacultyUser".equals(moduleName)) {
+    String temp = getUsername();
+    System.out.println(temp);
+    FacultyUser controller = loader.getController();
+    controller.loadFacultyData(temp);
+
 }
 
 

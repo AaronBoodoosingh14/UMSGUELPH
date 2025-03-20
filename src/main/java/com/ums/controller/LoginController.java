@@ -61,10 +61,9 @@ public class LoginController{
 
 
     private void handleLogin() throws SQLException {
-
-
         String username = txtUsername.getText().trim();
         String password = txtPassword.getText().trim();
+
 
         try {
             String insert = "SELECT * FROM loginInfo WHERE username = ? AND password = ?";
@@ -76,16 +75,20 @@ public class LoginController{
 
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                String role;
-                role = rs.getString("role");
-                loadDashboard(role);
-            }else{ showAlert("Username or password is incorrect!");}
+                String role = rs.getString("role");
+                System.out.println(role);
 
-        }catch (SQLException _){
 
+                loadDashboard(role);  // Only call loadDashboard after successful login
+            } else {
+                showAlert("Username or password is incorrect!");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();  // Add this to see any SQL errors
+            showAlert("Database error occurred: " + e.getMessage());
         }
-
     }
+
 
     /**
       Loads the dashboard and passes the user's role.
@@ -97,13 +100,25 @@ public class LoginController{
 
             DashboardController dashboardController = loader.getController();
             dashboardController.setUserRole(role);
+            dashboardController.setUsername(txtUsername.getText());
 
-            Stage window = (Stage) btnLogin.getScene().getWindow();
-            window.setScene(new Scene(root));
-            window.setMaximized(true);
-            window.show();
+            // Get the current stage more reliably
+            Scene currentScene = btnLogin.getScene();
+            if (currentScene != null) {
+                Stage window = (Stage) currentScene.getWindow();
+                if (window != null) {
+                    window.setScene(new Scene(root));
+                    window.setMaximized(true);
+                    window.show();
+                } else {
+                    System.err.println("Window is null");
+                }
+            } else {
+                System.err.println("Scene is null");
+            }
         } catch (IOException e) {
-            showAlert("Failed to load dashboard.");
+            e.printStackTrace();
+            showAlert("Failed to load dashboard: " + e.getMessage());
         }
     }
 
