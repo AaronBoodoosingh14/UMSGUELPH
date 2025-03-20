@@ -11,7 +11,8 @@ public class Faculty {
     private String courses;
     private String email;
     private String officeLocation;
-    private String profilePhotoPath;  // New field
+    private String profilePhotoPath;
+    private String password;// New field
 
     // Default constructor
     public Faculty() {
@@ -19,13 +20,13 @@ public class Faculty {
     }
 
     // Updated parameterized constructor
-    public Faculty(String FacultyID, String facultyName, String degree, String research,
+    public Faculty(String password, String FacultyID, String facultyName, String degree, String research,
                    String courses, String email, String officeLocation) {
-        this( facultyName,FacultyID, degree, research, courses, email, officeLocation, "");
+        this(password, facultyName,FacultyID, degree, research, courses, email, officeLocation, "");
     }
 
     // New full constructor
-    public Faculty(String FacultyID, String facultyName, String degree, String research,
+    public Faculty(String password, String FacultyID, String facultyName, String degree, String research,
                    String courses, String email, String officeLocation,
                    String profilePhotoPath) {
         this.FacultyID = FacultyID;
@@ -36,9 +37,13 @@ public class Faculty {
         this.email = email;
         this.officeLocation = officeLocation;
         this.profilePhotoPath = profilePhotoPath;
+        this.password = password;
     }
 
     // New getter and setter
+    public String getPassword() {return password;}
+    public void setPassword(String password) {this.password = password;}
+
     public String getFacultyID() {return FacultyID;}
     public void setFacultyID(String FacultyID) {this.FacultyID = FacultyID;}
 

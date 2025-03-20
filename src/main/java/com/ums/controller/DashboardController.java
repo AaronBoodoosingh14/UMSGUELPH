@@ -92,7 +92,7 @@ if("Events".equals(moduleName)) {
     String temp = getUsername();
     System.out.println(temp);
     FacultyUser controller = loader.getController();
-    controller.loadFacultyData(temp);
+    controller.SQLhandling(temp);
 
 }
 
