@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="500" prefWidth="600" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.ums.controller.StudentControllers.AddStudent">
+    <children>
+        <VBox alignment="CENTER" layoutX="50.0" layoutY="20.0" spacing="10">
+            <Label text="Add Student">
+                <font>
+                    <Font size="18.0" />
+                </font>
+            </Label>
+            <GridPane hgap="10" vgap="10">
+                <columnConstraints>
+                    <ColumnConstraints halignment="RIGHT" minWidth="150.0" />
+                    <ColumnConstraints minWidth="350.0" />
+                </columnConstraints>
+
+                <Label text="Name:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                <TextField fx:id="txtName" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+                <Label text="Email:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                <TextField fx:id="txtEmail" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                <Label text="Academic Level:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                <TextField fx:id="txtAcademicLevel" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+                <Label text="Address:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                <TextField fx:id="txtAddress" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+                <Label text="Telephone:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                <TextField fx:id="txtTelephone" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+
+                <Label text="Current Semester:" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+                <TextField fx:id="txtCurrentSemester" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+
+                <Label text="Subjects Registered:" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+                <TextField fx:id="txtSubjectsRegistered" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+
+                <Label text="Thesis Title:" GridPane.columnIndex="0" GridPane.rowIndex="7" />
+                <TextField fx:id="txtThesisTitle" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+
+                <Label text="Progress:" GridPane.columnIndex="0" GridPane.rowIndex="8" />
+                <TextField fx:id="txtProgress" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+
+                <rowConstraints>
+                    <RowConstraints />
+                    <RowConstraints />
+                    <RowConstraints />
+                    <RowConstraints />
+                    <RowConstraints />
+                    <RowConstraints />
+                    <RowConstraints />
+                    <RowConstraints />
+                    <RowConstraints />
+                </rowConstraints>
+            </GridPane>
+
+            <HBox alignment="CENTER" spacing="10">
+                <Button fx:id="btnSave" text="Save"  />
+                <Button fx:id="btnCancel" text="Cancel" />
+            </HBox>
+        </VBox>
+    </children>
+</AnchorPane>

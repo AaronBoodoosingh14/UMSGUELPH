@@ -1,30 +1,34 @@
 package com.ums.controller;
 
-import com.ums.data.Faculty;
+import com.ums.controller.StudentControllers.AddStudent;
 import com.ums.data.Student;
 import com.ums.database.DatabaseManager;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import javafx.stage.Stage;
+import javafx.util.Duration;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import com.ums.controller.StudentControllers.EditStudent;
+import javafx.stage.Modality;
+
 
 /**
  * Controller for Student Management.
- * Handles adding, editing, deleting students, and importing data from an Excel file.
+ * Handles adding, editing, deleting students, and importing data from an SQL database.
  */
 public class StudentController {
 
@@ -33,13 +37,13 @@ public class StudentController {
     private TableView<Student> studentTable;
 
     @FXML
-    private TableColumn<Student, String> colStudentID, colName, colEmail, colAcademicLevel;
+    private TableColumn<Student, String> colStudentID, colName, colEmail, colAcademicLevel, colAddress, colTelephone, colCurrentSemester, colProgress, colTuition, colThesisTitle, colSubjectsRegistered;
 
     @FXML
-    private TextField txtStudentID, txtName, txtEmail, txtAcademicLevel;
+    private TextField txtStudentID, txtName, txtEmail, txtAcademicLevel, txtAddress, txtTelephone, txtCurrentSemester, txtProgress, txtTuition, txtThesisTitle, txtSubjectsRegistered, searchField;
 
     @FXML
-    private Button btnAdd, btnEdit, btnDelete;
+    private Button btnAdd, btnEdit, btnDelete, btnRefresh;
 
     // ObservableList to hold student data and update TableView in real-time
     private final ObservableList<Student> students = FXCollections.observableArrayList();
@@ -54,26 +58,72 @@ public class StudentController {
         // Link TableView columns to Student object properties
         colStudentID.setCellValueFactory(new PropertyValueFactory<>("studentId"));
         colName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        colAddress.setCellValueFactory(new PropertyValueFactory<>("address"));
+        colTelephone.setCellValueFactory(new PropertyValueFactory<>("telephone"));
         colEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
         colAcademicLevel.setCellValueFactory(new PropertyValueFactory<>("academicLevel"));
+        colCurrentSemester.setCellValueFactory(new PropertyValueFactory<>("currentSemester"));
+        colSubjectsRegistered.setCellValueFactory(new PropertyValueFactory<>("subjectsRegistered"));
+        colThesisTitle.setCellValueFactory(new PropertyValueFactory<>("thesisTitle"));
+        colProgress.setCellValueFactory(new PropertyValueFactory<>("progress"));
+        colTuition.setCellValueFactory(new PropertyValueFactory<>("tuition"));
 
         // Bind the student list to the TableView
         studentTable.setItems(students);
 
-        // Set button actions
-        //btnAdd.setOnAction(e -> addStudent());
-        btnEdit.setOnAction(e -> editStudent());
+        // Set button actions to open Add and Edit dialogs
+        btnAdd.setOnAction(e -> handleAddStudent()); //
+        btnEdit.setOnAction(e -> handleEditStudent()); //
         btnDelete.setOnAction(e -> deleteStudent());
+        btnRefresh.setOnAction(e -> handleRefresh());
 
         importStudentsFromSql();
-
     }
 
     /**
-     * Imports students from an Excel file (UMS_Data.xlsx) into the TableView.
-     * - Reads the "Students" sheet.
-     * - Extracts Student ID, Name, Email, and Academic Level.
-     * - Prevents duplicate Student IDs.
+     * Refresh the student table with a small delay for better UI experience.
+     */
+    @FXML
+    private void handleRefresh() {
+        studentTable.getItems().clear();
+
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0.25), event -> {
+            importStudentsFromSql();
+        }));
+        timeline.setCycleCount(1);
+        timeline.play();
+    }
+
+    /**
+     * Selects a student when a row in the table is clicked.
+     */
+    @FXML
+    private void columnSelect() {
+        Student selectedStudent = studentTable.getSelectionModel().getSelectedItem();
+        System.out.println(selectedStudent);
+    }
+
+    /**
+     * Handles searching for a student by ID, Name, or Email.
+     */
+    @FXML
+    private void handleSearch() {
+        String searchTerm = searchField.getText().toLowerCase();
+
+        if (searchTerm.isEmpty()) {
+            studentTable.setItems(students);
+        } else {
+            ObservableList<Student> filteredList = students.filtered(student ->
+                    student.getStudentId().toLowerCase().contains(searchTerm) ||
+                            student.getName().toLowerCase().contains(searchTerm) ||
+                            student.getEmail().toLowerCase().contains(searchTerm)
+            );
+            studentTable.setItems(filteredList);
+        }
+    }
+
+    /**
+     * Imports students from the SQL database into the TableView.
      */
     private void importStudentsFromSql() {
         students.clear();
@@ -96,7 +146,8 @@ public class StudentController {
                 student.setThesisTitle(rs.getString("ThesisTitle"));
                 student.setProgress(rs.getString("Progress"));
                 student.setPassword(rs.getString("Password"));
-
+                student.setCurrentSemester(rs.getString("CurrentSemester"));
+                student.setTuition(rs.getString("Tuition"));
 
                 students.add(student);
             }
@@ -105,84 +156,72 @@ public class StudentController {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            showAlert("Database Error", "Failed to load faculty data.");
+            showAlert("Database Error", "Failed to load student data.");
         }
     }
 
     /**
-     * Checks if a student with the given Student ID already exists in the list.
+     * Adds a new student to the TableView and the database.
      */
-    private boolean isDuplicate(String studentID) {
-        return students.stream().anyMatch(student -> student.getStudentId().equalsIgnoreCase(studentID));
+    @FXML
+    private void handleAddStudent() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/ums/admin/StudentPopup/AddStudent.fxml")); // ✅ Ensure the path is correct
+            Parent root = loader.load();
+
+
+            Stage stage = new Stage();
+            stage.setTitle("Add Student");
+            stage.setResizable(false);
+            stage.setScene(new Scene(root));
+            stage.showAndWait();
+
+            handleRefresh(); // Refresh table after adding
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Error", "Failed to open Add Student window.");
+        }
     }
 
     /**
-     * Adds a new student to the TableView.
-     * - Retrieves input values.
-     * - Ensures all fields are filled.
-     * - Checks for duplicate Student ID.
+     * Edits the selected student in the TableView and updates the database.
      */
-  /*private void addStudent() {
-        String studentID = txtStudentID.getText().trim();
-        String name = txtName.getText().trim();
-        String email = txtEmail.getText().trim();
-        String academicLevel = txtAcademicLevel.getText().trim();
-
-        if (!studentID.isEmpty() && !name.isEmpty() && !email.isEmpty() && !academicLevel.isEmpty()) {
-            if (!isDuplicate(studentID)) {
-                students.add(new Student(studentID, name, "", "", email, academicLevel, "", "", new ArrayList<>(), "", "", "default123"));
-
-                // Clear input fields after adding
-                txtStudentID.clear();
-                txtName.clear();
-                txtEmail.clear();
-                txtAcademicLevel.clear();
-            } else {
-                showAlert("Duplicate ID", "A student with this ID already exists.");
-            }
-        } else {
-            showAlert("Invalid Input", "Please fill in all fields.");
-        }
-    } */
-
-    /**
-     * Edits the selected student in the TableView.
-     * - Only updates non-empty fields.
-     * - Refreshes the TableView to reflect changes.
-     */
-    private void editStudent() {
-        // Get selected student from the table
+    @FXML
+    private void handleEditStudent() {
         Student selectedStudent = studentTable.getSelectionModel().getSelectedItem();
-
-        if (selectedStudent != null) {
-            // Retrieve new values from text fields
-            String newName = txtName.getText().trim();
-            String newEmail = txtEmail.getText().trim();
-            String newAcademicLevel = txtAcademicLevel.getText().trim();
-
-            // Update only if the new values are not empty
-            if (!newName.isEmpty()) selectedStudent.setName(newName);
-            if (!newEmail.isEmpty()) selectedStudent.setEmail(newEmail);
-            if (!newAcademicLevel.isEmpty()) selectedStudent.setAcademicLevel(newAcademicLevel);
-
-            // Refresh TableView to reflect changes
-            studentTable.refresh();
-
-            // Clear input fields after editing
-            txtName.clear();
-            txtEmail.clear();
-            txtAcademicLevel.clear();
-
-            showAlert("Success", "Student details updated successfully!");
-        } else {
+        if (selectedStudent == null) {
             showAlert("No Selection", "Please select a student to edit.");
+            return;
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/ums/admin/StudentPopup/EditStudent.fxml"));
+            Parent root = loader.load();
+
+            // Get the controller and pass the student data
+            EditStudent controller = loader.getController();
+            controller.setStudentData(selectedStudent);
+
+            Stage stage = new Stage();
+            stage.setTitle("Edit Student");
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setResizable(false);
+            stage.setScene(new Scene(root));
+            stage.showAndWait();
+
+            handleRefresh(); // Refresh table after editing
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Error", "Failed to open Edit Student window.");
         }
     }
+
+
 
     /**
      * Deletes the selected student from the TableView.
      */
-    private void deleteStudent() {
+    public void deleteStudent() {
         Student selected = studentTable.getSelectionModel().getSelectedItem();
         if (selected != null) {
             students.remove(selected);
@@ -192,7 +231,7 @@ public class StudentController {
     }
 
     /**
-     * Displays an alert dialog with a given title and message.
+     * Displays an alert dialog.
      */
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
