@@ -8,9 +8,13 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
+import java.io.InputStream;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -36,13 +40,19 @@ public class FacultyUser extends Faculty {
     private Button btnpfp;
     @FXML
     private Button btnstudent;
+    @FXML
+    private ImageView profiledefault;
 
     private ArrayList<String> facultyInfo;
 
     public FacultyUser() {}
 
     @FXML
-    public void initialize() {}
+    public void initialize() {
+        Image image = new Image(getClass().getResourceAsStream("/pic.png"));
+        profiledefault.setImage(image);
+
+    }
 
 
     public void SQLhandling(String ID) {
