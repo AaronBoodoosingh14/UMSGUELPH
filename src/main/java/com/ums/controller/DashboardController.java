@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.TitledPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
@@ -24,8 +25,13 @@ public class DashboardController {
     @FXML
     private Button btnSubjects, btnCourses, btnStudents, btnFaculty, btnEvents, btnLogout, btnView;  // Setting up modules
 
-    private String userRole;// Default to Student if no role is set
+    private String userRole;
     private String username;
+    private String permUser;
+
+    @FXML
+    private TitledPane DropDown;
+
 
 
     /**
@@ -45,8 +51,29 @@ public class DashboardController {
         btnStudents.setOnAction(e -> loadModule("Student"));
         btnFaculty.setOnAction(e -> loadModule("Faculty"));
         btnEvents.setOnAction(e -> loadModule("Events"));
-        btnView.setOnAction(e -> loadModule("FacultyUser"));
+        btnView.setOnAction(e -> {System.out.println("Button clicked, permUser is: " + permUser);
+            username = UMSApplication.getLoggedInUsername();
+            System.out.println("After assignment, username is: " + username);
+            loadModule("FacultyUser");});
         btnLogout.setOnAction(e -> logout());
+
+    }
+
+    public void setDropDown(boolean text) {
+        DropDown.setExpanded(text);
+
+    }
+
+
+    public void setPermUser(String permUser) {
+        System.out.println("Setting permUser to: " + permUser);
+        this.permUser = permUser;
+        System.out.println("After setting, permUser is: " + this.permUser);
+
+
+    }
+    public String getPermUser() {
+        return permUser;
     }
 
     public void setUsername(String username){
@@ -80,21 +107,23 @@ public class DashboardController {
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent view = loader.load();
-if("Events".equals(moduleName)) {
+            if("Events".equals(moduleName)) {
 
-    EventController controller = loader.getController();
-    controller.setUserRole(userRole);
-}else if("Subject".equals(moduleName)) {
-    // Pass user role to SubjectController
-    SubjectController controller = loader.getController();
-    controller.setUserRole(userRole);
-}else if ("FacultyUser".equals(moduleName)) {
-    String temp = getUsername();
-    System.out.println(temp);
-    FacultyUser controller = loader.getController();
-    controller.SQLhandling(temp);
+                EventController controller = loader.getController();
+                controller.setUserRole(userRole);
+            }else if("Subject".equals(moduleName)) {
+                // Pass user role to SubjectController
+                SubjectController controller = loader.getController();
+                controller.setUserRole(userRole);
+            }else if ("FacultyUser".equals(moduleName)) {
+                System.out.println("Loading FacultyUser, current username: " + username);
+                System.out.println("Current permUser: " + permUser);
+                String temp = getUsername();
+                System.out.println("getUsername() returned: " + temp);
+                FacultyUser controller = loader.getController();
+                controller.SQLhandling(temp);
 
-}
+            }
 
 
 
@@ -106,9 +135,7 @@ if("Events".equals(moduleName)) {
         }
     }
 
-
-
-    private void logout() {
+        private void logout() {
         System.out.println("Logging out...");
         Stage stage = (Stage) btnLogout.getScene().getWindow();
         stage.close();

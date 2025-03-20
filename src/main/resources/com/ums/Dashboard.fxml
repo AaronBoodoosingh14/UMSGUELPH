@@ -16,7 +16,7 @@
             <Label style="-fx-text-fill: white; -fx-font-size: 16px;" text="Menu" />
 
             <!-- Expandable Menu for Modules -->
-            <TitledPane expanded="false" text="Modules">
+            <TitledPane fx:id="DropDown" expanded="false" text="Modules">
                 <content>
                     <VBox spacing="5">
                         <!-- Navigation Buttons -->

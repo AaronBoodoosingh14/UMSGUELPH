@@ -30,10 +30,8 @@ public class FacultyUser extends Faculty {
     private Label Research;
     @FXML
     private Label Office;
-    @FXML
-    private Button Viewcourse;
 
-    private ArrayList<String> facultyInfo; // Store faculty info as a field
+    private ArrayList<String> facultyInfo;
 
     public FacultyUser() {}
 
@@ -42,6 +40,7 @@ public class FacultyUser extends Faculty {
 
 
     public void SQLhandling(String ID) {
+        System.out.println("Inside SQLhandling, received facultyID: " + ID);
         String query = "SELECT * FROM faculty_info WHERE FacultyID = ?";
         ArrayList<String> facultyInfo = new ArrayList<>();
 
@@ -81,7 +80,7 @@ public class FacultyUser extends Faculty {
     }
 
     public void loadFaculty(ArrayList<String> facultyInfo) {
-        this.facultyInfo = facultyInfo;  // Assign to field
+        this.facultyInfo = facultyInfo;
 
         Name.setText(facultyInfo.get(1));
         FacultyID.setText(facultyInfo.get(0));

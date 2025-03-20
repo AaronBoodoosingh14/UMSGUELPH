@@ -9,11 +9,13 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -82,7 +84,6 @@ public class FacultyAdmin {
                 e.printStackTrace();
             }
 
-        handleRefresh();
         }
 
 
@@ -155,25 +156,30 @@ public class FacultyAdmin {
     private void  handleDeleteFaculty(ActionEvent event) throws Exception {
         ArrayList<String> selection = new ArrayList<String>(columnSelect());
         String FacultyID = selection.get(0);
-        String  FacultyName = selection.get(1);
+        String FacultyName = selection.get(1);
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirm Delete");
         alert.setHeaderText("Are you sure you want to delete " + FacultyName + " from the database");
         alert.setContentText("This action cannot be reversed");
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK){
+        if (result.get() == ButtonType.OK) {
             String sql = "DELETE FROM faculty_info WHERE FacultyID = ?";
-            Connection connection  = DatabaseManager.getConnection();
+            String login = "DELETE FROM loginInfo WHERE username = ?";
+            Connection connection = DatabaseManager.getConnection();
+            PreparedStatement stmt = connection.prepareStatement(login);
             PreparedStatement statement = connection.prepareStatement(sql);
-            var ps  = connection.prepareStatement(sql);
+            var ps = connection.prepareStatement(sql);
+            var rs = connection.prepareStatement(login);
+            rs.setString(1,FacultyID);
             ps.setString(1, FacultyID);
+            rs.executeUpdate();
             ps.executeUpdate();
             Alert alert2 = new Alert(Alert.AlertType.INFORMATION);
             alert2.setTitle("Successful Delete");
             alert2.setHeaderText(FacultyName + " was deleted from the database");
             alert2.setContentText("");
-            
+
 
         } else {
             Alert alert1 = new Alert(Alert.AlertType.INFORMATION);
@@ -183,14 +189,6 @@ public class FacultyAdmin {
             Optional<ButtonType> result1 = alert1.showAndWait();
 
         }
-
-
-
-
-
-
-
-
 
     }
 
@@ -224,10 +222,6 @@ public class FacultyAdmin {
 
 
     }
-
-
-
-
 
     @FXML
     private void handleSearch() {
@@ -263,14 +257,23 @@ public class FacultyAdmin {
     public void handleViewProfile(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/ums/Dashboard.fxml"));
         Parent root = loader.load();
-
         DashboardController dashboard = loader.getController();
-        dashboard.loadModule("Faculty");
+        dashboard.setUserRole("Admin");
+
+        ArrayList<String> selection = new ArrayList<String>(columnSelect());
+        String facultyID = selection.getFirst();
+        System.out.println(facultyID);
+        dashboard.setUsername(facultyID);
+        dashboard.loadModule("FacultyUser");
+        dashboard.setDropDown(true);
 
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
+        Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+        stage.setWidth(screenBounds.getWidth());
+        stage.setHeight(screenBounds.getHeight());
     }
 
 }

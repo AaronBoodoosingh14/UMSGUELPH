@@ -11,6 +11,15 @@ import java.io.IOException;
 import java.util.Formatter;
 
 public class UMSApplication extends javafx.application.Application {
+    private static String loggedInUsername;
+
+    public static void setLoggedInUsername(String username) {
+        loggedInUsername = username;
+    }
+
+    public static String getLoggedInUsername() {
+        return loggedInUsername;
+    }
 
     @Override
     public void start(Stage stage) throws IOException {

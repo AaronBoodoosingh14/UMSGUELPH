@@ -1,5 +1,6 @@
 package com.ums.controller;
 
+import com.ums.UMSApplication;
 import com.ums.database.DatabaseManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -98,11 +99,16 @@ public class LoginController{
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/ums/Dashboard.fxml"));
             Parent root = loader.load();
 
-            DashboardController dashboardController = loader.getController();
-            dashboardController.setUserRole(role);
-            dashboardController.setUsername(txtUsername.getText());
 
-            // Get the current stage more reliably
+            DashboardController dashboardController = loader.getController();
+            dashboardController.setDropDown(false);
+            dashboardController.setUserRole(role);
+            dashboardController.setPermUser(txtUsername.getText());
+            UMSApplication.setLoggedInUsername(txtUsername.getText());
+            String temp = dashboardController.getPermUser();
+            System.out.println(temp);
+
+
             Scene currentScene = btnLogin.getScene();
             if (currentScene != null) {
                 Stage window = (Stage) currentScene.getWindow();
