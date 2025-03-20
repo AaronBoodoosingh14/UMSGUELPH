@@ -4,8 +4,6 @@ import com.ums.UMSApplication;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.control.Button;
@@ -28,6 +26,7 @@ public class DashboardController {
     private String userRole;
     private String username;
     private String permUser;
+    private boolean visable = false;
 
     @FXML
     private TitledPane DropDown;
@@ -54,7 +53,9 @@ public class DashboardController {
         btnView.setOnAction(e -> {System.out.println("Button clicked, permUser is: " + permUser);
             username = UMSApplication.getLoggedInUsername();
             System.out.println("After assignment, username is: " + username);
+            visable = true;
             loadModule("FacultyUser");});
+
         btnLogout.setOnAction(e -> logout());
 
     }
@@ -62,6 +63,15 @@ public class DashboardController {
     public void setDropDown(boolean text) {
         DropDown.setExpanded(text);
 
+    }
+
+    private void setVisible(boolean visible) {
+        this.visable = visible;
+
+    }
+
+    private boolean getVisible() {
+            return visable;
     }
 
 
@@ -122,6 +132,7 @@ public class DashboardController {
                 System.out.println("getUsername() returned: " + temp);
                 FacultyUser controller = loader.getController();
                 controller.SQLhandling(temp);
+                controller.buttonVisable(visable);
 
             }
 

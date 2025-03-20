@@ -147,7 +147,7 @@ public class FacultyAdmin {
     public void handleRefresh(){
         facultyTable.getItems().clear();
 
-        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0.15), event ->{loadFacultyData();}));
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0.05), event ->{loadFacultyData();}));
         timeline.setCycleCount(1);
         timeline.play();
     }

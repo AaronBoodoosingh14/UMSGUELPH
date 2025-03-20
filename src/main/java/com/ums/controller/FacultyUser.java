@@ -30,6 +30,12 @@ public class FacultyUser extends Faculty {
     private Label Research;
     @FXML
     private Label Office;
+    @FXML
+    private Button btnpass;
+    @FXML
+    private Button btnpfp;
+    @FXML
+    private Button btnstudent;
 
     private ArrayList<String> facultyInfo;
 
@@ -77,6 +83,12 @@ public class FacultyUser extends Faculty {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void buttonVisable(boolean visible) {
+        btnpass.setVisible(visible);
+        btnpfp.setVisible(visible);
+        btnstudent.setVisible(visible);
     }
 
     public void loadFaculty(ArrayList<String> facultyInfo) {
