@@ -1,6 +1,5 @@
 package com.ums.controller;
 
-import com.ums.controller.StudentControllers.AddStudent;
 import com.ums.data.Student;
 import com.ums.database.DatabaseManager;
 import javafx.animation.KeyFrame;
@@ -22,8 +21,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
-import com.ums.controller.StudentControllers.EditStudent;
-import javafx.stage.Modality;
 
 
 /**
@@ -98,9 +95,37 @@ public class StudentController {
      * Selects a student when a row in the table is clicked.
      */
     @FXML
-    private void columnSelect() {
+    private ArrayList<String> columnSelect() {
         Student selectedStudent = studentTable.getSelectionModel().getSelectedItem();
-        System.out.println(selectedStudent);
+        String studentID = selectedStudent.getStudentId();
+        String studentName = selectedStudent.getName();
+        String Address = selectedStudent.getAddress();
+        String telephone = selectedStudent.getTelephone();
+        String studentEmail = selectedStudent.getEmail();
+        String Alevel =  selectedStudent.getAcademicLevel();
+        String semester = selectedStudent.getCurrentSemester();
+        String subjectsReg = selectedStudent.getSubjectsRegistered().toString();
+        String thesis = selectedStudent.getThesisTitle();
+        String progress = selectedStudent.getProgress();
+        String tuition = selectedStudent.getTuition();
+
+        ArrayList<String> StudentSelect =  new ArrayList<String>();
+        StudentSelect.add(studentID);
+        StudentSelect.add(studentName);
+        StudentSelect.add(Address);
+        StudentSelect.add(telephone);
+        StudentSelect.add(studentEmail);
+        StudentSelect.add(Alevel);
+        StudentSelect.add(semester);
+        StudentSelect.add(subjectsReg);
+        StudentSelect.add(thesis);
+        StudentSelect.add(progress);
+        StudentSelect.add(tuition);
+
+
+
+        System.out.println(StudentSelect);
+        return StudentSelect;
     }
 
     /**
@@ -142,7 +167,7 @@ public class StudentController {
                 student.setTelephone(rs.getString("Telephone"));
                 student.setEmail(rs.getString("Email"));
                 student.setAcademicLevel(rs.getString("AcademicLevel"));
-                student.setSubjectsRegistered(Collections.singletonList(rs.getString("SubjectsRegistered")));
+                student.setSubjectsRegistered((rs.getString("SubjectsRegistered")));
                 student.setThesisTitle(rs.getString("ThesisTitle"));
                 student.setProgress(rs.getString("Progress"));
                 student.setPassword(rs.getString("Password"));
@@ -160,9 +185,7 @@ public class StudentController {
         }
     }
 
-    /**
-     * Adds a new student to the TableView and the database.
-     */
+
     @FXML
     private void handleAddStudent() {
         try {
@@ -175,8 +198,6 @@ public class StudentController {
             stage.setResizable(false);
             stage.setScene(new Scene(root));
             stage.showAndWait();
-
-            handleRefresh(); // Refresh table after adding
         } catch (IOException e) {
             e.printStackTrace();
             showAlert("Error", "Failed to open Add Student window.");
@@ -188,33 +209,39 @@ public class StudentController {
      */
     @FXML
     private void handleEditStudent() {
-        Student selectedStudent = studentTable.getSelectionModel().getSelectedItem();
-        if (selectedStudent == null) {
-            showAlert("No Selection", "Please select a student to edit.");
-            return;
-        }
+        ArrayList<String> student = new ArrayList<>(columnSelect());
+        String studentID = student.get(0);
+        String studentName = student.get(1);
+        String Address = student.get(2);
+        String telephone = student.get(3);
+        String studentEmail = student.get(4);
+        String Alevel = student.get(5);
+        String semester = student.get(6);
+        String subjectsReg = student.get(7);
+        String thesis = student.get(8);
+        String progress = student.get(9);
+        String tuition = student.get(10);
 
-        try {
+        try{
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/ums/admin/StudentPopup/EditStudent.fxml"));
             Parent root = loader.load();
 
-            // Get the controller and pass the student data
-            EditStudent controller = loader.getController();
-            controller.setStudentData(selectedStudent);
+            EditStudent editStudentcontroller = loader.getController();
+
+            editStudentcontroller.setStudentData(studentID,studentName,Address,telephone,studentEmail,Alevel,semester,subjectsReg,thesis,progress,tuition);
 
             Stage stage = new Stage();
-            stage.setTitle("Edit Student");
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setResizable(false);
             stage.setScene(new Scene(root));
-            stage.showAndWait();
+            stage.setTitle("Edit Faculty");
+            stage.show();
 
-            handleRefresh(); // Refresh table after editing
-        } catch (IOException e) {
+        }catch (Exception e){
             e.printStackTrace();
-            showAlert("Error", "Failed to open Edit Student window.");
-        }
-    }
+
+
+
+
+    }}
 
 
 

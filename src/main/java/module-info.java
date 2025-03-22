@@ -9,6 +9,7 @@ module com.ums {
     requires java.sql;
     requires org.apache.poi.ooxml;
     requires java.desktop;
+    requires commons.math3;
 
 
     opens com.ums to javafx.fxml;

@@ -90,8 +90,10 @@ public class EditFaculty extends Faculty {
 
             if (result.isPresent() && result.get() == ButtonType.OK) {
                 String sql = "UPDATE faculty_info SET FacultyID = ?, Name = ?, Degree = ?, ResearchInterest = ?, Email = ?, OfficeLocation = ?, courses = ? WHERE FacultyID = ?;";
+                String login = "UPDATE loginInfo SET username = ? WHERE username = ?;";
                 try (Connection connection = DatabaseManager.getConnection();
-                     var ps = connection.prepareStatement(sql)) {
+                     var ps = connection.prepareStatement(sql);
+                     var rs = connection.prepareStatement(login)) {
 
                     ps.setString(1, ID);
                     ps.setString(2, name);
@@ -102,7 +104,11 @@ public class EditFaculty extends Faculty {
                     ps.setString(7, courses);
                     ps.setString(8,permID);
 
+                    rs.setString(1,ID);
+                    rs.setString(2,permID);
+
                     ps.executeUpdate();
+                    rs.executeUpdate();
 
                     Stage stage = (Stage) btncancel.getScene().getWindow();
                     stage.close();

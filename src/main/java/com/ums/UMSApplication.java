@@ -10,7 +10,16 @@ import javafx.scene.image.Image;
 import java.io.IOException;
 import java.util.Formatter;
 
-public class UMSApplication extends javafx.application.Application {
+public class
+
+
+
+
+
+
+
+
+UMSApplication extends javafx.application.Application {
     private static String loggedInUsername;
 
     public static void setLoggedInUsername(String username) {

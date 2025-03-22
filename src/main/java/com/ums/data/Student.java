@@ -1,8 +1,5 @@
 package com.ums.data;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Student {
     private String studentId;
     private String name;
@@ -12,27 +9,19 @@ public class Student {
     private String academicLevel;
     private String currentSemester;
     private String profilePhotoPath;
-    private List<String> subjectsRegistered;
+    private String subjectsRegistered;
     private String thesisTitle;
     private String progress;
     private String password;
     private String tuition;
 
     public Student() {
-        this.subjectsRegistered = new ArrayList<>();
         this.profilePhotoPath = "";
     }
 
     public Student(String tuition, String studentId, String name, String address, String telephone, String email,
-                   String academicLevel, String currentSemester, List<String> subjectsRegistered,
+                   String academicLevel, String currentSemester, String subjectsRegistered,
                    String thesisTitle, String progress, String password) {
-        this(studentId, name, address, telephone, email, academicLevel, currentSemester,
-                subjectsRegistered, thesisTitle, progress, password, "");
-    }
-
-    public Student(String studentId, String name, String address, String telephone, String email,
-                   String academicLevel, String currentSemester, List<String> subjectsRegistered,
-                   String thesisTitle, String progress, String password, String profilePhotoPath) {
         this.studentId = studentId;
         this.name = name;
         this.address = address;
@@ -40,7 +29,25 @@ public class Student {
         this.email = email;
         this.academicLevel = academicLevel;
         this.currentSemester = currentSemester;
-        this.subjectsRegistered = new ArrayList<>(subjectsRegistered);
+        this.subjectsRegistered = subjectsRegistered;
+        this.thesisTitle = thesisTitle;
+        this.progress = progress;
+        this.password = password;
+        this.tuition = tuition;
+        this.profilePhotoPath = "";
+    }
+
+    public Student(String studentId, String name, String address, String telephone, String email,
+                   String academicLevel, String currentSemester, String subjectsRegistered,
+                   String thesisTitle, String progress, String password, String tuition, String profilePhotoPath) {
+        this.studentId = studentId;
+        this.name = name;
+        this.address = address;
+        this.telephone = telephone;
+        this.email = email;
+        this.academicLevel = academicLevel;
+        this.currentSemester = currentSemester;
+        this.subjectsRegistered = subjectsRegistered;
         this.thesisTitle = thesisTitle;
         this.progress = progress;
         this.password = password;
@@ -48,13 +55,8 @@ public class Student {
         this.profilePhotoPath = profilePhotoPath;
     }
 
-    public String getProfilePhotoPath() {
-        return profilePhotoPath;
-    }
-
-    public void setProfilePhotoPath(String profilePhotoPath) {
-        this.profilePhotoPath = profilePhotoPath;
-    }
+    public String getProfilePhotoPath() { return profilePhotoPath; }
+    public void setProfilePhotoPath(String profilePhotoPath) { this.profilePhotoPath = profilePhotoPath; }
 
     public String getStudentId() { return studentId; }
     public void setStudentId(String studentId) { this.studentId = studentId; }
@@ -77,10 +79,8 @@ public class Student {
     public String getCurrentSemester() { return currentSemester; }
     public void setCurrentSemester(String currentSemester) { this.currentSemester = currentSemester; }
 
-    public List<String> getSubjectsRegistered() { return subjectsRegistered; }
-    public void setSubjectsRegistered(List<String> subjectsRegistered) { this.subjectsRegistered = new ArrayList<>(subjectsRegistered); }
-
-    public void addSubject(String subject) { this.subjectsRegistered.add(subject); }
+    public String getSubjectsRegistered() { return subjectsRegistered; }
+    public void setSubjectsRegistered(String subjectsRegistered) { this.subjectsRegistered = subjectsRegistered; }
 
     public String getThesisTitle() { return thesisTitle; }
     public void setThesisTitle(String thesisTitle) { this.thesisTitle = thesisTitle; }
@@ -104,8 +104,8 @@ public class Student {
                 ", email='" + email + '\'' +
                 ", academicLevel='" + academicLevel + '\'' +
                 ", currentSemester='" + currentSemester + '\'' +
-                ", profilePhoto='" + profilePhotoPath + '\'' +
-                ", subjectsRegistered=" + subjectsRegistered +
+                ", profilePhotoPath='" + profilePhotoPath + '\'' +
+                ", subjectsRegistered='" + subjectsRegistered + '\'' +
                 ", thesisTitle='" + thesisTitle + '\'' +
                 ", progress='" + progress + '\'' +
                 ", tuition='" + tuition + '\'' +

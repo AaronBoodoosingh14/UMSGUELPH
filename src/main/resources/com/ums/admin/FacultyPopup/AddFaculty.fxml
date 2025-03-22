@@ -38,6 +38,7 @@
                 <Label text="Courses:" GridPane.columnIndex="0" GridPane.rowIndex="6" />
                 <TextField fx:id="coursesField" GridPane.columnIndex="1" GridPane.rowIndex="6" />
 
+
                 <rowConstraints>
                     <RowConstraints />
                     <RowConstraints />

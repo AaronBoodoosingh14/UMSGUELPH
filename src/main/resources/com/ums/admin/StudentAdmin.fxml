@@ -20,10 +20,10 @@
     <center>
         <TableView fx:id="studentTable" onMousePressed="#columnSelect" style="-fx-padding: 10;">
             <columns>
-                <TableColumn fx:id="colStudentID" prefWidth="150" text="Student ID" />
-                <TableColumn fx:id="colName" prefWidth="200" text="Name" />
-                <TableColumn fx:id="colAddress" prefWidth="200" text="Address" />
-                <TableColumn fx:id="colTelephone" prefWidth="150" text="Telephone" />
+                <TableColumn fx:id="colStudentID" prefWidth="125" text="Student ID" />
+                <TableColumn fx:id="colName" prefWidth="125" text="Name" />
+                <TableColumn fx:id="colAddress" prefWidth="80" text="Address" />
+                <TableColumn fx:id="colTelephone" prefWidth="75" text="Telephone" />
                 <TableColumn fx:id="colEmail" prefWidth="200" text="Email" />
                 <TableColumn fx:id="colAcademicLevel" prefWidth="150" text="Academic Level" />
                 <TableColumn fx:id="colCurrentSemester" prefWidth="150" text="Current Semester" />
