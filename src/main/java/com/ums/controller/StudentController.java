@@ -191,13 +191,11 @@ public class StudentController {
         }
     }
 
-
     @FXML
     private void handleAddStudent() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/ums/admin/StudentPopup/AddStudent.fxml")); // ✅ Ensure the path is correct
             Parent root = loader.load();
-
 
             Stage stage = new Stage();
             stage.setTitle("Add Student");
@@ -243,13 +241,7 @@ public class StudentController {
 
         }catch (Exception e){
             e.printStackTrace();
-
-
-
-
     }}
-
-
 
     /**
      * Deletes the selected student from the TableView.
