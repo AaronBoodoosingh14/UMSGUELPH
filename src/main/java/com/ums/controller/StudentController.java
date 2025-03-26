@@ -71,7 +71,13 @@ public class StudentController {
         // Set button actions to open Add and Edit dialogs
         btnAdd.setOnAction(e -> handleAddStudent()); //
         btnEdit.setOnAction(e -> handleEditStudent()); //
-        btnDelete.setOnAction(e -> deleteStudent());
+        btnDelete.setOnAction(e -> {
+            try {
+                deleteStudent();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
         btnRefresh.setOnAction(e -> handleRefresh());
 
         importStudentsFromSql();
@@ -248,12 +254,41 @@ public class StudentController {
     /**
      * Deletes the selected student from the TableView.
      */
-    public void deleteStudent() {
-        Student selected = studentTable.getSelectionModel().getSelectedItem();
-        if (selected != null) {
-            students.remove(selected);
+    public void deleteStudent() throws SQLException {
+        ArrayList<String> selection = new ArrayList<String>(columnSelect());
+        String studentID = selection.get(0);
+        String studentName = selection.get(1);
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirm Delete");
+        alert.setHeaderText("Are you sure you want to delete " + studentName + " from the database");
+        alert.setContentText("This action cannot be reversed");
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK) {
+            String sql = "DELETE FROM students_info WHERE StudentId =  ?";
+            String login = "DELETE FROM loginInfo WHERE username = ?";
+            Connection connection = DatabaseManager.getConnection();
+            PreparedStatement stmt = connection.prepareStatement(login);
+            PreparedStatement statement = connection.prepareStatement(sql);
+            var ps = connection.prepareStatement(sql);
+            var rs = connection.prepareStatement(login);
+            rs.setString(1,studentID);
+            ps.setString(1, studentID);
+            rs.executeUpdate();
+            ps.executeUpdate();
+            Alert alert2 = new Alert(Alert.AlertType.INFORMATION);
+            alert2.setTitle("Successful Delete");
+            alert2.setHeaderText(studentName + " was deleted from the database");
+            alert2.setContentText("");
+
+
         } else {
-            showAlert("No Selection", "Please select a student to delete.");
+            Alert alert1 = new Alert(Alert.AlertType.INFORMATION);
+            alert1.setTitle("Delete confirm");
+            alert1.setHeaderText(studentName + " was not deleted");
+            alert1.setContentText("Either the faculty was not found or the user cancelled");
+            Optional<ButtonType> result1 = alert1.showAndWait();
+
         }
     }
 
