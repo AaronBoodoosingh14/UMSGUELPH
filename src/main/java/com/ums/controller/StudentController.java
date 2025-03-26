@@ -278,8 +278,9 @@ public class StudentController {
             ps.executeUpdate();
             Alert alert2 = new Alert(Alert.AlertType.INFORMATION);
             alert2.setTitle("Successful Delete");
-            alert2.setHeaderText(studentName + " was deleted from the database");
+            alert2.setHeaderText("user was successfully deleted");
             alert2.setContentText("");
+            Optional<ButtonType> result2 = alert2.showAndWait();
 
 
         } else {
