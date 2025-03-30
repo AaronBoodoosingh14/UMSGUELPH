@@ -1,18 +1,28 @@
 package com.ums.controller;
 
+import com.ums.UMSApplication;
 import com.ums.data.Event;
+
+import com.ums.data.Faculty;
+import com.ums.data.Subject;
 import com.ums.database.DatabaseManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
+import java.io.*;
+import java.lang.String;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,8 +30,6 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.YearMonth;
 import java.util.Date;
 import java.util.Optional;
 
@@ -49,7 +57,8 @@ public class EventController {
     private TableColumn<Event, String> eventRegisteredStudents;
 
     @FXML
-    private TextField txtEventCode, txtEventName, txtEventDescription, txtEventLocation, txtEventDateAndTime, txtEventCapacity, txtEventCost, txtEventHeaderImage, txtEventRegisteredStudents;
+    private TextField txtEventCode, txtEventName,txtEventDescription, txtEventLocation,  txtEventDateAndTime,txtEventCapacity,txtEventCost,txtEventHeaderImage,txtEventRegisteredStudents;
+
 
     @FXML
     private Button btnAdd;
@@ -63,25 +72,7 @@ public class EventController {
 
     @FXML
     private Button btnCancelEdit;
-    @FXML
-    private VBox vBoxCalendarGrid;
 
-    @FXML
-    private VBox vBoxListView;
-
-    @FXML
-    private Button btnListView;
-    @FXML
-    private Button btnCalView;
-
-
-    double vBoxListViewOriginalHeight;
-
-
-    private GridPane calendarGrid;
-    private ComboBox<Integer> yearSelector;
-    private ComboBox<String> monthSelector;
-    private YearMonth currentMonth;
 
 
     // ObservableList to store subjects (TableView updates automatically)
@@ -112,39 +103,25 @@ public class EventController {
         // Bind list to TableView
         eventTable.setItems(events);
         importEventsFromSQL();
-        if (null != btnAdd) {
+        if(null != btnAdd ) {
             btnAdd.setOnAction(eventAction -> addEvent());
         }
-        if (null != btnDelete) {
+        if(null != btnDelete ) {
             btnDelete.setOnAction(eventAction -> removeRow());
         }
-        if (null != btnEdit) {
+        if(null != btnEdit ) {
             btnEdit.setOnAction(eventAction -> editEvent());
         }
 
-        if (null != btnSaveEdit) {
-            btnSaveEdit.setOnAction(eventAction -> saveEditEvent());
+        if(null != btnSaveEdit ) {
+            btnSaveEdit.setOnAction(eventAction ->saveEditEvent());
             btnSaveEdit.setVisible(false);
         }
 
-        if (null != btnCancelEdit) {
+        if(null != btnCancelEdit ) {
             btnCancelEdit.setOnAction(eventAction -> cancelEditEvent());
             btnCancelEdit.setVisible(false);
         }
-
-        if (null != btnListView) {
-            btnListView.setOnAction(eventAction -> displayListView());
-        }
-        if (null != btnCalView) {
-            btnCalView.setOnAction(eventAction -> displayCalView());
-        }
-
-        if (null != vBoxCalendarGrid) {
-            vBoxCalendarGrid.setVisible(false);
-        }
-
-
-        vBoxListViewOriginalHeight = vBoxListView.getPrefHeight(); // Save original height
 
 
     }
@@ -162,6 +139,7 @@ public class EventController {
 
     @FXML
     private void editEvent() {
+
 
         Event event = eventTable.getSelectionModel().getSelectedItem();
 
@@ -181,11 +159,11 @@ public class EventController {
         txtEventName.setText(event.getEventName());
         txtEventDescription.setText(event.getDescription());
         txtEventLocation.setText(event.getLocation());
-        txtEventDateAndTime.setText(event.getDateTime());
+        //txtEventDateAndTime.setText(event.getDateTime()); (fix)
         txtEventCapacity.setText(event.getCapacity());
         txtEventCost.setText(event.getCost());
         txtEventHeaderImage.setText(event.getHeaderImage());
-        txtEventRegisteredStudents.setText(event.getRegisteredStudents());
+        //txtEventRegisteredStudents.setText(event.getRegisteredStudents()); (fix)
 
     }
 
@@ -201,23 +179,25 @@ public class EventController {
         String registeredStudents = txtEventRegisteredStudents.getText().trim();
 
 
-        if (eventName.isEmpty() || location.isEmpty() || dateTime.isEmpty()) {
+        if ( eventName.isEmpty() || location.isEmpty() || dateTime.isEmpty()) {
             Alert errorAlert = new Alert(Alert.AlertType.ERROR);
             errorAlert.setHeaderText("Input not valid");
             errorAlert.setContentText("Event name and Location and Date/Time, these fields are required");
             errorAlert.showAndWait();
 
-        } else if (!isDateValid(dateTime)) {
+        }else if (!isDateValid(dateTime)) {
             Alert errorAlert = new Alert(Alert.AlertType.ERROR);
             errorAlert.setHeaderText("Invalid Date");
             errorAlert.setContentText("Please enter valid date");
             errorAlert.showAndWait();
-        } else {
+        }
+        else {
             String query = "UPDATE events SET eventName = ?, description = ?, location = ?, dateTime = ?, " +
-                    "capacity = ?, cost = ?, headerImage = ?, registeredStudents = ? WHERE eventCode = ?";
+                    "capacity = ?, cost = ?, headerImage = ?, registeredStudents = ? WHERE eventID = ?";
 
             try (Connection conn = DatabaseManager.getConnection();
-                 PreparedStatement pstmt = conn.prepareStatement(query)) {
+                 PreparedStatement pstmt = conn.prepareStatement(query))
+            {
                 pstmt.setString(1, eventName);
                 pstmt.setString(2, description);
                 pstmt.setString(3, location);
@@ -244,7 +224,7 @@ public class EventController {
             } catch (Exception e) {
                 e.printStackTrace(); // Print SQL error details
             }
-            cancelEditEvent();
+
         }
     }
 
@@ -264,27 +244,30 @@ public class EventController {
         String registeredStudents = txtEventRegisteredStudents.getText().trim();
 
 
-        if (isDuplicate(eventCode)) {
+        if ( isDuplicate(eventCode)) {
             Alert errorAlert = new Alert(Alert.AlertType.ERROR);
             errorAlert.setHeaderText("Input not valid");
             errorAlert.setContentText("Event code already exists, please enter new event code");
             errorAlert.showAndWait();
 
-        } else if (eventCode.isEmpty() || eventName.isEmpty() || location.isEmpty() || dateTime.isEmpty()) {
+        }
+        else if (eventCode.isEmpty() || eventName.isEmpty() || location.isEmpty() || dateTime.isEmpty()) {
             Alert errorAlert = new Alert(Alert.AlertType.ERROR);
             errorAlert.setHeaderText("Input not valid");
             errorAlert.setContentText("Event code and Event name and Location and Date/Time, these fields are required");
             errorAlert.showAndWait();
 
-        } else if (!isDateValid(dateTime)) {
+        }else if (!isDateValid(dateTime)) {
             Alert errorAlert = new Alert(Alert.AlertType.ERROR);
             errorAlert.setHeaderText("Invalid Date");
             errorAlert.setContentText("Please enter valid date");
             errorAlert.showAndWait();
-        } else {
+        }
+        else {
             String query = "INSERT INTO events (eventCode,eventName,description,location,dateTime,capacity,cost,headerImage,registeredStudents) VALUES (?,?,?,?,?,?,?,?,?)";
             try (Connection conn = DatabaseManager.getConnection();
-                 PreparedStatement pstmt = conn.prepareStatement(query)) {
+                 PreparedStatement pstmt = conn.prepareStatement(query))
+            {
                 pstmt.setString(1, eventCode);
                 pstmt.setString(2, eventName);
                 pstmt.setString(3, description);
@@ -328,7 +311,7 @@ public class EventController {
         txtEventRegisteredStudents.clear();
     }
 
-    private java.sql.Date convertStringToSQLDate(String dateStr) {
+    private  java.sql.Date convertStringToSQLDate(String dateStr) {
         try {
             java.util.Date utilDate = dtFormat.parse(dateStr); // Convert to java.util.Date
             return new java.sql.Date(utilDate.getTime()); // Convert to java.sql.Date
@@ -336,10 +319,8 @@ public class EventController {
             return null; // Return null if parsing fails
         }
     }
-
     /**
      * Checks if a event with the same code already exists in the list.
-     *
      * @param code Event code to check for duplicates
      * @return true if the event already exists, false otherwise
      */
@@ -362,7 +343,8 @@ public class EventController {
             Date parsedDate = dtFormat.parse(inputDate);
             returnFlag = true;
 
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             System.out.println(
                     "Invalid date format. yyyy-MM-dd.");
         }
@@ -388,12 +370,12 @@ public class EventController {
                 java.sql.Date date = rs.getDate("dateTime");
 
                 String dateStr = dtFormat.format(date);
-                event.setDateTime(dateStr);
+                //event.setDateTime(dateStr); (fix)
 
                 event.setCapacity(rs.getString("capacity"));
                 event.setCost(rs.getString("cost"));
                 event.setHeaderImage(rs.getString("headerImage"));
-                event.setRegisteredStudents(rs.getString("registeredStudents"));
+                //event.setRegisteredStudents(rs.getString("registeredStudents")); (fix)
                 events.add(event);
 
             }
@@ -440,7 +422,7 @@ public class EventController {
                 }
 
             }
-        } catch (Exception ex) {
+        } catch(Exception ex){
             System.out.println("Error" + ex.getMessage());
         }
 
@@ -460,137 +442,5 @@ public class EventController {
         return result.isPresent() && result.get() == ButtonType.YES;
     }
 
-    private void displayListView() {
-        vBoxCalendarGrid.setVisible(false);
-        vBoxListView.setVisible(true);
-        vBoxListView.setPrefHeight(vBoxListViewOriginalHeight);
-    }
-
-    private void displayCalView() {
-        vBoxCalendarGrid.setVisible(true);
-        vBoxListView.setVisible(false);
-        btnCalView.setText("Loading..");
-        btnCalView.setDisable(true);
-        btnListView.setDisable(true);
-        vBoxListView.setPrefHeight(0);
-
-        BorderPane root = new BorderPane();
-        HBox controls = new HBox(10);
-        controls.setPadding(new Insets(10));
-
-        yearSelector = new ComboBox<>();
-        for (int i = 2024; i <= 2030; i++) {
-            yearSelector.getItems().add(i);
-        }
-        yearSelector.setValue(LocalDate.now().getYear());
-
-        monthSelector = new ComboBox<>();
-        String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
-        for (String month : months) {
-            monthSelector.getItems().add(month);
-        }
-        monthSelector.setValue(months[LocalDate.now().getMonthValue() - 1]);
-
-        Button updateButton = new Button("Update Calendar");
-        updateButton.setOnAction(e -> updateCalendar());
-
-        controls.getChildren().addAll(new Label("Year:"), yearSelector, new Label("Month:"), monthSelector, updateButton);
-
-        calendarGrid = new GridPane();
-        calendarGrid.setPadding(new Insets(10));
-        calendarGrid.setHgap(10);
-        calendarGrid.setVgap(10);
-
-        root.setTop(controls);
-        root.setCenter(calendarGrid);
-
-        currentMonth = YearMonth.now();
-        updateCalendar();
-        vBoxCalendarGrid.getChildren().clear();
-        vBoxCalendarGrid.getChildren().add(root);
-
-        btnCalView.setText("Calender View");
-        btnCalView.setDisable(false);
-        btnListView.setDisable(false);
-
-        //  Scene scene = new Scene(root, 600, 400);
-        //    primaryStage.setScene(scene);
-        //   primaryStage.show();
-
-
-    }
-
-    private void updateCalendar() {
-        showOkMessage("Loading please wait");
-        calendarGrid.getChildren().clear();
-        int selectedYear = yearSelector.getValue();
-        int selectedMonth = monthSelector.getSelectionModel().getSelectedIndex() + 1;
-        currentMonth = YearMonth.of(selectedYear, selectedMonth);
-
-        LocalDate firstDayOfMonth = currentMonth.atDay(1);
-        int daysInMonth = currentMonth.lengthOfMonth();
-
-
-        Connection conn = null;
-        try {
-            conn = DatabaseManager.getConnection();
-
-            for (int day = 1; day <= daysInMonth; day++) {
-                LocalDate date = firstDayOfMonth.plusDays(day - 1);
-                VBox dayBox = new VBox();
-                dayBox.setPadding(new Insets(5));
-                dayBox.setStyle("-fx-border-color: black; -fx-padding: 10px;");
-
-                Label dayLabel = new Label(String.valueOf(day));
-                dayBox.getChildren().add(dayLabel);
-                String event = getEventForDate(date, conn, dayBox);
-
-
-                calendarGrid.add(dayBox, (day - 1) % 7, (day - 1) / 7);
-            }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        } finally {
-            if (conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
-        showOkMessage("Calendar Updated");
-    }
-
-    private String getEventForDate(LocalDate date, Connection conn, VBox dayBox) throws SQLException {
-        String event = null;
-        String query = "SELECT eventName FROM events where dateTime = '" + date + "'";
-        try (
-                PreparedStatement stmt = conn.prepareStatement(query);
-                ResultSet rs = stmt.executeQuery()) {
-            while (rs.next()) {
-                event = rs.getString("eventName");
-                if (event != null) {
-                    Label eventLabel = new Label(event);
-                    dayBox.getChildren().add(eventLabel);
-                }
-            }
-
-
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-
-        }
-        return event;
-    }
-
-    private void showOkMessage(String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Status");
-        alert.setHeaderText(null); // No header text
-        alert.setContentText(message);
-
-        alert.showAndWait(); // Show the alert and wait for the user to close it
-    }
 }
 
