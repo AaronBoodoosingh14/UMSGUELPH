@@ -19,7 +19,7 @@ public class
 
 
 
-UMSApplication extends javafx.application.Application {
+ UMSApplication extends javafx.application.Application {
     private static String loggedInUsername;
 
     public static void setLoggedInUsername(String username) {
