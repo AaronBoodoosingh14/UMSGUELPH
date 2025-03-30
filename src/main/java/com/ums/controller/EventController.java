@@ -73,7 +73,7 @@ public class EventController {
     @FXML
     private Button btnCancelEdit;
 
-
+    private int x;
 
     // ObservableList to store subjects (TableView updates automatically)
     private ObservableList<Event> events = FXCollections.observableArrayList();
