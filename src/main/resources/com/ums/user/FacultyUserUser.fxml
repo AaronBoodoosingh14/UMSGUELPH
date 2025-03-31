@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="435.0" prefWidth="686.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ums.controller.FacultyUserView">
+    <children>
+        <Label layoutX="6.0" layoutY="7.0" text="Student Profile">
+            <font>
+                <Font name="HelveticaNeueLTStd-Bd" size="22.0" />
+            </font>
+        </Label>
+        <Label fx:id="Name" layoutX="28.0" layoutY="192.0" prefHeight="23.0" prefWidth="206.0">
+            <font>
+                <Font name="HelveticaNeueLTStd-Bd" size="18.0" />
+            </font></Label>
+        <Label layoutX="296.0" layoutY="47.0" prefHeight="17.0" prefWidth="59.0" text="Student ID:" />
+        <Label layoutX="295.0" layoutY="130.0" text="Telephone" />
+        <Label layoutX="295.0" layoutY="201.0" prefHeight="17.0" prefWidth="84.0" text="Email" />
+        <Label layoutX="295.0" layoutY="89.0" text="Address:" />
+        <Label layoutX="293.0" layoutY="166.0" text="Tuiton:" />
+        <Button fx:id="btnpass" layoutX="152.0" layoutY="242.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="94.0" text="Edit Password" />
+        <Button fx:id="btnpfp" layoutX="13.0" layoutY="242.0" mnemonicParsing="false" onAction="#handleProfile" prefHeight="25.0" prefWidth="109.0" text="Edit Profile Picture" />
+        <Button layoutX="14.0" layoutY="284.0" mnemonicParsing="false" text="View Assinged Courses" />
+        <ImageView fx:id="profiledefault" fitHeight="150.0" fitWidth="200.0" layoutX="20.0" layoutY="47.0" pickOnBounds="true" preserveRatio="true" />
+      <Label layoutX="293.0" layoutY="237.0" text="Current Semester: " />
+      <Label layoutX="293.0" layoutY="279.0" text="Academic Level" />
+      <Label layoutX="293.0" layoutY="319.0" text="Progress" />
+      <Button layoutX="173.0" layoutY="284.0" mnemonicParsing="false" text="View Grades" />
+      <Button layoutX="13.0" layoutY="315.0" mnemonicParsing="false" text="View Courses" />
+      <Label fx:id="SID" layoutX="361.0" layoutY="47.0" />
+      <Label fx:id="address" layoutX="341.0" layoutY="89.0" />
+      <Label fx:id="telephone" layoutX="355.0" layoutY="130.0" />
+      <Label fx:id="tuition" layoutX="337.0" layoutY="166.0" />
+      <Label fx:id="email" layoutX="327.0" layoutY="201.0" />
+      <Label fx:id="semester" layoutX="391.0" layoutY="237.0" />
+      <Label fx:id="academic" layoutX="377.0" layoutY="279.0" />
+      <Label fx:id="progress" layoutX="347.0" layoutY="319.0" />
+    </children>
+</AnchorPane>

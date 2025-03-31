@@ -1,18 +1,25 @@
 package com.ums.controller;
 
+import com.ums.UMSApplication;
 import com.ums.data.Faculty;
 import com.ums.data.Student;
 import com.ums.database.DatabaseManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.sql.Connection;
@@ -49,9 +56,21 @@ public class FacultyUser extends Faculty {
 
     @FXML
     public void initialize() {
-        Image image = new Image(getClass().getResourceAsStream("/pic.png"));
-        profiledefault.setImage(image);
+        showPFP();
 
+    }
+
+    public void handleProfile(ActionEvent actionEvent) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/ums/uploadpic.fxml"));
+        Parent root = loader.load();
+
+        Uploadpic uploadpic = loader.getController();
+
+
+        Stage stage = new Stage();
+        stage.setScene(new Scene(root));
+        stage.setTitle("Upload Profile");
+        stage.show();
     }
 
 
@@ -199,4 +218,29 @@ public class FacultyUser extends Faculty {
         alert.setContentText("Active Courses");
         alert.showAndWait();
     }
+    public void showPFP(){
+        Uploadpic uploadpic = new Uploadpic();
+        String path = uploadpic.downloadPic(UMSApplication.getLoggedInUsername());
+        System.out.println(path);
+
+        if (path != null) {
+            System.out.println(path);
+
+            // Assuming path is a local file path
+            try {
+                File file = new File(path);
+                if (file.exists()) {
+                    Image image = new Image(file.toURI().toString());  // Convert file path to URI
+                    profiledefault.setImage(image);
+                }
+            } catch (Exception e) {
+                System.err.println("Error loading image: " + e.getMessage());
+            }
+        }
+        else {
+            Image image = new Image ("pic.png");
+            profiledefault.setImage(image);
+        }
+    }
+
 }

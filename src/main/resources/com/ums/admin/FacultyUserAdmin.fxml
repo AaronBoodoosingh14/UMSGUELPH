@@ -22,7 +22,7 @@
       <Label layoutX="295.0" layoutY="89.0" text="Degree:" />
       <Label layoutX="293.0" layoutY="166.0" text="Research Interest:" />
       <Button fx:id="btnpass" layoutX="22.0" layoutY="232.0" mnemonicParsing="false" onAction="#handleEditpass" prefHeight="25.0" prefWidth="105.0" text="Edit Password" />
-      <Button fx:id="btnpfp" layoutX="20.0" layoutY="275.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="109.0" text="Edit Profile Picture" />
+      <Button fx:id="btnpfp" layoutX="20.0" layoutY="275.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="109.0" text="Edit Profile Picture" onAction="#handleProfile" />
       <Button fx:id="btnstudent" layoutX="22.0" layoutY="316.0" mnemonicParsing="false" onAction="#handleViewStudents" text="View Student list" />
       <Button layoutX="22.0" layoutY="361.0" mnemonicParsing="false" onAction="#handleViewCourses" text="View Assinged Courses" />
       <Label fx:id="FacultyID" layoutX="355.0" layoutY="47.0" />

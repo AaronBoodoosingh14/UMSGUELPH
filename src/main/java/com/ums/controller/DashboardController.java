@@ -10,6 +10,7 @@ import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * DashboardController manages the main dashboard.
@@ -130,9 +131,12 @@ public class DashboardController {
                 System.out.println("Current permUser: " + permUser);
                 String temp = getUsername();
                 System.out.println("getUsername() returned: " + temp);
-                FacultyUser controller = loader.getController();
-                controller.SQLhandling(temp);
-                controller.buttonVisable(visable);
+                if(Objects.equals(userRole, "Admin")){FacultyUser controller = loader.getController();
+                    controller.SQLhandling(temp);
+                    controller.buttonVisable(visable);}
+                else{FacultyUserView controller = loader.getController();
+                controller.SQLhandling();}
+
 
             }
 
