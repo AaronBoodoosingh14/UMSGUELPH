@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="200.0" prefWidth="400.0"
+            xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.ums.controller.AddSubject">
+
+    <VBox spacing="15.0" alignment="CENTER"
+          AnchorPane.topAnchor="20.0"
+          AnchorPane.bottomAnchor="20.0"
+          AnchorPane.leftAnchor="20.0"
+          AnchorPane.rightAnchor="20.0">
+
+        <Label text="Add Subject">
+            <font>
+                <Font size="18.0"/>
+            </font>
+        </Label>
+
+        <TextField fx:id="txtSubjectCode" promptText="Subject Code" maxWidth="250"/>
+        <TextField fx:id="txtSubjectName" promptText="Subject Name" maxWidth="250"/>
+
+        <HBox spacing="10" alignment="CENTER">
+            <Button fx:id="btnSave" text="Save"/>
+            <Button fx:id="btnCancel" text="Cancel"/>
+        </HBox>
+
+    </VBox>
+</AnchorPane>

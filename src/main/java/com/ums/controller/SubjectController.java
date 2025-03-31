@@ -5,15 +5,16 @@ import com.ums.database.DatabaseManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import javafx.stage.Stage;
+
+import java.io.IOException;
+import java.sql.*;
+import java.util.Optional;
 
 /**
  * Controller for Subject Management.
@@ -21,29 +22,13 @@ import java.sql.SQLException;
  */
 public class SubjectController {
 
-    @FXML
-    private TableView<Subject> subjectTable;
-
-    @FXML
-    private TableColumn<Subject, String> colCode;
-
-    @FXML
-    private TableColumn<Subject, String> colName;
-
-    @FXML
-    private TextField txtCode, txtName;
-
-    @FXML
-    private Button btnAdd;
-
-    @FXML
-    private Button btnEdit;
-
-    @FXML
-    private Button btnDelete;
+    @FXML private TableView<Subject> subjectTable;
+    @FXML private TableColumn<Subject, String> colCode;
+    @FXML private TableColumn<Subject, String> colName;
+    @FXML private TextField txtCode, txtName;
+    @FXML private Button btnAdd, btnEdit, btnDelete;
 
     private final ObservableList<Subject> subjects = FXCollections.observableArrayList();
-
     private String userRole = "Student"; // Default role
 
     public void setUserRole(String role) {
@@ -56,117 +41,120 @@ public class SubjectController {
         colCode.setCellValueFactory(new PropertyValueFactory<>("subjectCode"));
         colName.setCellValueFactory(new PropertyValueFactory<>("subjectName"));
         subjectTable.setItems(subjects);
+
         importSubjectsFromSQL();
+
         btnAdd.setOnAction(e -> addSubject());
-        btnEdit.setOnAction(e -> editSubject()); // Bind edit button action
+        btnEdit.setOnAction(e -> editSubject());
         btnDelete.setOnAction(e -> deleteSubject());
     }
 
-
+    /** Disable input fields and buttons if user is a Student */
     private void configureUIForRole() {
         if ("Student".equalsIgnoreCase(userRole)) {
-            txtCode.setDisable(true);
             txtCode.setVisible(false);
-
-            txtName.setDisable(true);
             txtName.setVisible(false);
-
-            btnAdd.setDisable(true);
             btnAdd.setVisible(false);
-
-            btnEdit.setDisable(true);
             btnEdit.setVisible(false);
-
-            btnDelete.setDisable(true);
             btnDelete.setVisible(false);
 
+            txtCode.setDisable(true);
+            txtName.setDisable(true);
+            btnAdd.setDisable(true);
+            btnEdit.setDisable(true);
+            btnDelete.setDisable(true);
         }
     }
 
+    /** Open popup to add a new subject */
     @FXML
     private void addSubject() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/ums/admin/SubjectPopup/AddSubject.fxml"));
+            Parent root = loader.load();
 
-        String insertStatement = "INSERT INTO subjects VALUES(?,?)";
-        String code = txtCode.getText().trim();
-        String name = txtName.getText().trim();
+            Stage stage = new Stage();
+            stage.setTitle("Add Subject");
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.showAndWait();
 
-        if (code.isEmpty() || name.isEmpty()) {
-            System.out.println("Subject Code and Name cannot be empty.");
-            return;
-        }
-
-        if (isDuplicate(code)) {
-            System.out.println("Duplicate subject code.");
-            return;
-        }
-
-        try (Connection conn = DatabaseManager.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(insertStatement)) {
-
-            stmt.setString(1, code);
-            stmt.setString(2, name);
-
-            int rowsInserted = stmt.executeUpdate();
-
-            if (rowsInserted > 0) {
-                System.out.println("Subject added successfully.");
-
-                // Add subject to local list
-                Subject subject = new Subject();
-                subject.setSubjectCode(code);
-                subject.setSubjectName(name);
-                subjects.add(subject);
-
-            }
-
-        } catch (SQLException e) {
+            importSubjectsFromSQL();
+        } catch (IOException e) {
             e.printStackTrace(System.out);
         }
-
-        txtCode.clear();
-        txtName.clear();
     }
 
+    /** Edit selected subject in popup */
+    @FXML
+    private void editSubject() {
+        Subject selectedSubject = subjectTable.getSelectionModel().getSelectedItem();
+
+        if (selectedSubject == null) {
+            showAlert(Alert.AlertType.WARNING, "No Selection", "No subject selected.", "Please select a subject to edit.");
+            return;
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/ums/admin/SubjectPopup/EditSubject.fxml"));
+            Parent root = loader.load();
+
+            EditSubject controller = loader.getController();
+            controller.setSubjectData(selectedSubject);
+
+            Stage stage = new Stage();
+            stage.setTitle("Edit Subject");
+            stage.setScene(new Scene(root));
+            stage.showAndWait();
+
+            importSubjectsFromSQL();
+        } catch (IOException e) {
+            e.printStackTrace(System.out);
+            showAlert(Alert.AlertType.ERROR, "Error", "Could not load Edit Subject window.", "Make sure the FXML file path is correct.");
+        }
+    }
+
+    /** Deletes selected subject after confirmation */
     @FXML
     private void deleteSubject() {
         Subject selectedSubject = subjectTable.getSelectionModel().getSelectedItem();
 
         if (selectedSubject == null) {
-            System.out.println("No subject selected.");
+            showAlert(Alert.AlertType.WARNING, "No Selection", "No subject selected.", "Please select a subject to delete.");
             return;
         }
 
-        String code = selectedSubject.getSubjectCode();
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Confirm Deletion");
+        confirm.setHeaderText("Are you sure you want to delete this subject?");
+        confirm.setContentText("Subject Code: " + selectedSubject.getSubjectCode());
 
-        // Confirm before deleting
-        System.out.println("Deleting subject: " + code);
+        Optional<ButtonType> result = confirm.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            String deleteStatement = "DELETE FROM subjects WHERE Code = ?";
 
-        String deleteStatement = "DELETE FROM subjects WHERE Code = ?";
+            try (Connection conn = DatabaseManager.getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(deleteStatement)) {
 
-        try (Connection conn = DatabaseManager.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(deleteStatement)) {
+                stmt.setString(1, selectedSubject.getSubjectCode());
+                int rowsDeleted = stmt.executeUpdate();
 
-            stmt.setString(1, code);
-            int rowsDeleted = stmt.executeUpdate();
+                if (rowsDeleted > 0) {
+                    subjects.remove(selectedSubject);
+                    subjectTable.refresh();
+                    showAlert(Alert.AlertType.INFORMATION, "Deleted", null, "Subject deleted successfully.");
+                } else {
+                    showAlert(Alert.AlertType.ERROR, "Error", "Subject not found in database.", "Nothing was deleted.");
+                }
 
-            if (rowsDeleted > 0) {
-                System.out.println("Subject deleted successfully.");
-
-                // Remove from observable list
-                subjects.remove(selectedSubject);
-                subjectTable.refresh();
-            } else {
-                System.out.println("Subject not found in the database.");
+            } catch (SQLException e) {
+                e.printStackTrace(System.out);
+                showAlert(Alert.AlertType.ERROR, "Error", "Database error occurred.", "Please try again.");
             }
-
-        } catch (SQLException e) {
-            e.printStackTrace(System.out);
         }
     }
-    private boolean isDuplicate(String code) {
-        return subjects.stream().anyMatch(s -> s.getSubjectCode().equalsIgnoreCase(code));
-    }
 
+    /** Load all subjects from the database */
     private void importSubjectsFromSQL() {
         subjects.clear();
 
@@ -180,73 +168,26 @@ public class SubjectController {
                 Subject subject = new Subject();
                 subject.setSubjectCode(rs.getString("Code"));
                 subject.setSubjectName(rs.getString("Name"));
-
-
                 subjects.add(subject);
             }
 
             subjectTable.setItems(subjects);
-
         } catch (SQLException e) {
             e.printStackTrace(System.out);
         }
-
     }
 
-    @FXML
-    private void editSubject() {
-        Subject selectedSubject = subjectTable.getSelectionModel().getSelectedItem();
-
-        if (selectedSubject == null) {
-            System.out.println("No subject selected.");
-            return;
-        }
-
-        // Update the text fields with the selected subject’s values
-        txtCode.setText(selectedSubject.getSubjectCode());
-        txtName.setText(selectedSubject.getSubjectName());
-
-        // Disable the add button to prevent duplicates
-        btnAdd.setDisable(true);
-
-        // When the user presses "Edit Subject", update the subject instead of adding a new one
-        btnEdit.setOnAction(e -> {
-            String newCode = txtCode.getText().trim();
-            String newName = txtName.getText().trim();
-
-
-            try (Connection conn = DatabaseManager.getConnection();
-                 PreparedStatement stmt = conn.prepareStatement(
-                         "UPDATE subjects SET Code = ?, Name = ? WHERE Code = ?")) {
-
-                stmt.setString(1, newCode);
-                stmt.setString(2, newName);
-                stmt.setString(3, selectedSubject.getSubjectCode());
-
-                int rowsUpdated = stmt.executeUpdate();
-
-                if (rowsUpdated > 0) {
-                    System.out.println("Subject updated successfully.");
-
-                    // Update the list directly
-                    selectedSubject.setSubjectCode(newCode);
-                    selectedSubject.setSubjectName(newName);
-
-                    // Refresh the TableView
-                    subjectTable.refresh();
-                } else {
-                    System.out.println("No subject found to update.");
-                }
-
-            } catch (SQLException ex) {
-                ex.printStackTrace(System.out);
-            }
-
-            // Clear input fields and re-enable the add button
-            txtCode.clear();
-            txtName.clear();
-            btnAdd.setDisable(false);
-        });
+    /** Checks if a subject code already exists */
+    private boolean isDuplicate(String code) {
+        return subjects.stream().anyMatch(s -> s.getSubjectCode().equalsIgnoreCase(code));
     }
 
+    /** Utility to show alerts */
+    private void showAlert(Alert.AlertType type, String title, String header, String content) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
 }
