@@ -11,16 +11,9 @@ import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 
-public class
+public class UMSApplication extends javafx.application.Application {
 
 
-
-
-
-
-
-
-UMSApplication extends javafx.application.Application {
     private static String loggedInUsername;
     private static final String TEMP_DIR = "src/main/resources/tempPic";
 

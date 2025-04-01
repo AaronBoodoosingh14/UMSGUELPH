@@ -56,6 +56,7 @@ public class Uploadpic {
 
     public void Uploadimage(String filepath, String folderName, String fileName) throws IOException {
         GoogleCredentials creds = GoogleCredentials.getApplicationDefault();
+        System.out.println("Using credentials: " + creds.getClass().getName());
         Storage storage = StorageOptions.getDefaultInstance().getService();
 
         String object = folderName + "/" + fileName;
@@ -63,7 +64,7 @@ public class Uploadpic {
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
 
         try {
-            // Attempt to upload the file
+
             storage.create(blobInfo, Files.readAllBytes(Paths.get(filepath)));
             System.out.println("File uploaded successfully: " + object);
         } catch (Exception e) {
