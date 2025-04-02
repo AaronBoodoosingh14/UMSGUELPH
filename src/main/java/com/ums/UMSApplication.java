@@ -1,7 +1,9 @@
 package com.ums;
 
 
+import atlantafx.base.theme.NordDark;
 import com.ums.controller.Uploadpic;
+import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -64,6 +66,7 @@ public class UMSApplication extends javafx.application.Application {
 
     @Override
     public void start(Stage stage) throws IOException {
+        Application.setUserAgentStylesheet(new NordDark().getUserAgentStylesheet());
         FXMLLoader fxmlLoader = new FXMLLoader(UMSApplication.class.getResource("/com/ums/Login.fxml"));
         FXMLLoader myLoader = new FXMLLoader(getClass().getResource("/createCategory.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 320, 240);

@@ -5,6 +5,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.TitledPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
@@ -18,6 +20,7 @@ import java.util.Objects;
  */
 public class DashboardController {
 
+    public ImageView logo;
     @FXML
     private StackPane mainContent;  // Main screen
 
@@ -63,6 +66,7 @@ public class DashboardController {
             loadModule("FacultyUser");});
 
         btnLogout.setOnAction(e -> logout());
+        loadimage();
 
     }
 
@@ -162,6 +166,12 @@ public class DashboardController {
 
         UMSApplication.restart();
 
+
+    }
+
+    public void loadimage(){
+        Image image = new Image("/logo.png");
+        logo.setImage(image);
 
     }
 

@@ -2,12 +2,17 @@
 
 <!-- Import necessary JavaFX components -->
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 
 <!-- Main layout container (BorderPane) -->
 
-<BorderPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ums.controller.DashboardController">
+<BorderPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ums.controller.DashboardController">
 
     <!-- Left Panel (Sidebar Menu) -->
     <left>
@@ -35,9 +40,14 @@
 
     <!-- Right Panel (Dynamic Content Area) -->
     <center>
-        <StackPane fx:id="mainContent" style="-fx-background-color: #ECF0F1; -fx-padding: 20;">
-            <!-- Default welcome message -->
-            <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Welcome to the University Management System" />
+        <StackPane fx:id="mainContent" style="-fx-padding: 100;">
+            <VBox alignment="CENTER" spacing="10" prefHeight="200.0" prefWidth="300.0">
+                <children>
+                    <!-- Default welcome message -->
+                    <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Welcome to the University Management System" />
+                    <ImageView fx:id="logo" fitHeight="250" fitWidth="620" pickOnBounds="true" preserveRatio="true" />
+                </children>
+            </VBox>
         </StackPane>
     </center>
 

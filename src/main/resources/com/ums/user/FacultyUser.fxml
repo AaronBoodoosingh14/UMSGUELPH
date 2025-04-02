@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ums.controller.FacultyUser">
+
+    <!-- Title Label -->
+    <Label layoutX="20" layoutY="10" style="-fx-font-size: 20px; -fx-font-weight: bold;" text="Faculty at Guelph" />
+
+    <HBox layoutX="20" layoutY="50" prefWidth="1000" spacing="20">
+        <!-- Your Professors Section (Right) -->
+        <VBox prefWidth="1000   " spacing="10">
+            <Label style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Your Professors" />
+            <VBox spacing="5">
+                <HBox fx:id="yourProfessors" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="117.0" prefWidth="677.0" spacing="10">
+                    <!-- Professors will be added here dynamically -->
+                </HBox>
+            </VBox>
+        </VBox>
+    </HBox>
+
+</AnchorPane>

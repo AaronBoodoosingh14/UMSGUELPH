@@ -7,36 +7,75 @@
 
 <AnchorPane prefHeight="435.0" prefWidth="686.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ums.controller.FacultyUserView">
     <children>
-        <Label layoutX="6.0" layoutY="7.0" text="Student Profile">
+        <!-- Title Label -->
+        <Label layoutX="20.0" layoutY="10.0" text="Student Profile">
+            <font>
+                <Font name="HelveticaNeueLTStd-Bd" size="28.0" />
+            </font>
+        </Label>
+
+        <!-- Profile Image -->
+        <ImageView fx:id="profiledefault" fitHeight="160.0" fitWidth="220.0" layoutX="20.0" layoutY="47.0" pickOnBounds="true" preserveRatio="true" />
+
+        <!-- Student Name -->
+        <Label fx:id="Name" layoutX="30.0" layoutY="220.0" prefHeight="30.0" prefWidth="250.0">
             <font>
                 <Font name="HelveticaNeueLTStd-Bd" size="22.0" />
             </font>
         </Label>
-        <Label fx:id="Name" layoutX="28.0" layoutY="192.0" prefHeight="23.0" prefWidth="206.0">
-            <font>
-                <Font name="HelveticaNeueLTStd-Bd" size="18.0" />
-            </font></Label>
-        <Label layoutX="296.0" layoutY="47.0" prefHeight="17.0" prefWidth="59.0" text="Student ID:" />
-        <Label layoutX="295.0" layoutY="130.0" text="Telephone" />
-        <Label layoutX="295.0" layoutY="201.0" prefHeight="17.0" prefWidth="84.0" text="Email" />
-        <Label layoutX="295.0" layoutY="89.0" text="Address:" />
-        <Label layoutX="293.0" layoutY="166.0" text="Tuiton:" />
-        <Button fx:id="btnpass" layoutX="152.0" layoutY="242.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="94.0" text="Edit Password" />
-        <Button fx:id="btnpfp" layoutX="13.0" layoutY="242.0" mnemonicParsing="false" onAction="#handleProfile" prefHeight="25.0" prefWidth="109.0" text="Edit Profile Picture" />
-        <Button layoutX="14.0" layoutY="284.0" mnemonicParsing="false" text="View Assinged Courses" />
-        <ImageView fx:id="profiledefault" fitHeight="150.0" fitWidth="200.0" layoutX="20.0" layoutY="47.0" pickOnBounds="true" preserveRatio="true" />
-      <Label layoutX="293.0" layoutY="237.0" text="Current Semester: " />
-      <Label layoutX="293.0" layoutY="279.0" text="Academic Level" />
-      <Label layoutX="293.0" layoutY="319.0" text="Progress" />
-      <Button layoutX="173.0" layoutY="284.0" mnemonicParsing="false" text="View Grades" />
-      <Button layoutX="13.0" layoutY="315.0" mnemonicParsing="false" text="View Courses" />
-      <Label fx:id="SID" layoutX="361.0" layoutY="47.0" />
-      <Label fx:id="address" layoutX="341.0" layoutY="89.0" />
-      <Label fx:id="telephone" layoutX="355.0" layoutY="130.0" />
-      <Label fx:id="tuition" layoutX="337.0" layoutY="166.0" />
-      <Label fx:id="email" layoutX="327.0" layoutY="201.0" />
-      <Label fx:id="semester" layoutX="391.0" layoutY="237.0" />
-      <Label fx:id="academic" layoutX="377.0" layoutY="279.0" />
-      <Label fx:id="progress" layoutX="347.0" layoutY="319.0" />
+
+        <!-- GridPane for Student Information -->
+        <GridPane layoutX="250.0" layoutY="50.0" prefHeight="300.0" prefWidth="400.0">
+            <columnConstraints>
+                <ColumnConstraints prefWidth="160.0" />
+                <ColumnConstraints prefWidth="240.0" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints prefHeight="40.0" />
+                <RowConstraints prefHeight="40.0" />
+                <RowConstraints prefHeight="40.0" />
+                <RowConstraints prefHeight="40.0" />
+                <RowConstraints prefHeight="40.0" />
+                <RowConstraints prefHeight="40.0" />
+                <RowConstraints prefHeight="40.0" />
+                <RowConstraints prefHeight="40.0" />
+            </rowConstraints>
+            <children>
+                <Label text="Student ID:" style="-fx-font-size: 18px;" />
+                <Label fx:id="SID" GridPane.columnIndex="1" style="-fx-font-size: 18px;" />
+
+                <Label text="Address:" GridPane.rowIndex="1" style="-fx-font-size: 18px;" />
+                <Label fx:id="address" GridPane.columnIndex="1" GridPane.rowIndex="1" style="-fx-font-size: 18px;" />
+
+                <Label text="Telephone:" GridPane.rowIndex="2" style="-fx-font-size: 18px;" />
+                <Label fx:id="telephone" GridPane.columnIndex="1" GridPane.rowIndex="2" style="-fx-font-size: 18px;" />
+
+                <Label text="Tuition:" GridPane.rowIndex="3" style="-fx-font-size: 18px;" />
+                <Label fx:id="tuition" GridPane.columnIndex="1" GridPane.rowIndex="3" style="-fx-font-size: 18px;" />
+
+                <Label text="Email:" GridPane.rowIndex="4" style="-fx-font-size: 18px;" />
+                <Label fx:id="email" GridPane.columnIndex="1" GridPane.rowIndex="4" style="-fx-font-size: 18px;" />
+
+                <Label text="Current Semester:" GridPane.rowIndex="5" style="-fx-font-size: 18px;" />
+                <Label fx:id="semester" GridPane.columnIndex="1" GridPane.rowIndex="5" style="-fx-font-size: 18px;" />
+
+                <Label text="Academic Level:" GridPane.rowIndex="6" style="-fx-font-size: 18px;" />
+                <Label fx:id="academic" GridPane.columnIndex="1" GridPane.rowIndex="6" style="-fx-font-size: 18px;" />
+
+                <Label text="Progress:" GridPane.rowIndex="7" style="-fx-font-size: 18px;" />
+                <Label fx:id="progress" GridPane.columnIndex="1" GridPane.rowIndex="7" style="-fx-font-size: 18px;" />
+            </children>
+        </GridPane>
+
+        <!-- VBox for Buttons -->
+        <VBox layoutX="20.0" layoutY="300.0" prefWidth="220.0" spacing="12">
+            <children>
+                <Button fx:id="btnpfp" mnemonicParsing="false" onAction="#handleProfile" prefHeight="40.0" prefWidth="220.0" text="Edit Profile Picture" style="-fx-background-color: #1E3A5F; -fx-text-fill: white; -fx-font-size: 16px;" />
+                <Button fx:id="btnpass" mnemonicParsing="false" prefHeight="40.0" prefWidth="220.0" text="Edit Password" style="-fx-background-color: #1E3A5F; -fx-text-fill: white; -fx-font-size: 16px;" />
+                <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="220.0" text="View Assigned Courses" style="-fx-background-color: #1E3A5F; -fx-text-fill: white; -fx-font-size: 16px;" />
+                <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="220.0" text="View Grades" style="-fx-background-color: #1E3A5F; -fx-text-fill: white; -fx-font-size: 16px;" />
+                <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="220.0" text="View Courses" style="-fx-background-color: #1E3A5F; -fx-text-fill: white; -fx-font-size: 16px;" />
+            </children>
+        </VBox>
     </children>
 </AnchorPane>

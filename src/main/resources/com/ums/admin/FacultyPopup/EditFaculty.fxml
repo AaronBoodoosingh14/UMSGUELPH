@@ -1,15 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="350" prefWidth="500" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ums.controller.EditFaculty">
+<AnchorPane prefHeight="454.0" prefWidth="545.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ums.controller.EditFaculty">
     <children>
         <VBox alignment="CENTER" layoutX="50.0" layoutY="20.0" spacing="10">
-            <Label text="Edit Faculty">
+            <Label prefHeight="27.0" prefWidth="341.0" text="Edit Faculty">
                 <font>
-                    <Font size="18.0" />
+                    <Font name="HelveticaNeueLTStd-Md" size="21.0" />
                 </font>
             </Label>
             <GridPane hgap="10" vgap="10">
