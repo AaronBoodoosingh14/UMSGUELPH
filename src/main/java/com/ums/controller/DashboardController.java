@@ -63,7 +63,9 @@ public class DashboardController {
             username = UMSApplication.getLoggedInUsername();
             System.out.println("After assignment, username is: " + username);
             visable = true;
-            loadModule("FacultyUser");});
+
+            loadModule("FacultyUser");
+                                                    });
 
         btnLogout.setOnAction(e -> logout());
         loadimage();
@@ -142,6 +144,7 @@ public class DashboardController {
                 System.out.println("getUsername() returned: " + temp);
                 if(Objects.equals(userRole, "Admin")){FacultyUser controller = loader.getController();
                     controller.SQLhandling(temp);
+                    controller.showPFP(temp);
                     controller.buttonVisable(visable);}
                 else{FacultyUserView controller = loader.getController();
                 controller.SQLhandling();}

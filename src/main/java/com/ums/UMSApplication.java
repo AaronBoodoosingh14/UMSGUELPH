@@ -1,7 +1,7 @@
 package com.ums;
 
-
 import atlantafx.base.theme.NordDark;
+import atlantafx.base.theme.PrimerLight;
 import com.ums.controller.Uploadpic;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -16,9 +16,9 @@ import java.nio.file.attribute.BasicFileAttributes;
 
 public class UMSApplication extends javafx.application.Application {
 
-
     private static String loggedInUsername;
-    private static String loggedInUserRole;  // Store the role globally
+    private static String loggedInUserRole;
+    private static boolean darkMode = true;
 
     private static final String TEMP_DIR = "src/main/resources/tempPic";
 
@@ -34,6 +34,14 @@ public class UMSApplication extends javafx.application.Application {
     }
     public static String getLoggedInUserRole() {
         return loggedInUserRole;
+    }
+
+    public static boolean isDarkMode() {
+        return darkMode;
+    }
+
+    public static void setDarkMode(boolean isDarkMode) {
+        darkMode = isDarkMode;
     }
 
     public static void clearTempDirectory() {
@@ -61,12 +69,14 @@ public class UMSApplication extends javafx.application.Application {
         }
     }
 
-
-
-
     @Override
     public void start(Stage stage) throws IOException {
-        Application.setUserAgentStylesheet(new NordDark().getUserAgentStylesheet());
+        if (darkMode) {
+            Application.setUserAgentStylesheet(new NordDark().getUserAgentStylesheet());
+        } else {
+            Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
+        }
+
         FXMLLoader fxmlLoader = new FXMLLoader(UMSApplication.class.getResource("/com/ums/Login.fxml"));
         FXMLLoader myLoader = new FXMLLoader(getClass().getResource("/createCategory.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 320, 240);
@@ -75,16 +85,12 @@ public class UMSApplication extends javafx.application.Application {
         stage.setTitle("UMS");
         stage.setScene(scene);
         stage.show();
-
     }
 
     public static void main(String[] args) {
         clearTempDirectory();
         loadprofilepic();
         launch();
-
-
-
     }
 
     public static void restart(){
@@ -97,17 +103,9 @@ public class UMSApplication extends javafx.application.Application {
             }
         });
     }
+
     public static void loadprofilepic(){
         Uploadpic uploadpic = new Uploadpic();
         uploadpic.downloadPic();
     }
-
 }
-
-
-
-
-
-
-
-
