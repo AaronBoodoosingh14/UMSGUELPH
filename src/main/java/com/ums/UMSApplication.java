@@ -1,6 +1,7 @@
 package com.ums;
 
 
+import com.ums.controller.Uploadpic;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -15,15 +16,24 @@ public class UMSApplication extends javafx.application.Application {
 
 
     private static String loggedInUsername;
+    private static String loggedInUserRole;  // Store the role globally
+
     private static final String TEMP_DIR = "src/main/resources/tempPic";
 
     public static void setLoggedInUsername(String username) {
         loggedInUsername = username;
     }
-
     public static String getLoggedInUsername() {
         return loggedInUsername;
     }
+
+    public static void setLoggedInUserRole(String role) {
+        loggedInUserRole = role;
+    }
+    public static String getLoggedInUserRole() {
+        return loggedInUserRole;
+    }
+
     public static void clearTempDirectory() {
         Path tempPath = Paths.get(TEMP_DIR);
         if (Files.exists(tempPath)) {
@@ -67,8 +77,9 @@ public class UMSApplication extends javafx.application.Application {
 
     public static void main(String[] args) {
         clearTempDirectory();
-
+        loadprofilepic();
         launch();
+
 
 
     }
@@ -82,6 +93,10 @@ public class UMSApplication extends javafx.application.Application {
                 System.out.println("error");
             }
         });
+    }
+    public static void loadprofilepic(){
+        Uploadpic uploadpic = new Uploadpic();
+        uploadpic.downloadPic();
     }
 
 }

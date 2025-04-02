@@ -29,7 +29,6 @@ public class LoginController{
 
 
 
-
     /**
      * Initializes the login system by reading credentials from Excel.
      */
@@ -77,6 +76,7 @@ public class LoginController{
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 String role = rs.getString("role");
+
                 System.out.println(role);
 
 
@@ -105,6 +105,7 @@ public class LoginController{
             dashboardController.setUserRole(role);
             dashboardController.setPermUser(txtUsername.getText());
             UMSApplication.setLoggedInUsername(txtUsername.getText());
+            UMSApplication.setLoggedInUserRole(role);
             String temp = dashboardController.getPermUser();
             System.out.println(temp);
 

@@ -1,6 +1,7 @@
 package com.ums.controller;
 
 import com.google.api.gax.paging.Page;
+import com.google.cloud.ReadChannel;
 import com.ums.UMSApplication;
 import com.ums.database.DatabaseManager;
 import javafx.event.ActionEvent;
@@ -12,14 +13,14 @@ import com.google.cloud.storage.*;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.channels.Channels;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-
+import java.util.Objects;
 
 public class Uploadpic {
 
@@ -29,12 +30,16 @@ public class Uploadpic {
     @FXML
     private Button btnsave;
 
-
     private String selectedFilePath;
     private String selectedFileName;
+    private String userRole;
 
-    private static String temp = "src/main/resources/tempPic";
+    public Uploadpic() {
+        this.userRole = UMSApplication.getLoggedInUserRole();
+        System.out.println(" User role retrieved in Uploadpic: " + userRole);
+    }
 
+    private static String temp = "src/main/resources/tempPic/";
 
     public void handleUpload(ActionEvent actionEvent) throws IOException {
         FileChooser fileChooser = new FileChooser();
@@ -45,120 +50,109 @@ public class Uploadpic {
         if (file != null) {
             selectedFilePath = file.getAbsolutePath();
             selectedFileName = file.getName();
-
         }
         String newFileName = generateName(selectedFileName);
         System.out.println(newFileName);
+        System.out.println("Before SQLtrack, userRole is: " + userRole);
         SQLtrack(newFileName);
-        Uploadimage(selectedFilePath, "FacultyProfilePic",newFileName);
-        downloadPic(UMSApplication.getLoggedInUsername());
+        Uploadimage(selectedFilePath, "FacultyProfilePic", newFileName);
+        downloadPic();
     }
 
     public void Uploadimage(String filepath, String folderName, String fileName) throws IOException {
         GoogleCredentials creds = GoogleCredentials.getApplicationDefault();
-        System.out.println("Using credentials: " + creds.getClass().getName());
         Storage storage = StorageOptions.getDefaultInstance().getService();
 
         String object = folderName + "/" + fileName;
         BlobId blobId = BlobId.of(BUCKET_NAME, object);
-        BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
 
-        try {
-
-            storage.create(blobInfo, Files.readAllBytes(Paths.get(filepath)));
-            System.out.println("File uploaded successfully: " + object);
-        } catch (Exception e) {
-            System.err.println("Error uploading file: " + e.getMessage());
-            e.printStackTrace();
+        if (storage.get(blobId) != null) {
+            storage.delete(blobId);
+            System.out.println("deleted goonar file " + object);
         }
 
+        BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
+        try {
+            storage.create(blobInfo, Files.readAllBytes(Paths.get(filepath)));
+            System.out.println("file uploaded  " + object);
+        } catch (Exception e) {
+            System.err.println("error uploading file" + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
+
     @FXML
-    private void handleclose(){
+    private void handleclose() {
         Stage stage = (Stage) btnsave.getScene().getWindow();
         stage.close();
     }
 
-    public String generateName(String file){
+    public String generateName(String file) {
         String fileExtension = file.substring(file.lastIndexOf("."));
-        String user =  UMSApplication.getLoggedInUsername();
-
-        return user +  fileExtension;
-
-
+        String user = UMSApplication.getLoggedInUsername();
+        return user + fileExtension;
     }
 
     private void SQLtrack(String filename) {
+        System.out.println(userRole);
+        if (Objects.equals(userRole, "Admin")) {
             String query = "UPDATE faculty_info SET profilepic = ? WHERE FacultyID = ?";
             String ID = UMSApplication.getLoggedInUsername();
 
-
-            try(Connection conn = DatabaseManager.getConnection();
-                var ps = conn.prepareStatement(query)
-            ) {
-
-                ps.setString(1,filename);
-                ps.setString(2,ID);
+            try (Connection conn = DatabaseManager.getConnection();
+                 var ps = conn.prepareStatement(query)) {
+                ps.setString(1, filename);
+                ps.setString(2, ID);
                 ps.executeUpdate();
-
-
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
+       else if (Objects.equals(userRole, "Student")) {
+            String query = "UPDATE students_info SET profilepic = ? WHERE StudentId = ?";
+            String ID = UMSApplication.getLoggedInUsername();
+
+            try (Connection conn = DatabaseManager.getConnection();
+                 var ps = conn.prepareStatement(query)) {
+                ps.setString(1, filename);
+                ps.setString(2, ID);
+                ps.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
-    public String downloadPic(String ID) {
-        String sql = "SELECT profilepic FROM faculty_info WHERE FacultyID = ?";
-        String profilepic = "";
-        String finalpath = null;
-        try (Connection conn = DatabaseManager.getConnection();
-             var ps = conn.prepareStatement(sql)) {
 
-            ps.setString(1, ID);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                profilepic = rs.getString("profilepic");
+    public void downloadPic() {
+        System.out.println("downloadPic() started");
+        String folderName = "FacultyProfilePic/";
+        String destinationFolder = "src/main/resources/tempPic/";
 
-            }
-
-            if (profilepic == null) {
-                return null;
-            }
-            else {
-                System.out.println("THis is profile pic" + profilepic);
-                String objectname = "FacultyProfilePic/" + profilepic.trim();
-                System.out.println(objectname);
-                System.out.println(temp);
-
-                Storage storage = StorageOptions.getDefaultInstance().getService();
-                Page<Blob> blobs = storage.list(BUCKET_NAME, Storage.BlobListOption.prefix("FacultyProfilePic/"));
-
-                System.out.println("Listing objects in FacultyProfilePic/:");
-                for (Blob b : blobs.iterateAll()) {
-                    System.out.println("Found file: " + b.getName());
-                }
-                Blob blob = storage.get(BUCKET_NAME, objectname);
-                if (blob == null) {
-                    System.out.println("Error: Blob not found for path: " + objectname);
-                    return null;
-                }
-                finalpath = Paths.get(temp, profilepic).toString();
-                System.out.println((finalpath));
-
-                Files.write(Paths.get(finalpath), blob.getContent());
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+        GoogleCredentials credentials;
+        try {
+            credentials = GoogleCredentials.getApplicationDefault();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.err.println("error loading creds: " + e.getMessage());
+            return;
         }
 
-        return finalpath;
+        Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
+        Page<Blob> blobs = storage.list(BUCKET_NAME, Storage.BlobListOption.prefix(folderName));
 
+        for (Blob blob : blobs.iterateAll()) {
+            String fileName = blob.getName().substring(folderName.length());
+            File file = new File(destinationFolder + fileName);
+
+            try {
+                Files.write(Paths.get(file.getAbsolutePath()), blob.getContent());
+                System.out.println("download: " + file.getAbsolutePath());
+            } catch (IOException e) {
+                System.err.println("failed to download " + fileName + ": " + e.getMessage());
+            }
+        }
     }
+
 }
-
-

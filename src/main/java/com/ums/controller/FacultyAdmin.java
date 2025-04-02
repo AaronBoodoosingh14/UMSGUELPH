@@ -116,9 +116,9 @@ public class FacultyAdmin {
 
         String query = "SELECT * FROM faculty_info";
 
-        try (Connection conn = DatabaseManager.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query);
-             ResultSet rs = stmt.executeQuery()) {
+            try (Connection conn = DatabaseManager.getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(query);
+                 ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
                 Faculty faculty = new Faculty();

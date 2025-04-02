@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class FacultyUserView {
@@ -56,7 +57,7 @@ public class FacultyUserView {
 
     @FXML
     public void initialize() {
-        //showPFP();
+        showPFP();
 
     }
 
@@ -136,29 +137,48 @@ public class FacultyUserView {
 
 
     }
-    /*public void showPFP(){
-        Uploadpic uploadpic = new Uploadpic();
-        String path = uploadpic.downloadPic(UMSApplication.getLoggedInUsername());
-        System.out.println(path);
+    public void showPFP(){
+        String query = "SELECT profilepic FROM students_info WHERE StudentId = ?";
+        String ID = UMSApplication.getLoggedInUsername();
+        String path = "src/main/resources/tempPic/";
+        String img = null;
+        String finalPath = null;
 
-        if (path != null) {
-            System.out.println(path);
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
 
-            // Assuming path is a local file path
-            try {
-                File file = new File(path);
-                if (file.exists()) {
-                    Image image = new Image(file.toURI().toString());  // Convert file path to URI
-                    profiledefault.setImage(image);
+            stmt.setString(1, ID);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                img = rs.getString("profilepic");
+                if (img != null) {
+                    finalPath = path + img;
                 }
-            } catch (Exception e) {
-                System.err.println("Error loading image: " + e.getMessage());
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        else {
-            Image image = new Image ("pic.png");
-            profiledefault.setImage(image);
+
+        if (img != null) {
+            System.out.println("Profile picture path: " + finalPath);
+
+            File file = new File(finalPath);
+            if (file.exists()) {
+                try {
+                    Image image = new Image(file.toURI().toString());
+                    profiledefault.setImage(image);
+                } catch (Exception e) {
+                    System.err.println("Error loading image: " + e.getMessage());
+                }
+            } else {
+                System.err.println("Profile picture not found, using default.");
+                profiledefault.setImage(new Image("pic.png"));
+            }
+        } else {
+            System.out.println("No profile picture found in DB, using default.");
+            profiledefault.setImage(new Image("pic.png"));
         }
-    } */
+    }
 
 }

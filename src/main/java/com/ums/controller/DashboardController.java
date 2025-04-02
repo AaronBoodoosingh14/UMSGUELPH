@@ -44,6 +44,11 @@ public class DashboardController {
         System.out.println("Logged in as: " + role);
     }
 
+    public String getUserRole(){
+        return userRole;
+    }
+
+
     @FXML
     public void initialize() {
         btnSubjects.setOnAction(e -> loadModule("Subject"));
