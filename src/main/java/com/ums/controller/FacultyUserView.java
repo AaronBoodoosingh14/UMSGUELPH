@@ -1,9 +1,13 @@
 package com.ums.controller;
 
+import atlantafx.base.controls.ToggleSwitch;
+import atlantafx.base.theme.NordDark;
+import atlantafx.base.theme.PrimerLight;
 import com.ums.UMSApplication;
 import com.ums.data.Faculty;
 import com.ums.data.Student;
 import com.ums.database.DatabaseManager;
+import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -54,12 +58,28 @@ public class FacultyUserView {
     private Label Name;
 
     private final String ID = UMSApplication.getLoggedInUsername();
+    @FXML
+    private ToggleSwitch themeToggle;
 
     @FXML
     public void initialize() {
         showPFP();
+        if (themeToggle != null) {
+            themeToggle.setSelected(UMSApplication.isDarkMode());
 
+
+            themeToggle.selectedProperty().addListener((observable, oldValue, newValue) -> {
+                UMSApplication.setDarkMode(newValue);
+
+                if (newValue) {
+                    Application.setUserAgentStylesheet(new NordDark().getUserAgentStylesheet());
+                } else {
+                    Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
+                }
+            });
+        }
     }
+
 
     public void handleProfile(ActionEvent actionEvent) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/ums/uploadpic.fxml"));

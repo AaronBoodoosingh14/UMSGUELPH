@@ -6,7 +6,7 @@
 
 <VBox spacing="15" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.ums.controller.SubjectController"
-      style="-fx-padding: 20; -fx-background-color: #f5f9fb;">
+      style="-fx-padding: 20">
 
     <!-- Header: Title and Search Bar -->
     <HBox spacing="20" alignment="CENTER_LEFT">

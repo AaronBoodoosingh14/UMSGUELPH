@@ -2,6 +2,8 @@ package com.ums.controller;
 
 import atlantafx.base.controls.ToggleSwitch;
 import atlantafx.base.theme.NordDark;
+import atlantafx.base.theme.NordLight;
+import atlantafx.base.theme.PrimerDark;
 import atlantafx.base.theme.PrimerLight;
 import com.ums.UMSApplication;
 import com.ums.data.Faculty;
@@ -55,7 +57,7 @@ public class FacultyUser extends Faculty {
 
                 // Apply theme change
                 if (newValue) {
-                    Application.setUserAgentStylesheet(new NordDark().getUserAgentStylesheet());
+                    Application.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
                 } else {
                     Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
                 }

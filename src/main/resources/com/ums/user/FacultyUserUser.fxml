@@ -5,6 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
+<?import atlantafx.base.controls.ToggleSwitch?>
 <AnchorPane prefHeight="435.0" prefWidth="686.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ums.controller.FacultyUserView">
     <children>
         <!-- Title Label -->
@@ -75,6 +76,7 @@
                 <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="220.0" text="View Assigned Courses" style="-fx-background-color: #1E3A5F; -fx-text-fill: white; -fx-font-size: 16px;" />
                 <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="220.0" text="View Grades" style="-fx-background-color: #1E3A5F; -fx-text-fill: white; -fx-font-size: 16px;" />
                 <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="220.0" text="View Courses" style="-fx-background-color: #1E3A5F; -fx-text-fill: white; -fx-font-size: 16px;" />
+                <ToggleSwitch fx:id="themeToggle" prefHeight="56.0" prefWidth="223.0" text="Light/Dark Mode" />
             </children>
         </VBox>
     </children>
