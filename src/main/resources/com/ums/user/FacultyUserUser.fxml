@@ -72,10 +72,10 @@
         <VBox layoutX="20.0" layoutY="300.0" prefWidth="220.0" spacing="12">
             <children>
                 <Button fx:id="btnpfp" mnemonicParsing="false" onAction="#handleProfile" prefHeight="40.0" prefWidth="220.0" text="Edit Profile Picture" style="-fx-background-color: #1E3A5F; -fx-text-fill: white; -fx-font-size: 16px;" />
-                <Button fx:id="btnpass" mnemonicParsing="false" prefHeight="40.0" prefWidth="220.0" text="Edit Password" style="-fx-background-color: #1E3A5F; -fx-text-fill: white; -fx-font-size: 16px;" />
-                <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="220.0" text="View Assigned Courses" style="-fx-background-color: #1E3A5F; -fx-text-fill: white; -fx-font-size: 16px;" />
-                <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="220.0" text="View Grades" style="-fx-background-color: #1E3A5F; -fx-text-fill: white; -fx-font-size: 16px;" />
-                <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="220.0" text="View Courses" style="-fx-background-color: #1E3A5F; -fx-text-fill: white; -fx-font-size: 16px;" />
+                <Button fx:id="btnpass" mnemonicParsing="false" onAction="#handleEditPassword" prefHeight="40.0" prefWidth="220.0" text="Edit Password" style="-fx-background-color: #1E3A5F; -fx-text-fill: white; -fx-font-size: 16px;" />
+                <Button fx:id="btnstudent" mnemonicParsing="false" onAction="#handleViewAssignedCourses" prefHeight="40.0" prefWidth="220.0" text="View Assigned Courses" style="-fx-background-color: #1E3A5F; -fx-text-fill: white; -fx-font-size: 16px;" />
+                <Button fx:id="btnGrades" mnemonicParsing="false" onAction="#handleViewGrades" prefHeight="40.0" prefWidth="220.0" text="View Grades" style="-fx-background-color: #1E3A5F; -fx-text-fill: white; -fx-font-size: 16px;" />
+                <Button fx:id="btnCourses" mnemonicParsing="false" onAction="#handleViewAllCourses" prefHeight="40.0" prefWidth="220.0" text="View Courses" style="-fx-background-color: #1E3A5F; -fx-text-fill: white; -fx-font-size: 16px;" />
                 <ToggleSwitch fx:id="themeToggle" prefHeight="56.0" prefWidth="223.0" text="Light/Dark Mode" />
             </children>
         </VBox>

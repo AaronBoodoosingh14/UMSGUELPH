@@ -160,7 +160,7 @@ public class AddStudent extends EditFaculty {
             e.printStackTrace();
         }
 
-        return base + String.format("%03d", nextNumber);
+        return base + String.format("%04d", nextNumber);
     }
 
     private String formatTextInput(String input) {
