@@ -8,8 +8,13 @@ import javafx.stage.Stage;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
+/**
+ * Controller class for handling the Add Course popup window.
+ * This class manages user input validation, data insertion into the database, and UI actions like clearing or closing.
+ */
 public class AddCourse {
 
+    // TextFields bound to the AddCourse.fxml file
     @FXML private TextField txtCourseCode;
     @FXML private TextField txtCourseName;
     @FXML private TextField txtSubjectCode;
@@ -20,15 +25,23 @@ public class AddCourse {
     @FXML private TextField txtLocation;
     @FXML private TextField txtTeacherName;
 
+    // Buttons for saving or canceling the operation
     @FXML private Button btnCancel;
     @FXML private Button btnSave;
 
+    /**
+     * Initializes the AddCourse controller.
+     * - Clears any preloaded data
+     * - Binds button actions
+     */
     @FXML
     public void initialize() {
-        clearFields(); // Optional: ensures no stale data on load
+        clearFields(); // Ensures form starts fresh
 
+        // Closes the window when Cancel is clicked
         btnCancel.setOnAction(e -> closeWindow());
 
+        // Validates and saves course details to the database when Save is clicked
         btnSave.setOnAction(e -> {
             if (!validateInputs()) return;
 
@@ -37,6 +50,7 @@ public class AddCourse {
                          "INSERT INTO courses (CourseCode, CourseName, SubjectCode, SectionNumber, Capacity, LectureTime, FinalExamDate, Location, TeacherName) " +
                                  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
 
+                // Binding user inputs to SQL statement
                 stmt.setInt(1, Integer.parseInt(txtCourseCode.getText().trim()));
                 stmt.setString(2, txtCourseName.getText().trim());
                 stmt.setString(3, txtSubjectCode.getText().trim());
@@ -47,20 +61,24 @@ public class AddCourse {
                 stmt.setString(8, txtLocation.getText().trim());
                 stmt.setString(9, txtTeacherName.getText().trim());
 
-                stmt.executeUpdate();
+                stmt.executeUpdate(); // Save course in DB
                 showAlert("Course added successfully!");
-                clearFields();
-                closeWindow();
+                clearFields(); // Reset form
+                closeWindow(); // Close popup
 
             } catch (Exception ex) {
-                ex.printStackTrace();
+                ex.printStackTrace(); // Print stack trace for debugging
                 showAlert("Failed to add course. Please check your input.");
             }
         });
     }
 
+    /**
+     * Validates all user input fields before saving.
+     * @return true if all inputs are valid; false otherwise
+     */
     private boolean validateInputs() {
-        // Check all fields are filled
+        // Ensure no field is left blank
         if (
                 txtCourseCode.getText().trim().isEmpty() ||
                         txtCourseName.getText().trim().isEmpty() ||
@@ -76,7 +94,7 @@ public class AddCourse {
             return false;
         }
 
-        // Check Course Code and Capacity are numbers
+        // Ensure Course Code and Capacity are valid integers
         try {
             Integer.parseInt(txtCourseCode.getText().trim());
             Integer.parseInt(txtCapacity.getText().trim());
@@ -88,6 +106,10 @@ public class AddCourse {
         return true;
     }
 
+    /**
+     * Displays an informational alert to the user.
+     * @param message The message to display.
+     */
     private void showAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Course Info");
@@ -96,6 +118,9 @@ public class AddCourse {
         alert.showAndWait();
     }
 
+    /**
+     * Clears all input fields in the form.
+     */
     private void clearFields() {
         txtCourseCode.clear();
         txtCourseName.clear();
@@ -108,6 +133,9 @@ public class AddCourse {
         txtTeacherName.clear();
     }
 
+    /**
+     * Closes the current popup window.
+     */
     private void closeWindow() {
         Stage stage = (Stage) btnCancel.getScene().getWindow();
         stage.close();

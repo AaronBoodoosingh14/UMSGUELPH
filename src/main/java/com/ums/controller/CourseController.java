@@ -11,7 +11,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import java.sql.*;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -21,49 +20,52 @@ import javafx.stage.Stage;
 /**
  * Controller class for managing courses in the University Management System (UMS).
  * This class handles user interactions with the Course Management UI, including
- * adding, editing, deleting, and importing courses from an Excel file.
+ * adding, editing, deleting, and importing courses from the SQL database.
  */
 public class CourseController {
 
-
-
-    // TableView UI component for displaying courses
+    // TableView for displaying list of courses
     @FXML
     private TableView<Course> courseTable;
 
-    // Table columns representing course details
+    // Table columns for displaying course attributes
     @FXML
     private TableColumn<Course, String> courseNameColumn, subjectNameColumn, sectionNumberColumn,
             teacherNameColumn, lectureTimeColumn, locationColumn, finalexamColumn;
     @FXML
     private TableColumn<Course, Integer> coursecodeColumn, capacityColumn;
 
-    // Buttons for handling various actions
+    // Buttons for various course operations
     @FXML
     private Button btnAddCourse, btnEditCourse, btnDeleteCourse, btnAssignFaculty, btnManageEnrollments;
 
-    // Text fields for user input to add/edit courses
+    // TextFields that may be toggled based on user role
     @FXML
-    private TextField txtCourseName, txtCourseCode, txtSubjectName, txtSectionNumber, txtTeacherName, txtLectureTime, txtLocation, txtFinalExamDate, txtCapacity;
+    private TextField txtCourseName, txtCourseCode, txtSubjectName, txtSectionNumber,
+            txtTeacherName, txtLectureTime, txtLocation, txtFinalExamDate, txtCapacity;
 
-    // List to store course data dynamically
+    // Lists to hold course and subject data
     private final ObservableList<Course> courses = FXCollections.observableArrayList();
-
     private final ObservableList<Subject> subjects = FXCollections.observableArrayList();
-
 
     private String userRole = "Student";
 
+    /**
+     * Sets the user's role and configures UI accordingly.
+     */
     public void setUserRole(String role) {
         this.userRole = role;
         configureUIForRole();
     }
+
     /**
-     * Initializes the controller. Sets up column-cell mappings and binds data to the TableView.
+     * Initializes the controller:
+     * - Maps table columns to Course properties
+     * - Loads course data from database
+     * - Binds Add button to open popup
      */
     @FXML
     public void initialize() {
-        // Mapping TableColumn to corresponding Course object properties
         courseNameColumn.setCellValueFactory(new PropertyValueFactory<>("courseName"));
         coursecodeColumn.setCellValueFactory(new PropertyValueFactory<>("courseCode"));
         subjectNameColumn.setCellValueFactory(new PropertyValueFactory<>("subjectName"));
@@ -73,14 +75,16 @@ public class CourseController {
         finalexamColumn.setCellValueFactory(new PropertyValueFactory<>("finalExam"));
         locationColumn.setCellValueFactory(new PropertyValueFactory<>("location"));
         teacherNameColumn.setCellValueFactory(new PropertyValueFactory<>("teacherName"));
-        handleImportSQL();
-        btnAddCourse.setOnAction(e -> {handleAddCourse();});
 
+        handleImportSQL(); // Populate course table
+        btnAddCourse.setOnAction(e -> { handleAddCourse(); });
     }
 
-
+    /**
+     * Shows or hides UI fields based on the user's role.
+     */
     private void configureUIForRole() {
-        if ("Student".equalsIgnoreCase(userRole)){
+        if ("Student".equalsIgnoreCase(userRole)) {
             txtCourseName.setVisible(true);
             txtCourseCode.setVisible(true);
             txtSubjectName.setVisible(true);
@@ -90,14 +94,12 @@ public class CourseController {
             txtLocation.setVisible(true);
             txtFinalExamDate.setVisible(true);
             txtCapacity.setVisible(true);
-
-
         }
     }
-    /**
-     * Handles adding a new course based on user input from text fields.
-     */
 
+    /**
+     * Opens a popup window to add a new course.
+     */
     @FXML
     private void handleAddCourse() {
         try {
@@ -109,14 +111,17 @@ public class CourseController {
             stage.setScene(new Scene(root));
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setResizable(false);
-            stage.showAndWait();
+            stage.showAndWait(); // Block until popup closes
 
-            handleImportSQL(); // refresh after add
-
+            handleImportSQL(); // Refresh course list
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+    /**
+     * Opens a popup window to edit the selected course.
+     */
     @FXML
     private void editCourse() {
         Course selectedCourse = courseTable.getSelectionModel().getSelectedItem();
@@ -129,11 +134,10 @@ public class CourseController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/ums/admin/CoursesPopup/EditCourses.fxml"));
             Parent root = loader.load();
 
-            // Get controller and pass selected course to pre-fill
+            // Set selected course for editing
             EditCourse editController = loader.getController();
             editController.setCourse(selectedCourse);
 
-            // Show modal popup
             Stage stage = new Stage();
             stage.setTitle("Edit Course");
             stage.setScene(new Scene(root));
@@ -141,15 +145,16 @@ public class CourseController {
             stage.setResizable(false);
             stage.showAndWait();
 
-            handleImportSQL(); // Refresh table after popup closes
-
+            handleImportSQL(); // Refresh after changes
         } catch (Exception e) {
             e.printStackTrace();
             showAlert("Error", "Failed to open edit popup.");
         }
     }
 
-
+    /**
+     * Displays a simple informational alert.
+     */
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
@@ -158,9 +163,9 @@ public class CourseController {
         alert.showAndWait();
     }
 
-
     /**
-     * Handles deleting a selected course from the TableView.
+     * Deletes the selected course from the TableView only (not the database).
+     * You can modify this to also remove from DB if needed.
      */
     @FXML
     private void handleDeleteCourse() {
@@ -174,12 +179,10 @@ public class CourseController {
     }
 
     /**
-     * Handles importing course data from an Excel file.
+     * Loads all valid courses from the SQL database into the table.
      */
-
-
     private void handleImportSQL() {
-        courses.clear();
+        courses.clear(); // Clear existing list
         String query = "SELECT * FROM courses";
 
         try (Connection conn = DatabaseManager.getConnection();
@@ -197,7 +200,7 @@ public class CourseController {
                 String location = rs.getString("Location");
                 String teacherName = rs.getString("TeacherName");
 
-                // 🧹 Skip rows with empty or junk data
+                // Skip rows with invalid data
                 if (courseCode <= 0 ||
                         courseName == null || courseName.trim().isEmpty() ||
                         subjectCode == null || subjectCode.trim().isEmpty() ||
@@ -217,10 +220,10 @@ public class CourseController {
                 course.setLocation(location);
                 course.setTeacherName(teacherName);
 
-                courses.add(course);
+                courses.add(course); // Add to observable list
             }
 
-            courseTable.setItems(courses);
+            courseTable.setItems(courses); // Bind data to TableView
             courseTable.refresh();
 
         } catch (SQLException e) {
@@ -229,10 +232,8 @@ public class CourseController {
         }
     }
 
-
-
     /**
-     * Retrieves the string value from an Excel cell, handling different data types.
+     * Extracts the string value from a cell for Excel-based import logic.
      */
     private String getCellValue(Cell cell) {
         if (cell == null) return "";
@@ -246,12 +247,11 @@ public class CourseController {
     }
 
     /**
-     * Refreshes the TableView to reflect changes.
+     * Refreshes the course table by reassigning the list.
      */
     private void refreshTable() {
-        courseTable.setItems(null);  // Clear the table first
-        courseTable.setItems(courses);  // Reassign list to trigger UI update
+        courseTable.setItems(null);
+        courseTable.setItems(courses);
         courseTable.refresh();
     }
-
 }
