@@ -1,6 +1,8 @@
 package com.ums;
 
 import atlantafx.base.theme.NordDark;
+import atlantafx.base.theme.NordLight;
+import atlantafx.base.theme.PrimerDark;
 import atlantafx.base.theme.PrimerLight;
 import com.ums.controller.Uploadpic;
 import javafx.application.Application;
@@ -72,7 +74,7 @@ public class UMSApplication extends javafx.application.Application {
     @Override
     public void start(Stage stage) throws IOException {
         if (darkMode) {
-            Application.setUserAgentStylesheet(new NordDark().getUserAgentStylesheet());
+            Application.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
         } else {
             Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
         }

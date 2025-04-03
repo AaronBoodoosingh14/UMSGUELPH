@@ -10,26 +10,25 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="625.0" prefWidth="925.0" style="-fx-background-color: #2A2D37;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ums.controller.FacultyUser">
+<AnchorPane fx:id="rootPane" prefHeight="625.0" prefWidth="925.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ums.controller.FacultyUser">
     <children>
-        <Label layoutX="20.0" layoutY="20.0" style="-fx-font-size: 33px; -fx-text-fill: white; -fx-font-weight: bold;" text="Faculty Profile" />
+        <Label fx:id="titleLabel" layoutX="20.0" layoutY="20.0" style="-fx-font-size: 33px; -fx-font-weight: bold;" text="Faculty Profile" />
 
-        <ImageView fx:id="profiledefault" fitHeight="160.0" fitWidth="160.0" layoutX="50.0" layoutY="80.0" pickOnBounds="true" preserveRatio="true" style="-fx-border-radius: 80; -fx-border-color: white; -fx-border-width: 3;" />
+        <ImageView fx:id="profiledefault" fitHeight="160.0" fitWidth="160.0" layoutX="50.0" layoutY="80.0" pickOnBounds="true" preserveRatio="true" style="-fx-border-radius: 80; -fx-border-width: 3;" />
 
-        <Label fx:id="Name" layoutX="50.0" layoutY="260.0" style="-fx-font-size: 24px; -fx-text-fill: white; -fx-font-weight: bold;" />
+        <Label fx:id="Name" layoutX="50.0" layoutY="260.0" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
 
         <VBox layoutX="50.0" layoutY="320.0" prefHeight="310.0" prefWidth="223.0" spacing="20">
             <children>
-                <Button fx:id="btnpass" onAction="#handleEditpass" style="-fx-pref-width: 220px; -fx-background-color: #1E3A5F; -fx-text-fill: white; -fx-font-size: 14px;" text="Edit Password" />
-                <Button fx:id="btnstudent" onAction="#handleViewStudents" style="-fx-pref-width: 220px; -fx-background-color: #1E3A5F; -fx-text-fill: white; -fx-font-size: 14px;" text="View Student List" />
-                <Button fx:id="btncourses" onAction="#handleViewCourses" style="-fx-pref-width: 220px; -fx-background-color: #1E3A5F; -fx-text-fill: white; -fx-font-size: 14px;" text="View Assigned Courses" />
-                <Button fx:id="btnpfp" onAction="#handleProfile" style="-fx-pref-width: 220px; -fx-background-color: #1E3A5F; -fx-text-fill: white; -fx-font-size: 14px;" text="Edit Profile Picture" />
-            <ToggleSwitch fx:id="themeToggle" prefHeight="56.0" prefWidth="223.0" text="Light/Dark Mode" />
-
+                <Button fx:id="btnpass" onAction="#handleEditpass" style="-fx-pref-width: 220px; -fx-font-size: 14px;" text="Edit Password" />
+                <Button fx:id="btnstudent" onAction="#handleViewStudents" style="-fx-pref-width: 220px; -fx-font-size: 14px;" text="View Student List" />
+                <Button fx:id="btncourses" onAction="#handleViewCourses" style="-fx-pref-width: 220px; -fx-font-size: 14px;" text="View Assigned Courses" />
+                <Button fx:id="btnpfp" onAction="#handleProfile" style="-fx-pref-width: 220px; -fx-font-size: 14px;" text="Edit Profile Picture" />
+                <ToggleSwitch fx:id="themeToggle" prefHeight="56.0" prefWidth="223.0" text="Light/Dark Mode" />
             </children>
         </VBox>
 
-        <GridPane hgap="25" layoutX="400.0" layoutY="120.0" vgap="20">
+        <GridPane fx:id="detailsGrid" hgap="25" layoutX="400.0" layoutY="120.0" vgap="20">
             <columnConstraints>
                 <ColumnConstraints prefWidth="150.0" />
                 <ColumnConstraints prefWidth="200.0" />
@@ -42,20 +41,20 @@
                 <RowConstraints prefHeight="35.0" />
             </rowConstraints>
             <children>
-                <Label style="-fx-font-size: 16px; -fx-text-fill: white; -fx-font-weight: bold;" text="Faculty ID:" />
-                <Label fx:id="FacultyID" style="-fx-font-size: 16px; -fx-text-fill: white;" GridPane.columnIndex="1" />
+                <Label fx:id="idLabel" style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Faculty ID:" />
+                <Label fx:id="FacultyID" style="-fx-font-size: 16px;" GridPane.columnIndex="1" />
 
-                <Label style="-fx-font-size: 16px; -fx-text-fill: white; -fx-font-weight: bold;" text="Degree:" GridPane.rowIndex="1" />
-                <Label fx:id="Degree" style="-fx-font-size: 16px; -fx-text-fill: white;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                <Label fx:id="degreeLabel" style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Degree:" GridPane.rowIndex="1" />
+                <Label fx:id="Degree" style="-fx-font-size: 16px;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
-                <Label style="-fx-font-size: 16px; -fx-text-fill: white; -fx-font-weight: bold;" text="Email:" GridPane.rowIndex="2" />
-                <Label fx:id="Email" style="-fx-font-size: 16px; -fx-text-fill: white;" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                <Label fx:id="emailLabel" style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Email:" GridPane.rowIndex="2" />
+                <Label fx:id="Email" style="-fx-font-size: 16px;" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
-                <Label style="-fx-font-size: 16px; -fx-text-fill: white; -fx-font-weight: bold;" text="Research Interest:" GridPane.rowIndex="3" />
-                <Label fx:id="Research" style="-fx-font-size: 16px; -fx-text-fill: white;" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                <Label fx:id="researchLabel" style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Research Interest:" GridPane.rowIndex="3" />
+                <Label fx:id="Research" style="-fx-font-size: 16px;" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
-                <Label style="-fx-font-size: 16px; -fx-text-fill: white; -fx-font-weight: bold;" text="Office:" GridPane.rowIndex="4" />
-                <Label fx:id="Office" style="-fx-font-size: 16px; -fx-text-fill: white;" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                <Label fx:id="officeLabel" style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Office:" GridPane.rowIndex="4" />
+                <Label fx:id="Office" style="-fx-font-size: 16px;" GridPane.columnIndex="1" GridPane.rowIndex="4" />
             </children>
         </GridPane>
     </children>
