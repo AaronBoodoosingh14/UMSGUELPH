@@ -73,8 +73,11 @@ public class FacultyUserView {
 
                 if (newValue) {
                     Application.setUserAgentStylesheet(new NordDark().getUserAgentStylesheet());
+                    DashboardController.updateDashboardLogo("/logo.png");
+
                 } else {
                     Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
+                    DashboardController.updateDashboardLogo("/uofgb.png");
                 }
             });
         }

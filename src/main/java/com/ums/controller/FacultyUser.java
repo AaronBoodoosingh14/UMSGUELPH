@@ -58,8 +58,10 @@ public class FacultyUser extends Faculty {
                 // Apply theme change
                 if (newValue) {
                     Application.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
+                    DashboardController.updateDashboardLogo("/logo.png");
                 } else {
                     Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
+                    DashboardController.updateDashboardLogo("/uofgb.png");
                 }
             });
         }

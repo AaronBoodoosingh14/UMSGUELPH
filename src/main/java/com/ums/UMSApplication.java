@@ -4,6 +4,7 @@ import atlantafx.base.theme.NordDark;
 import atlantafx.base.theme.NordLight;
 import atlantafx.base.theme.PrimerDark;
 import atlantafx.base.theme.PrimerLight;
+import com.ums.controller.DashboardController;
 import com.ums.controller.Uploadpic;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -44,6 +45,17 @@ public class UMSApplication extends javafx.application.Application {
 
     public static void setDarkMode(boolean isDarkMode) {
         darkMode = isDarkMode;
+    }
+
+
+    private static DashboardController currentDashboardController;
+
+    public static void setCurrentDashboardController(DashboardController controller) {
+        currentDashboardController = controller;
+    }
+
+    public static DashboardController getCurrentDashboardController() {
+        return currentDashboardController;
     }
 
     public static void clearTempDirectory() {

@@ -101,9 +101,16 @@ public class LoginController{
 
 
             DashboardController dashboardController = loader.getController();
+
+            UMSApplication.setCurrentDashboardController(dashboardController);
             dashboardController.setDropDown(false);
             dashboardController.setUserRole(role);
             dashboardController.setPermUser(txtUsername.getText());
+            if (UMSApplication.isDarkMode()) {
+                dashboardController.updateDashboardLogo("/logo.png");
+            } else {
+                dashboardController.updateDashboardLogo("/uofgb.png");
+            }
             UMSApplication.setLoggedInUsername(txtUsername.getText());
             UMSApplication.setLoggedInUserRole(role);
             String temp = dashboardController.getPermUser();
