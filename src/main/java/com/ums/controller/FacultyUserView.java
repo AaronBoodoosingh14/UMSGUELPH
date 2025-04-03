@@ -3,6 +3,7 @@ package com.ums.controller;
 
 import atlantafx.base.controls.ToggleSwitch;
 import atlantafx.base.theme.NordDark;
+import atlantafx.base.theme.PrimerDark;
 import atlantafx.base.theme.PrimerLight;
 import com.ums.UMSApplication;
 import com.ums.data.Student;
@@ -43,7 +44,7 @@ public class FacultyUserView {
             themeToggle.setSelected(UMSApplication.isDarkMode());
             themeToggle.selectedProperty().addListener((observable, oldValue, newValue) -> {
                 UMSApplication.setDarkMode(newValue);
-                Application.setUserAgentStylesheet(newValue ? new NordDark().getUserAgentStylesheet() : new PrimerLight().getUserAgentStylesheet());
+                Application.setUserAgentStylesheet(newValue ? new PrimerDark().getUserAgentStylesheet() : new PrimerLight().getUserAgentStylesheet());
             });
         }
     }

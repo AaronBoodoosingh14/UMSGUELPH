@@ -2,22 +2,30 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ums.controller.FacultyUser">
+<AnchorPane prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/24" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ums.controller.FacultyStudent">
 
-    <!-- Title Label -->
-    <Label layoutX="20" layoutY="10" style="-fx-font-size: 20px; -fx-font-weight: bold;" text="Faculty at Guelph" />
+    <!--tital -->
+    <Label layoutX="20" layoutY="10" style="-fx-font-size: 20px; -fx-font-weight: bold;" text="Faculty Directory" />
 
-    <HBox layoutX="20" layoutY="50" prefWidth="1000" spacing="20">
-        <!-- Your Professors Section (Right) -->
-        <VBox prefWidth="1000   " spacing="10">
-            <Label style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Your Professors" />
-            <VBox spacing="5">
-                <HBox fx:id="yourProfessors" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="117.0" prefWidth="677.0" spacing="10">
-                    <!-- Professors will be added here dynamically -->
-                </HBox>
-            </VBox>
-        </VBox>
+    <!-- search -->
+    <HBox layoutX="20" layoutY="45" spacing="10">
+        <TextField fx:id="searchField" promptText="Search faculty by name, research interest..." prefWidth="300" />
+        <Button fx:id="searchButton" text="Search" />
     </HBox>
 
+    <!-- container for the faculty-->
+    <ScrollPane fitToWidth="true" layoutX="20" layoutY="80"
+                AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0"
+                AnchorPane.topAnchor="80.0" AnchorPane.bottomAnchor="20.0">
+        <FlowPane fx:id="facultyContainer" hgap="20" vgap="20" prefWidth="860">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10" />
+            </padding>
+            <!-- adding  each box here -->
+        </FlowPane>
+    </ScrollPane>
 </AnchorPane>

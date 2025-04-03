@@ -31,18 +31,15 @@ public class DashboardController {
     private String username;
     private String permUser;
     private boolean visable = false;
+    public String flocation;
 
     @FXML
     private TitledPane DropDown;
-
-
-
 
     /**
      * Sets the user role and applies role-based module selection.
      * @param role The user's role (Admin or Student).
      */
-
     public void setUserRole(String role) {
         this.userRole = role;
         System.out.println("Logged in as: " + role);
@@ -57,51 +54,43 @@ public class DashboardController {
     }
 
 
+
     @FXML
     public void initialize() {
+
         btnSubjects.setOnAction(e -> loadModule("Subject"));
         btnCourses.setOnAction(e -> loadModule("Course"));
         btnStudents.setOnAction(e -> loadModule("Student"));
         btnFaculty.setOnAction(e -> loadModule("Faculty"));
         btnEvents.setOnAction(e -> loadModule("Events"));
-        btnView.setOnAction(e -> {System.out.println("Button clicked, permUser is: " + permUser);
+        btnView.setOnAction(e -> {
+            System.out.println("Button clicked, permUser is: " + permUser);
             username = UMSApplication.getLoggedInUsername();
             System.out.println("After assignment, username is: " + username);
             visable = true;
-
             loadModule("FacultyUser");
-                                                    });
+        });
 
         btnLogout.setOnAction(e -> logout());
-
-
     }
-
-
 
     public void setDropDown(boolean text) {
         DropDown.setExpanded(text);
-
     }
 
     private void setVisible(boolean visible) {
         this.visable = visible;
-
     }
 
     private boolean getVisible() {
-            return visable;
+        return visable;
     }
-
 
     public void setPermUser(String permUser) {
         System.out.println("Setting permUser to: " + permUser);
         this.permUser = permUser;
         System.out.println("After setting, permUser is: " + this.permUser);
-
     }
-
-
 
     public String getPermUser() {
         return permUser;
@@ -110,19 +99,25 @@ public class DashboardController {
     public void setUsername(String username){
         this.username = username;
     }
+
     private String getUsername(){
         return username;
     }
 
-
     /**
-     * Loads the correct module FXML file based on user role.
+     * Loads the correct module FXML file based on module name.
      * @param moduleName The module name (Subjects, Courses, etc.).
      */
     public void loadModule(String moduleName) {
         String fxmlPath;
 
-        if ("Admin".equalsIgnoreCase(userRole)) {
+        if ("FacultyStudent".equals(moduleName)) {
+            fxmlPath = "/com/ums/user/FacultyUser.fxml";
+        }
+        else if ("FacultyAdmin".equals(moduleName)) {
+            fxmlPath = "/com/ums/admin/FacultyAdmin.fxml"; // Direct path for FacultyAdmin
+        }
+        else if ("Admin".equalsIgnoreCase(userRole)) {
             fxmlPath = "/com/ums/admin/" + moduleName + "Admin.fxml";
         } else {
             fxmlPath = "/com/ums/user/" + moduleName + "User.fxml";
@@ -138,30 +133,32 @@ public class DashboardController {
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent view = loader.load();
-            if("Events".equals(moduleName)) {
 
+            if ("Events".equals(moduleName)) {
                 EventController controller = loader.getController();
                 controller.setUserRole(userRole);
-            }else if("Subject".equals(moduleName)) {
+            } else if ("Subject".equals(moduleName)) {
                 // Pass user role to SubjectController
                 SubjectController controller = loader.getController();
                 controller.setUserRole(userRole);
-            }else if ("FacultyUser".equals(moduleName)) {
+            } else if ("FacultyUser".equals(moduleName)) {
                 System.out.println("Loading FacultyUser, current username: " + username);
                 System.out.println("Current permUser: " + permUser);
                 String temp = getUsername();
                 System.out.println("getUsername() returned: " + temp);
-                if(Objects.equals(userRole, "Admin")){FacultyUser controller = loader.getController();
+                if (Objects.equals(userRole, "Admin")) {
+                    FacultyUser controller = loader.getController();
                     controller.SQLhandling(temp);
                     controller.showPFP(temp);
-                    controller.buttonVisable(visable);}
-                else{FacultyUserView controller = loader.getController();
-                controller.SQLhandling();}
-
-
+                    controller.buttonVisable(visable);
+                } else {
+                    FacultyUserView controller = loader.getController();
+                    controller.SQLhandling();
+                }
+            } else if ("FacultyStudent".equals(moduleName)) {
+                // No additional setup needed, FacultyStudent initializes itself
+                System.out.println("FacultyStudent module loaded");
             }
-
-
 
             mainContent.getChildren().clear();
             mainContent.getChildren().add(view);
@@ -171,30 +168,22 @@ public class DashboardController {
         }
     }
 
-        private void logout() {
+    private void logout() {
         System.out.println("Logging out...");
         Stage stage = (Stage) btnLogout.getScene().getWindow();
         stage.close();
-
         UMSApplication.restart();
-
-
     }
 
     public void loadimage(String color){
         Image image = new Image(color);
         logo.setImage(image);
-
     }
+
     public static void updateDashboardLogo(String logoPath) {
         DashboardController currentController = UMSApplication.getCurrentDashboardController();
         if (currentController != null) {
             currentController.loadimage(logoPath);
         }
     }
-
-
-
-
-
 }
