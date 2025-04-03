@@ -4,22 +4,28 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.*?>
 
-<VBox spacing="10" alignment="CENTER"
-      xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.ums.controller.SubjectController">
+<VBox spacing="20" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.ums.controller.SubjectController"
+      style="-fx-padding: 20;">
 
-    <Label text="Subjects Management" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
-
+    <!-- Header: Title and Search Bar -->
     <HBox spacing="20" alignment="CENTER_LEFT">
-        <Label text="Search:" />
+        <Label text="Subjects Management" style="-fx-font-size: 20px; -fx-font-weight: bold;" />
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label text="Search:" style="-fx-font-size: 14px;"/>
         <TextField fx:id="searchField" promptText="Search subject..." />
         <Button text="Search" onAction="#handleSearch" />
     </HBox>
 
-    <TableView fx:id="subjectTable" prefWidth="400">
+    <!-- Table of Subjects -->
+    <TableView fx:id="subjectTable" VBox.vgrow="ALWAYS" prefHeight="500" fixedCellSize="65" style="-fx-font-size: 14px;">
+        <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+        </columnResizePolicy>
         <columns>
-            <TableColumn text="Subject Code" fx:id="colCode" />
-            <TableColumn text="Subject Name" fx:id="colName" />
+            <TableColumn fx:id="colCode" text="Subject Code" minWidth="100" />
+            <TableColumn fx:id="colName" text="Subject Name" minWidth="150" />
+            <TableColumn fx:id="colDescription" text="Description" minWidth="400" />
         </columns>
     </TableView>
 

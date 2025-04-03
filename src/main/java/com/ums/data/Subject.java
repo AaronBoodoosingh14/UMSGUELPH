@@ -8,7 +8,7 @@ public class Subject {
 
     private String subjectCode; // Unique identifier for the subject (e.g., "MATH101")
     private String subjectName; // Name of the subject (e.g., "Calculus")
-
+    private String description;
 
     public Subject() {
         this.subjectCode = subjectCode;
@@ -46,6 +46,10 @@ public class Subject {
     public void setSubjectCode(String subjectCode) {
         this.subjectCode = subjectCode;
     }
+
+
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 
     /**
      * Returns a string representation of the Subject object.
