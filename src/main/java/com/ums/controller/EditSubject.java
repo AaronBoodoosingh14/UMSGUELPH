@@ -50,6 +50,9 @@ public class EditSubject {
             showAlert("Validation Error", "Both Subject Code and Name are required.", Alert.AlertType.WARNING);
             return;
         }
+        if (!isValidInput(newCode,newName)) {
+            return;
+        }
 
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Confirm Edit");
@@ -102,6 +105,7 @@ public class EditSubject {
         stage.close();
     }
 
+
     /** Utility method for showing alert dialogs. */
     private void showAlert(String title, String message, Alert.AlertType type) {
         Alert alert = new Alert(type);
@@ -109,5 +113,18 @@ public class EditSubject {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    private boolean isValidInput(String code, String name) {
+        if (code == null || code.trim().isEmpty() || name == null || name.trim().isEmpty()) {
+            showAlert("Please fill in all fields.", "Input Error",Alert.AlertType.WARNING );
+            return false;
+        }
+
+        if (!code.matches("[A-Z]{2,10}\\d{1,4}")) {
+            showAlert("Format Error", "Subject code must be in the format: ABCD123",Alert.AlertType.WARNING);
+            return false;
+        }
+        return true;
     }
 }

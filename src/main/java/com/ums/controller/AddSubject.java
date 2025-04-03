@@ -35,6 +35,9 @@ public class AddSubject {
             showAlert(Alert.AlertType.WARNING, "Missing Input", "Please enter both subject code and name.");
             return;
         }
+        if (!isValidInput(code, name)) {
+            return;
+        }
 
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Confirm Add");
@@ -63,7 +66,11 @@ public class AddSubject {
 
         } catch (Exception ex) {
             ex.printStackTrace(System.out);
-            showAlert(Alert.AlertType.ERROR, "Database Error", "Could not add subject.");
+            if (ex.getMessage().toLowerCase().contains("duplicate")) {
+                showAlert(Alert.AlertType.ERROR, "Duplicate Error", "A subject with this code already exists.");
+            } else {
+                showAlert(Alert.AlertType.ERROR, "Database Error", "An error occurred while saving the subject.");
+            }
         }
     }
 
@@ -94,4 +101,19 @@ public class AddSubject {
         alert.setContentText(content);
         alert.showAndWait();
     }
+
+    private boolean isValidInput(String code, String name) {
+        if (code == null || code.trim().isEmpty() || name == null || name.trim().isEmpty()) {
+            showAlert(Alert.AlertType.WARNING, "Input Error", "Please fill in all fields.");
+            return false;
+        }
+
+        if (!code.matches("[A-Z]{2,10}\\d{1,4}")) {
+            showAlert(Alert.AlertType.WARNING, "Format Error", "Subject code must be in the format: ABCD123");
+            return false;
+        }
+
+        return true;
+    }
+
 }

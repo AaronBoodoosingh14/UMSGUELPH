@@ -17,12 +17,8 @@
     import java.sql.*;
     import java.util.Optional;
 
-    /**
-     * Controller for Subject Management.
-     * Students can only view subjects, while admins can edit.
-     */
-    public class SubjectController {
 
+    public class SubjectController {
         @FXML private TableView<Subject> subjectTable;
         @FXML private TableColumn<Subject, String> colCode;
         @FXML private TableColumn<Subject, String> colName;
@@ -31,9 +27,7 @@
         @FXML private TextField searchField;
         @FXML private TableColumn<Subject, String> colDescription;
 
-
         private ObservableList<Subject> allSubjects = FXCollections.observableArrayList();
-
         private final ObservableList<Subject> subjects = FXCollections.observableArrayList();
         private String userRole = "Student"; // Default role
 
@@ -56,7 +50,6 @@
             btnEdit.setOnAction(e -> editSubject());
             btnDelete.setOnAction(e -> deleteSubject());
             searchField.setOnKeyReleased(e -> handleSearch());
-
         }
 
         /** Disable input fields and buttons if user is a Student */
@@ -120,7 +113,7 @@
                 importSubjectsFromSQL();
             } catch (IOException e) {
                 e.printStackTrace(System.out);
-                showAlert(Alert.AlertType.ERROR, "Error", "Could not load Edit Subject window.", "Make sure the FXML file path is correct.");
+                showAlert(Alert.AlertType.ERROR, "Error", "Could not load Edit Subject window.", "Make sure to select a subject to edit.");
             }
         }
 
@@ -205,7 +198,7 @@
                         case "MUSIC102":
                             subject.setDescription("The foundations of music theory, notation, harmony, and ear training are all covered in this course. In order to cultivate critical listening abilities, students also study the history of music across cultures and eras.");
                             break;
-                        case "PSYCHO100":
+                        case "PSYCH100":
                             subject.setDescription("An introduction to psychological science is given in this course, including topics such as personality, development, cognition, abnormal behaviour, and research methodologies. emphasizes scientific thinking and practical applications.");
                             break;
                         default:
