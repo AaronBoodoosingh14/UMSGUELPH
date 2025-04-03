@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.ums.controller.EditCourse"
+            prefWidth="400" prefHeight="400">
+
+    <VBox spacing="10" alignment="CENTER" AnchorPane.topAnchor="20" AnchorPane.leftAnchor="20"
+          AnchorPane.rightAnchor="20" AnchorPane.bottomAnchor="20">
+        <Label text="Edit Course" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+
+        <TextField fx:id="txtCourseCode" promptText="Course Code" />
+        <TextField fx:id="txtCourseName" promptText="Course Name" />
+        <TextField fx:id="txtSubjectCode" promptText="Subject Code" />
+        <TextField fx:id="txtSection" promptText="Section" />
+        <TextField fx:id="txtCapacity" promptText="Capacity" />
+        <TextField fx:id="txtLectureTime" promptText="Lecture Time" />
+        <TextField fx:id="txtFinalExamDate" promptText="Final Exam Date" />
+        <TextField fx:id="txtLocation" promptText="Location" />
+        <TextField fx:id="txtTeacherName" promptText="Teacher Name" />
+
+        <HBox spacing="10" alignment="CENTER">
+            <Button fx:id="btnSave" text="Save" prefWidth="100"/>
+            <Button fx:id="btnCancel" text="Cancel" prefWidth="100"/>
+        </HBox>
+    </VBox>
+</AnchorPane>

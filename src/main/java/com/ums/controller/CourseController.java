@@ -11,6 +11,12 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import java.sql.*;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 /**
  * Controller class for managing courses in the University Management System (UMS).
@@ -68,9 +74,10 @@ public class CourseController {
         locationColumn.setCellValueFactory(new PropertyValueFactory<>("location"));
         teacherNameColumn.setCellValueFactory(new PropertyValueFactory<>("teacherName"));
         handleImportSQL();
-        btnAddCourse.setOnAction(e -> {addCourse();});
+        btnAddCourse.setOnAction(e -> {handleAddCourse();});
 
     }
+
 
     private void configureUIForRole() {
         if ("Student".equalsIgnoreCase(userRole)){
@@ -91,181 +98,55 @@ public class CourseController {
      * Handles adding a new course based on user input from text fields.
      */
 
-    private void addCourse() {
-        String insertStatement = "INSERT INTO courses VALUES(?,?,?,?,?,?,?,?,?)";
-        String insertSubjectStatement = "INSERT INTO subjects VALUES(?,?)";
-        String CourseCode = txtCourseCode.getText().trim();
-        String CourseName = txtCourseName.getText().trim();
-        String SubjectName = txtSubjectName.getText().trim();
-        String SectionNumber = txtSectionNumber.getText().trim();
-        String TeacherName = txtTeacherName.getText().trim();
-        String LectureTime = txtLectureTime.getText().trim();
-        String Location = txtLocation.getText().trim();
-        String FinalExam = txtFinalExamDate.getText().trim();
-        String Capacity = txtCapacity.getText().trim();
+    @FXML
+    private void handleAddCourse() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/ums/admin/CoursesPopup/EditCourses.fxml"));
+            Parent root = loader.load();
 
-        if (CourseCode.isEmpty() || CourseName.isEmpty() || SubjectName.isEmpty() || SectionNumber.isEmpty()){
-            System.out.println("All fields must be filled before adding a course.");
-            return;
+            Stage stage = new Stage();
+            stage.setTitle("Add Course");
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setResizable(false);
+            stage.showAndWait();
+
+            handleImportSQL(); // refresh after add
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        //Add function later
-        //if (isDuplicate(code)){
-            //System.out.println("Course code already exists.");
-        //}
-
-        try (Connection conn = DatabaseManager.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(insertStatement)) {
-
-            stmt.setString(1, CourseCode);
-            stmt.setString(2,CourseName);
-            stmt.setString(3,SubjectName);
-            stmt.setString(4,SectionNumber);
-            stmt.setString(5,Capacity);
-            stmt.setString(6,LectureTime);
-            stmt.setString(7,FinalExam);
-            stmt.setString(8,Location);
-            stmt.setString(9,TeacherName);
-
-
-            int rowsInserted = stmt.executeUpdate();
-
-            if (rowsInserted > 0) {
-                System.out.println("Course added successfully.");
-
-                Course course = new Course();
-                course.setCourseCode(Integer.parseInt(CourseCode));
-                course.setCourseName(CourseName);
-                course.setSubjectName(SubjectName);
-                course.setSectionNumber(SectionNumber);
-                course.setTeacherName(TeacherName);
-                course.setLectureTime(LectureTime);
-                course.setLocation(Location);
-                course.setCapacity(Integer.parseInt(Capacity));
-                course.setFinalExam(FinalExam);
-                courses.add(course);
-
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        try (Connection conn = DatabaseManager.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(insertSubjectStatement)) {
-
-            stmt.setInt(1, Integer.parseInt(CourseCode));
-            stmt.setString(2, CourseName);
-
-            int rowsInserted = stmt.executeUpdate();
-
-            if (rowsInserted > 0) {
-                System.out.println("Subject added successfully.");
-
-                // ✅ Add to local list of subjects
-                Subject subject = new Subject();
-                subject.setSubjectCode(String.valueOf(Integer.parseInt(CourseCode)));
-                subject.setSubjectName(CourseName);
-                subjects.add(subject);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace(System.out);
-        }
-
-        txtCourseCode.clear();
-        txtCourseName.clear();
-        txtSubjectName.clear();
-        txtSectionNumber.clear();
-        txtTeacherName.clear();
-        txtLectureTime.clear();
-        txtLocation.clear();
-        txtFinalExamDate.clear();
-        txtCapacity.clear();
-
     }
-
-
     @FXML
     private void editCourse() {
         Course selectedCourse = courseTable.getSelectionModel().getSelectedItem();
         if (selectedCourse == null) {
-            System.out.println("No course selected.");
+            showAlert("No Selection", "Please select a course to edit.");
             return;
         }
 
-        txtCourseCode.setText(String.valueOf(selectedCourse.getCourseCode())); // Ensure it's a string
-        txtCourseName.setText(selectedCourse.getCourseName());
-        txtSubjectName.setText(selectedCourse.getSubjectName());
-        txtSectionNumber.setText(selectedCourse.getSectionNumber());
-        txtCapacity.setText(String.valueOf(selectedCourse.getCapacity())); // Convert to string
-        txtLectureTime.setText(selectedCourse.getLectureTime());
-        txtFinalExamDate.setText(selectedCourse.getFinalExam());
-        txtLocation.setText(selectedCourse.getLocation());
-        txtTeacherName.setText(selectedCourse.getTeacherName());
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/ums/admin/CoursesPopup/EditCourses.fxml"));
+            Parent root = loader.load();
 
-        btnAddCourse.setDisable(true);
+            // Get controller and pass selected course to pre-fill
+            EditCourse editController = loader.getController();
+            editController.setCourse(selectedCourse);
 
-        btnEditCourse.setOnAction(e -> {
-            String newCourseCode = txtCourseCode.getText().trim();
-            String newCourseName = txtCourseName.getText().trim();
-            String newSubjectName = txtSubjectName.getText().trim();
-            String newSectionNumber = txtSectionNumber.getText().trim();
-            String newCapacity = txtCapacity.getText().trim();
-            String newLectureTime = txtLectureTime.getText().trim();
-            String newFinalExam = txtFinalExamDate.getText().trim();
-            String newLocation = txtLocation.getText().trim();
-            String newTeacherName = txtTeacherName.getText().trim();
+            // Show modal popup
+            Stage stage = new Stage();
+            stage.setTitle("Edit Course");
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setResizable(false);
+            stage.showAndWait();
 
-            try (Connection conn = DatabaseManager.getConnection();
-                 PreparedStatement stmt = conn.prepareStatement(
-                         "UPDATE courses SET CourseCode = ?, CourseName = ?, SubjectCode = ?, SectionNumber = ?, Capacity = ?, LectureTime = ?, FinalExamDate = ?, Location = ?, TeacherName = ? WHERE CourseCode = ?")) {
+            handleImportSQL(); // Refresh table after popup closes
 
-                stmt.setString(1, newCourseCode);
-                stmt.setString(2, newCourseName);
-                stmt.setString(3, newSubjectName);
-                stmt.setString(4, newSectionNumber);
-                stmt.setString(5, newCapacity);
-                stmt.setString(6, newLectureTime);
-                stmt.setString(7, newFinalExam);
-                stmt.setString(8, newLocation);
-                stmt.setString(9, newTeacherName);
-                stmt.setString(10, String.valueOf(selectedCourse.getCourseCode()));
-
-                int rowsUpdated = stmt.executeUpdate();
-
-                if (rowsUpdated > 0) {
-                    System.out.println("Course updated successfully.");
-
-                    selectedCourse.setCourseCode(Integer.parseInt(newCourseCode));
-                    selectedCourse.setCourseName(newCourseName);
-                    selectedCourse.setSubjectName(newSubjectName);
-                    selectedCourse.setSectionNumber(newSectionNumber);
-                    selectedCourse.setCapacity(Integer.parseInt(newCapacity));
-                    selectedCourse.setLectureTime(newLectureTime);
-                    selectedCourse.setFinalExam(newFinalExam);
-                    selectedCourse.setLocation(newLocation);
-                    selectedCourse.setTeacherName(newTeacherName);
-
-                    courseTable.refresh();
-                } else {
-                    System.out.println("Course not updated successfully.");
-                }
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
-
-            // Clear text fields after editing
-            txtCourseCode.clear();
-            txtCourseName.clear();
-            txtSubjectName.clear();
-            txtSectionNumber.clear();
-            txtCapacity.clear();
-            txtLectureTime.clear();
-            txtFinalExamDate.clear();
-            txtLocation.clear();
-            txtTeacherName.clear();
-
-            btnAddCourse.setDisable(false);
-        });
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert("Error", "Failed to open edit popup.");
+        }
     }
 
 
@@ -299,34 +180,54 @@ public class CourseController {
 
     private void handleImportSQL() {
         courses.clear();
-        String query = "SELECT * FROM courses"; // Ensure 'courses' is the correct table name
+        String query = "SELECT * FROM courses";
 
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
+                int courseCode = rs.getInt("CourseCode");
+                String courseName = rs.getString("CourseName");
+                String subjectCode = rs.getString("SubjectCode");
+                String section = rs.getString("SectionNumber");
+                int capacity = rs.getInt("Capacity");
+                String lectureTime = rs.getString("LectureTime");
+                String finalExam = rs.getString("FinalExamDate");
+                String location = rs.getString("Location");
+                String teacherName = rs.getString("TeacherName");
+
+                // 🧹 Skip rows with empty or junk data
+                if (courseCode <= 0 ||
+                        courseName == null || courseName.trim().isEmpty() ||
+                        subjectCode == null || subjectCode.trim().isEmpty() ||
+                        section == null || section.trim().isEmpty()) {
+                    System.out.println("Skipping invalid row: " + courseCode + " | " + courseName);
+                    continue;
+                }
+
                 Course course = new Course();
-                course.setCourseCode(rs.getInt("CourseCode")); // Adjust column names as needed
-                course.setCourseName(rs.getString("CourseName"));
-                course.setSubjectName(rs.getString("SubjectCode"));
-                course.setSectionNumber(rs.getString("SectionNumber"));
-                course.setCapacity(rs.getInt("Capacity"));
-                course.setLectureTime(rs.getString("LectureTime"));
-                course.setFinalExam(rs.getString("FinalExamDate"));
-                course.setLocation(rs.getString("Location"));
-                course.setTeacherName(rs.getString("TeacherName"));
+                course.setCourseCode(courseCode);
+                course.setCourseName(courseName);
+                course.setSubjectName(subjectCode);
+                course.setSectionNumber(section);
+                course.setCapacity(capacity);
+                course.setLectureTime(lectureTime);
+                course.setFinalExam(finalExam);
+                course.setLocation(location);
+                course.setTeacherName(teacherName);
 
                 courses.add(course);
             }
 
-            courseTable.setItems(courses); // Ensure the table is updated with new data
+            courseTable.setItems(courses);
+            courseTable.refresh();
+
         } catch (SQLException e) {
-            e.printStackTrace(); // Log SQL exception
+            e.printStackTrace();
             showAlert("Database Error", "Failed to load courses from database.");
         }
     }
-
 
 
 
