@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- Import necessary JavaFX components -->
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.*?>
 
-<!-- Main container (VBox) that organizes elements vertically -->
-<VBox spacing="10" alignment="CENTER" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.ums.controller.SubjectController">
+<VBox spacing="15" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.ums.controller.SubjectController"
+      style="-fx-padding: 20; -fx-background-color: #f5f9fb;">
 
-    <!-- Title Label -->
-    <Label text="Subjects Management" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+    <!-- Header: Title and Search Bar -->
+    <HBox spacing="20" alignment="CENTER_LEFT">
+        <Label text="Subjects Management" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label text="Search:" />
+        <TextField fx:id="searchField" promptText="Search subject..." />
+        <Button text="Search" onAction="#handleSearch" />
+    </HBox>
 
-    <!-- TableView to display subjects -->
-    <TableView fx:id="subjectTable" prefWidth="300">
+    <!-- Table of Subjects -->
+    <TableView fx:id="subjectTable" VBox.vgrow="ALWAYS" prefHeight="500">
         <columns>
-            <!-- Column for Subject Code -->
-            <TableColumn text="Subject Code" fx:id="colCode" />
-            <!-- Column for Subject Name -->
-            <TableColumn text="Subject Name" fx:id="colName" />
+            <TableColumn fx:id="colCode" text="Subject Code" prefWidth="200"/>
+            <TableColumn fx:id="colName" text="Subject Name" prefWidth="300"/>
         </columns>
     </TableView>
 
-    <!-- Input Section: TextFields and Add Button inside an HBox (Horizontal Layout) -->
-    <HBox spacing="10">
-        <Button text="Add Subject" fx:id="btnAdd" />
-        <Button text="Edit Subject" fx:id="btnEdit" />
-        <Button fx:id="btnDelete" text="Delete" />
-
-
+    <!-- Bottom Control Buttons -->
+    <HBox spacing="15" alignment="CENTER">
+        <Button fx:id="btnAdd" text="Add Subject" prefWidth="120" style="-fx-font-size: 14px; -fx-padding: 8 16;" />
+        <Button fx:id="btnEdit" text="Edit Subject" prefWidth="120" style="-fx-font-size: 14px; -fx-padding: 8 16;" />
+        <Button fx:id="btnDelete" text="Delete" prefWidth="120" style="-fx-font-size: 14px; -fx-padding: 8 16;" />
     </HBox>
-
 
 </VBox>

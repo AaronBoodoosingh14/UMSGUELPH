@@ -4,6 +4,7 @@ import com.ums.data.Subject;
 import com.ums.database.DatabaseManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -27,6 +28,9 @@ public class SubjectController {
     @FXML private TableColumn<Subject, String> colName;
     @FXML private TextField txtCode, txtName;
     @FXML private Button btnAdd, btnEdit, btnDelete;
+    @FXML private TextField searchField;
+
+    private ObservableList<Subject> allSubjects = FXCollections.observableArrayList();
 
     private final ObservableList<Subject> subjects = FXCollections.observableArrayList();
     private String userRole = "Student"; // Default role
@@ -47,6 +51,8 @@ public class SubjectController {
         btnAdd.setOnAction(e -> addSubject());
         btnEdit.setOnAction(e -> editSubject());
         btnDelete.setOnAction(e -> deleteSubject());
+        searchField.setOnKeyReleased(e -> handleSearch());
+
     }
 
     /** Disable input fields and buttons if user is a Student */
@@ -157,6 +163,7 @@ public class SubjectController {
     /** Load all subjects from the database */
     private void importSubjectsFromSQL() {
         subjects.clear();
+        allSubjects.clear();
 
         String query = "SELECT * FROM subjects";
 
@@ -171,11 +178,15 @@ public class SubjectController {
                 subjects.add(subject);
             }
 
-            subjectTable.setItems(subjects);
+            // Clone into allSubjects for reference
+            allSubjects.addAll(subjects);
+
+            subjectTable.setItems(subjects);  // Initial full view
         } catch (SQLException e) {
             e.printStackTrace(System.out);
         }
     }
+
 
     /** Checks if a subject code already exists */
     private boolean isDuplicate(String code) {
@@ -190,4 +201,25 @@ public class SubjectController {
         alert.setContentText(content);
         alert.showAndWait();
     }
+
+    @FXML
+    private void handleSearch() {
+        String searchTerm = searchField.getText().toLowerCase().trim();
+
+        if (searchTerm.isEmpty()) {
+            subjectTable.setItems(FXCollections.observableArrayList(allSubjects));
+        } else {
+            ObservableList<Subject> filtered = FXCollections.observableArrayList();
+            for (Subject s : allSubjects) {
+                if (s.getSubjectCode().toLowerCase().contains(searchTerm) ||
+                        s.getSubjectName().toLowerCase().contains(searchTerm)) {
+                    filtered.add(s);
+                }
+            }
+            subjectTable.setItems(filtered);
+        }
+    }
+
+
+
 }
