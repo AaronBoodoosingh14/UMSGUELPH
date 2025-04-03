@@ -20,24 +20,25 @@ public class AddSubject {
     @FXML private Button btnSave;
     @FXML private Button btnCancel;
 
+    /**
+     * Initializes button actions when the FXML loads.
+     * - btnSave triggers subject validation and insertion
+     * - btnCancel confirms and closes the popup
+     */
     @FXML
     public void initialize() {
         btnSave.setOnAction(e -> confirmAndSaveSubject());
         btnCancel.setOnAction(e -> confirmCancel());
     }
 
-    /** Prompts user to confirm and saves subject if confirmed. */
+    /**
+     * Validates input fields, confirms with user, and saves subject if confirmed.
+     */
     private void confirmAndSaveSubject() {
-        String code = txtSubjectCode.getText().trim();
-        String name = txtSubjectName.getText().trim();
+        String code = formatSubjectCode(txtSubjectCode.getText());
+        String name = formatSubjectName(txtSubjectName.getText());
 
-        if (code.isEmpty() || name.isEmpty()) {
-            showAlert(Alert.AlertType.WARNING, "Missing Input", "Please enter both subject code and name.");
-            return;
-        }
-        if (!isValidInput(code, name)) {
-            return;
-        }
+        if (!isValidInput(code, name)) return;
 
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Confirm Add");
@@ -50,7 +51,10 @@ public class AddSubject {
         }
     }
 
-    /** Executes SQL to insert subject into database. */
+    /**
+     * Executes the SQL insert statement to save a new subject to the database.
+     * Displays alerts for success or failure (including duplicates).
+     */
     private void saveSubject(String code, String name) {
         String sql = "INSERT INTO subjects (Code, Name) VALUES (?, ?)";
 
@@ -74,7 +78,10 @@ public class AddSubject {
         }
     }
 
-    /** Asks for confirmation before canceling the add operation. */
+    /**
+     * Confirms cancellation with user before closing the window.
+     * Protects against accidental dismissal with unsaved data.
+     */
     private void confirmCancel() {
         Alert cancelAlert = new Alert(Alert.AlertType.CONFIRMATION);
         cancelAlert.setTitle("Cancel Confirmation");
@@ -87,13 +94,17 @@ public class AddSubject {
         }
     }
 
-    /** Closes the popup window. */
+    /**
+     * Closes the current popup window.
+     */
     private void closeWindow() {
         Stage stage = (Stage) btnCancel.getScene().getWindow();
         stage.close();
     }
 
-    /** Utility method for showing user-friendly alerts. */
+    /**
+     * Shows an alert with the given type, title, and message content.
+     */
     private void showAlert(Alert.AlertType type, String title, String content) {
         Alert alert = new Alert(type);
         alert.setTitle(title);
@@ -102,6 +113,10 @@ public class AddSubject {
         alert.showAndWait();
     }
 
+    /**
+     * Validates subject code and name fields.
+     * Ensures both are non-empty and that code follows the format like "CS101".
+     */
     private boolean isValidInput(String code, String name) {
         if (code == null || code.trim().isEmpty() || name == null || name.trim().isEmpty()) {
             showAlert(Alert.AlertType.WARNING, "Input Error", "Please fill in all fields.");
@@ -114,6 +129,28 @@ public class AddSubject {
         }
 
         return true;
+    }
+
+    /**
+     * Formats subject code: trims whitespace and converts to uppercase.
+     */
+    private String formatSubjectCode(String input) {
+        return input == null ? "" : input.trim().toUpperCase();
+    }
+
+    /**
+     * Capitalizes the first letter of each word in the subject name.
+     * E.g., "computer science" becomes "Computer Science"
+     */
+    private String formatSubjectName(String input) {
+        if (input == null || input.isBlank()) return "";
+        String[] words = input.trim().toLowerCase().split("\\s+");
+        StringBuilder formatted = new StringBuilder();
+        for (String word : words) {
+            formatted.append(Character.toUpperCase(word.charAt(0)))
+                    .append(word.substring(1)).append(" ");
+        }
+        return formatted.toString().trim();
     }
 
 }

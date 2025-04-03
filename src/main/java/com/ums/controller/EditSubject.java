@@ -26,7 +26,10 @@ public class EditSubject {
 
     private String originalCode;
 
-    /** Loads the selected subject data into the form fields. */
+    /**
+     * Populates the text fields with the selected subject's data.
+     * @param subject The subject to be edited.
+     */
     public void setSubjectData(Subject subject) {
         if (subject == null) return;
 
@@ -35,24 +38,25 @@ public class EditSubject {
         originalCode = subject.getSubjectCode();
     }
 
+    /**
+     * Initializes the Save and Cancel button actions.
+     */
     @FXML
     public void initialize() {
         btnSave.setOnAction(e -> confirmAndSaveChanges());
         btnCancel.setOnAction(e -> confirmCancel());
     }
 
-    /** Asks for confirmation before saving subject changes. */
+    /**
+     * Confirms with the user before applying changes to the subject.
+     * Validates input and proceeds to update if confirmed.
+     */
+    @FXML
     private void confirmAndSaveChanges() {
-        String newCode = txtSubjectCode.getText().trim();
-        String newName = txtSubjectName.getText().trim();
+        String newCode = formatSubjectCode(txtSubjectCode.getText());
+        String newName = formatSubjectName(txtSubjectName.getText());
 
-        if (newCode.isEmpty() || newName.isEmpty()) {
-            showAlert("Validation Error", "Both Subject Code and Name are required.", Alert.AlertType.WARNING);
-            return;
-        }
-        if (!isValidInput(newCode,newName)) {
-            return;
-        }
+        if (!isValidInput(newCode, newName)) return;
 
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Confirm Edit");
@@ -65,7 +69,10 @@ public class EditSubject {
         }
     }
 
-    /** Executes SQL update to save the subject changes. */
+    /**
+     * Updates the subject record in the database using the new values.
+     * Shows a success or error alert based on the outcome.
+     */
     private void updateSubject(String newCode, String newName) {
         String sql = "UPDATE subjects SET Code = ?, Name = ? WHERE Code = ?";
 
@@ -86,7 +93,9 @@ public class EditSubject {
         }
     }
 
-    /** Confirms whether the user really wants to cancel editing. */
+    /**
+     * Asks user if they want to cancel the operation and closes the window if confirmed.
+     */
     private void confirmCancel() {
         Alert cancelAlert = new Alert(Alert.AlertType.CONFIRMATION);
         cancelAlert.setTitle("Cancel Confirmation");
@@ -99,14 +108,17 @@ public class EditSubject {
         }
     }
 
-    /** Closes the edit subject popup window. */
+    /**
+     * Closes the edit subject popup window.
+     */
     private void closeWindow() {
         Stage stage = (Stage) btnSave.getScene().getWindow();
         stage.close();
     }
 
-
-    /** Utility method for showing alert dialogs. */
+    /**
+     * Shows an alert with the given title, message, and type.
+     */
     private void showAlert(String title, String message, Alert.AlertType type) {
         Alert alert = new Alert(type);
         alert.setTitle(title);
@@ -115,16 +127,41 @@ public class EditSubject {
         alert.showAndWait();
     }
 
+    /**
+     * Validates the subject code and name fields.
+     * @return true if input is valid, false otherwise.
+     */
     private boolean isValidInput(String code, String name) {
         if (code == null || code.trim().isEmpty() || name == null || name.trim().isEmpty()) {
-            showAlert("Please fill in all fields.", "Input Error",Alert.AlertType.WARNING );
+            showAlert("Please fill in all fields.", "Input Error", Alert.AlertType.WARNING);
             return false;
         }
 
         if (!code.matches("[A-Z]{2,10}\\d{1,4}")) {
-            showAlert("Format Error", "Subject code must be in the format: ABCD123",Alert.AlertType.WARNING);
+            showAlert("Format Error", "Subject code must be in the format: ABCD123", Alert.AlertType.WARNING);
             return false;
         }
         return true;
+    }
+
+    /**
+     * Converts the subject code to uppercase and trims whitespace.
+     */
+    private String formatSubjectCode(String input) {
+        return input == null ? "" : input.trim().toUpperCase();
+    }
+
+    /**
+     * Formats the subject name to Title Case.
+     */
+    private String formatSubjectName(String input) {
+        if (input == null || input.isBlank()) return "";
+        String[] words = input.trim().toLowerCase().split("\\s+");
+        StringBuilder formatted = new StringBuilder();
+        for (String word : words) {
+            formatted.append(Character.toUpperCase(word.charAt(0)))
+                    .append(word.substring(1)).append(" ");
+        }
+        return formatted.toString().trim();
     }
 }

@@ -19,6 +19,7 @@
 
 
     public class SubjectController {
+        // FXML UI elements
         @FXML private TableView<Subject> subjectTable;
         @FXML private TableColumn<Subject, String> colCode;
         @FXML private TableColumn<Subject, String> colName;
@@ -27,10 +28,11 @@
         @FXML private TextField searchField;
         @FXML private TableColumn<Subject, String> colDescription;
 
-        private ObservableList<Subject> allSubjects = FXCollections.observableArrayList();
-        private final ObservableList<Subject> subjects = FXCollections.observableArrayList();
-        private String userRole = "Student"; // Default role
+        private ObservableList<Subject> allSubjects = FXCollections.observableArrayList(); // Full dataset for search
+        private final ObservableList<Subject> subjects = FXCollections.observableArrayList(); // Data displayed in table
+        private String userRole = "Student"; // Default user role
 
+        // Sets the user role (used to toggle UI components for students vs. admins)
         public void setUserRole(String role) {
             this.userRole = role;
             configureUIForRole();
@@ -38,21 +40,24 @@
 
         @FXML
         public void initialize() {
+            // Set up table column bindings
             colCode.setCellValueFactory(new PropertyValueFactory<>("subjectCode"));
             colName.setCellValueFactory(new PropertyValueFactory<>("subjectName"));
-            subjectTable.setItems(subjects);
             colDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
-            colDescription.setCellFactory(column -> createWrappedCell());
+            colDescription.setCellFactory(column -> createWrappedCell()); // custom text wrapping
 
-            importSubjectsFromSQL();
+            subjectTable.setItems(subjects); // bind data
 
+            importSubjectsFromSQL(); // fetch from DB
+
+            // Button and field event handlers
             btnAdd.setOnAction(e -> addSubject());
             btnEdit.setOnAction(e -> editSubject());
             btnDelete.setOnAction(e -> deleteSubject());
             searchField.setOnKeyReleased(e -> handleSearch());
         }
 
-        /** Disable input fields and buttons if user is a Student */
+        /** Hide or disable controls if the logged-in user is a Student */
         private void configureUIForRole() {
             if ("Student".equalsIgnoreCase(userRole)) {
                 txtCode.setVisible(false);
@@ -69,7 +74,7 @@
             }
         }
 
-        /** Open popup to add a new subject */
+        /** Launches popup to add a new subject */
         @FXML
         private void addSubject() {
             try {
@@ -80,15 +85,15 @@
                 stage.setTitle("Add Subject");
                 stage.setScene(new Scene(root));
                 stage.setResizable(false);
-                stage.showAndWait();
+                stage.showAndWait(); // pause for popup
 
-                importSubjectsFromSQL();
+                importSubjectsFromSQL(); // reload table
             } catch (IOException e) {
                 e.printStackTrace(System.out);
             }
         }
 
-        /** Edit selected subject in popup */
+        /** Opens the edit subject window with selected subject’s data */
         @FXML
         private void editSubject() {
             Subject selectedSubject = subjectTable.getSelectionModel().getSelectedItem();
@@ -103,21 +108,22 @@
                 Parent root = loader.load();
 
                 EditSubject controller = loader.getController();
-                controller.setSubjectData(selectedSubject);
+                controller.setSubjectData(selectedSubject); // send data
 
                 Stage stage = new Stage();
                 stage.setTitle("Edit Subject");
                 stage.setScene(new Scene(root));
+                stage.setResizable(false);
                 stage.showAndWait();
 
-                importSubjectsFromSQL();
+                importSubjectsFromSQL(); // refresh
             } catch (IOException e) {
                 e.printStackTrace(System.out);
                 showAlert(Alert.AlertType.ERROR, "Error", "Could not load Edit Subject window.", "Make sure to select a subject to edit.");
             }
         }
 
-        /** Deletes selected subject after confirmation */
+        /** Deletes the selected subject from the database after confirmation */
         @FXML
         private void deleteSubject() {
             Subject selectedSubject = subjectTable.getSelectionModel().getSelectedItem();
@@ -157,8 +163,7 @@
             }
         }
 
-
-        /** Load all subjects from the database */
+        /** Retrieves all subjects from the database and populates the table */
         private void importSubjectsFromSQL() {
             subjects.clear();
             allSubjects.clear();
@@ -173,67 +178,29 @@
                     Subject subject = new Subject();
                     subject.setSubjectCode(rs.getString("Code"));
                     subject.setSubjectName(rs.getString("Name"));
-                    switch (subject.getSubjectCode()) {
-                        case "MATH001":
-                            subject.setDescription("This course offers a thorough study of algebra and serves as an introduction to calculus. Focuses on practical applications in science, math, and engineering as well as analytical thinking. Preparing students for the subsequent calculus courses.");
-                            break;
-                        case "ENG101":
-                            subject.setDescription("Rhetorical techniques, critical analysis, and academic writing are the main topics of this course. In addition to creating essays based on research, students will hone their ability to formulate ideas and support them with reasoning.");
-                            break;
-                        case "CS201":
-                            subject.setDescription("Basic data structures utilizing Python and Java, problem-solving techniques, and fundamental programming ideas are all covered in this course. introduces computational thinking and software development techniques as well.");
-                            break;
-                        case "CHEM200":
-                            subject.setDescription("Atomic theory, molecular structure, chemical reactions, thermodynamics, and lab safety are all thoroughly examined in this course. It gets pupils ready for more coursework in the biological and physical sciences.");
-                            break;
-                        case "BIO300":
-                            subject.setDescription("The structure and operation of cells, genetic processes, and biochemical pathways are all covered in this course. includes laboratory work centred on enzyme activity, DNA analysis, and microscopy. This course will prepare students trying to dive deep into the world of biology.");
-                            break;
-                        case "ENGG402":
-                            subject.setDescription("The advanced study of engineering fundamentals covered in this course includes materials, system integration, dynamics, and statics. Students work in groups on design projects and solve practical problems.");
-                            break;
-                        case "HIST101":
-                            subject.setDescription("Students in this course study the major world civilizations from antiquity to the present, looking at governmental structures, artistic creations, revolutions, and international relations from a historical perspective.");
-                            break;
-                        case "MUSIC102":
-                            subject.setDescription("The foundations of music theory, notation, harmony, and ear training are all covered in this course. In order to cultivate critical listening abilities, students also study the history of music across cultures and eras.");
-                            break;
-                        case "PSYCH100":
-                            subject.setDescription("An introduction to psychological science is given in this course, including topics such as personality, development, cognition, abnormal behaviour, and research methodologies. emphasizes scientific thinking and practical applications.");
-                            break;
-                        default:
-                            subject.setDescription("No description available.");
-                    }
+                    subject.setDescription(switch (subject.getSubjectCode()) {
+                        case "MATH001" -> "This course offers a thorough study of algebra and serves as an introduction to calculus...";
+                        case "ENG101" -> "Rhetorical techniques, critical analysis, and academic writing are the main topics...";
+                        case "CS201" -> "Basic data structures utilizing Python and Java...";
+                        case "CHEM200" -> "Atomic theory, molecular structure, chemical reactions...";
+                        case "BIO300" -> "The structure and operation of cells, genetic processes...";
+                        case "ENGG402" -> "The advanced study of engineering fundamentals...";
+                        case "HIST101" -> "Students study major world civilizations from antiquity to the present...";
+                        case "MUSIC102" -> "The foundations of music theory, notation, harmony...";
+                        case "PSYCH100" -> "An introduction to psychological science, including topics such as personality and development.";
+                        default -> "No description available.";
+                    });
                     subjects.add(subject);
                 }
 
-
-                // Clone into allSubjects for reference
                 allSubjects.addAll(subjects);
-
-                subjectTable.setItems(subjects);  // Initial full view
+                subjectTable.setItems(subjects);
             } catch (SQLException e) {
                 e.printStackTrace(System.out);
             }
-
-
         }
 
-
-        /** Checks if a subject code already exists */
-        private boolean isDuplicate(String code) {
-            return subjects.stream().anyMatch(s -> s.getSubjectCode().equalsIgnoreCase(code));
-        }
-
-        /** Utility to show alerts */
-        private void showAlert(Alert.AlertType type, String title, String header, String content) {
-            Alert alert = new Alert(type);
-            alert.setTitle(title);
-            alert.setHeaderText(header);
-            alert.setContentText(content);
-            alert.showAndWait();
-        }
-
+        /** Search handler: Filters the table view based on subject code or name */
         @FXML
         private void handleSearch() {
             String searchTerm = searchField.getText().toLowerCase().trim();
@@ -252,6 +219,7 @@
             }
         }
 
+        /** Custom TableCell that wraps long text and applies tooltip */
         @FXML
         public TableCell<Subject, String> createWrappedCell() {
             return new TableCell<>() {
@@ -263,7 +231,7 @@
                     text.setStyle("-fx-padding: 8px;");
                     setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
                     setGraphic(text);
-                    setStyle("-fx-alignment: TOP-LEFT;"); // align top left
+                    setStyle("-fx-alignment: TOP-LEFT;");
                 }
 
                 @Override
@@ -286,9 +254,18 @@
             };
         }
 
+        /** Helper method to check for duplicate subject codes */
+        private boolean isDuplicate(String code) {
+            return subjects.stream().anyMatch(s -> s.getSubjectCode().equalsIgnoreCase(code));
+        }
 
-
-
-
-
+        /** Displays alert messages in popups */
+        private void showAlert(Alert.AlertType type, String title, String header, String content) {
+            Alert alert = new Alert(type);
+            alert.setTitle(title);
+            alert.setHeaderText(header);
+            alert.setContentText(content);
+            alert.showAndWait();
+        }
     }
+
