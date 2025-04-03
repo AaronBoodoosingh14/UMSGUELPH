@@ -9,8 +9,14 @@ import javafx.stage.Stage;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
+/**
+ * Controller class for handling the "Edit Course" popup.
+ * This class manages the UI fields, validates input, updates the database,
+ * and synchronizes changes with the in-memory Course object.
+ */
 public class EditCourse {
 
+    // UI form fields (injected from FXML)
     @FXML private TextField txtCourseCode;
     @FXML private TextField txtCourseName;
     @FXML private TextField txtSubjectCode;
@@ -21,14 +27,21 @@ public class EditCourse {
     @FXML private TextField txtLocation;
     @FXML private TextField txtTeacherName;
 
+    // Buttons for cancel/save actions
     @FXML private Button btnCancel;
     @FXML private Button btnSave;
 
+    // Holds the course object being edited
     private Course course;
 
+    /**
+     * Called from CourseController to pass the selected course to this edit popup.
+     * This method pre-fills the form with the selected course's details.
+     */
     public void setCourse(Course course) {
         this.course = course;
-        // Pre-fill form
+
+        // Populate form fields with existing course data
         txtCourseCode.setText(String.valueOf(course.getCourseCode()));
         txtCourseName.setText(course.getCourseName());
         txtSubjectCode.setText(course.getSubjectName());
@@ -40,10 +53,15 @@ public class EditCourse {
         txtTeacherName.setText(course.getTeacherName());
     }
 
+    /**
+     * Initializes the controller and sets up button actions.
+     */
     @FXML
     public void initialize() {
+        // Close the window when "Cancel" is clicked
         btnCancel.setOnAction(e -> closeWindow());
 
+        // Save the course when "Save" is clicked
         btnSave.setOnAction(e -> {
             if (!validateInputs()) return;
 
@@ -53,7 +71,8 @@ public class EditCourse {
 
                 int newCourseCode = Integer.parseInt(txtCourseCode.getText().trim());
 
-                stmt.setInt(1, newCourseCode); // NEW course code
+                // Set parameters for the UPDATE statement
+                stmt.setInt(1, newCourseCode);
                 stmt.setString(2, txtCourseName.getText().trim());
                 stmt.setString(3, txtSubjectCode.getText().trim());
                 stmt.setString(4, txtSection.getText().trim());
@@ -62,11 +81,11 @@ public class EditCourse {
                 stmt.setString(7, txtFinalExamDate.getText().trim());
                 stmt.setString(8, txtLocation.getText().trim());
                 stmt.setString(9, txtTeacherName.getText().trim());
-                stmt.setInt(10, course.getCourseCode()); // OLD course code to locate row
+                stmt.setInt(10, course.getCourseCode()); // Original course code for WHERE clause
 
-                stmt.executeUpdate();
+                stmt.executeUpdate(); // Execute the update query
 
-                // Update in-memory object
+                // Update the in-memory Course object to reflect the changes
                 course.setCourseCode(newCourseCode);
                 course.setCourseName(txtCourseName.getText().trim());
                 course.setSubjectName(txtSubjectCode.getText().trim());
@@ -78,7 +97,8 @@ public class EditCourse {
                 course.setTeacherName(txtTeacherName.getText().trim());
 
                 showAlert("Course updated successfully!");
-                closeWindow();
+                closeWindow(); // Close the popup
+
             } catch (Exception ex) {
                 ex.printStackTrace();
                 showAlert("Failed to update course.");
@@ -86,7 +106,12 @@ public class EditCourse {
         });
     }
 
+    /**
+     * Validates all user input fields.
+     * Ensures required fields are filled and numeric fields contain valid numbers.
+     */
     private boolean validateInputs() {
+        // Check for empty fields
         if (txtCourseCode.getText().isEmpty() || txtCourseName.getText().isEmpty() ||
                 txtSubjectCode.getText().isEmpty() || txtSection.getText().isEmpty() ||
                 txtCapacity.getText().isEmpty() || txtLectureTime.getText().isEmpty() ||
@@ -96,6 +121,7 @@ public class EditCourse {
             return false;
         }
 
+        // Check if Course Code and Capacity are valid integers
         try {
             Integer.parseInt(txtCourseCode.getText());
             Integer.parseInt(txtCapacity.getText());
@@ -107,6 +133,9 @@ public class EditCourse {
         return true;
     }
 
+    /**
+     * Displays an alert dialog with the given message.
+     */
     private void showAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Course Edit");
@@ -115,6 +144,9 @@ public class EditCourse {
         alert.showAndWait();
     }
 
+    /**
+     * Closes the current popup window.
+     */
     private void closeWindow() {
         Stage stage = (Stage) btnCancel.getScene().getWindow();
         stage.close();
