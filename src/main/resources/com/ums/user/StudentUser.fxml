@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.ums.controller.StudentUser">
+
+    <top>
+        <VBox spacing="10" style="-fx-padding: 15;">
+            <Label text="Student Profile" style="-fx-font-size: 22; -fx-font-weight: bold;" />
+        </VBox>
+    </top>
+
+    <left>
+        <VBox spacing="15" alignment="CENTER" style="-fx-padding: 15;">
+            <ImageView fx:id="profileImage" fitWidth="150" fitHeight="150" preserveRatio="true" />
+            <Button fx:id="btnUploadPhoto" text="Upload Photo" />
+            <Button fx:id="btnEditPassword" text="Edit Password" />
+        </VBox>
+    </left>
+
+    <center>
+        <GridPane hgap="15" vgap="10" style="-fx-padding: 15;">
+            <columnConstraints>
+                <ColumnConstraints minWidth="150"/>
+                <ColumnConstraints minWidth="300"/>
+            </columnConstraints>
+
+            <Label text="Name:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+            <TextField fx:id="nameLabel" editable="false" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+            <Label text="Student ID:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+            <TextField fx:id="studentIdLabel" editable="false" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+            <Label text="Address:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+            <TextField fx:id="addressLabel" editable="false" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+            <Label text="Phone:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+            <TextField fx:id="phoneLabel" editable="false" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+            <Label text="Email:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+            <TextField fx:id="emailLabel" editable="false" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+            <Label text="Academic Level:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+            <TextField fx:id="academicLevelLabel" editable="false" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+
+            <Label text="Current Semester:" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+            <TextField fx:id="semesterLabel" editable="false" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+
+            <Label text="Thesis Title:" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
+            <TextField fx:id="thesisLabel" editable="false" GridPane.rowIndex="7" GridPane.columnIndex="1"/>
+
+            <Label text="Progress:" GridPane.rowIndex="8" GridPane.columnIndex="0"/>
+            <TextField fx:id="progressLabel" editable="false" GridPane.rowIndex="8" GridPane.columnIndex="1"/>
+
+            <Label text="Tuition Status:" GridPane.rowIndex="9" GridPane.columnIndex="0"/>
+            <TextField fx:id="tuitionLabel" editable="false" GridPane.rowIndex="9" GridPane.columnIndex="1"/>
+        </GridPane>
+    </center>
+
+    <bottom>
+        <HBox spacing="20" alignment="CENTER" style="-fx-padding: 15;">
+            <VBox>
+                <Label text="Registered Subjects:" style="-fx-font-weight: bold;" />
+                <TextArea fx:id="registeredSubjectsArea" prefColumnCount="30" prefRowCount="2" editable="false" wrapText="true"/>
+            </VBox>
+
+            <VBox>
+                <Label text="Enrolled Courses:" style="-fx-font-weight: bold;" />
+                <TextArea fx:id="enrolledCoursesArea" prefColumnCount="30" prefRowCount="2" editable="false" wrapText="true"/>
+            </VBox>
+
+            <VBox>
+                <Label text="Grades:" style="-fx-font-weight: bold;" />
+                <TextArea fx:id="gradesArea" prefColumnCount="30" prefRowCount="2" editable="false" wrapText="true"/>
+            </VBox>
+        </HBox>
+    </bottom>
+
+</BorderPane>

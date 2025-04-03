@@ -213,6 +213,12 @@ public class StudentController {
      */
     @FXML
     private void handleEditStudent() {
+        Student selectedStudent = studentTable.getSelectionModel().getSelectedItem();
+        if (selectedStudent == null) {
+            showAlert("No Selection", "Please select a student to edit.");
+            return;
+        }
+
         ArrayList<String> student = new ArrayList<>(columnSelect());
         String studentID = student.get(0);
         String studentName = student.get(1);
@@ -226,22 +232,23 @@ public class StudentController {
         String progress = student.get(9);
         String tuition = student.get(10);
 
-        try{
+        try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/ums/admin/StudentPopup/EditStudent.fxml"));
             Parent root = loader.load();
 
             EditStudent editStudentcontroller = loader.getController();
-
-            editStudentcontroller.setStudentData(studentID,studentName,Address,telephone,studentEmail,Alevel,semester,subjectsReg,thesis,progress,tuition);
+            editStudentcontroller.setStudentData(studentID, studentName, Address, telephone, studentEmail, Alevel, semester, subjectsReg, thesis, progress, tuition);
 
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
-            stage.setTitle("Edit Faculty");
+            stage.setTitle("Edit Student");
             stage.show();
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-    }}
+        }
+    }
+
 
     /**
      * Deletes the selected student from the TableView.

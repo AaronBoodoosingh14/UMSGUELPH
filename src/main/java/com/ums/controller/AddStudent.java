@@ -1,3 +1,4 @@
+// Updated AddStudent.java: Email auto-fills based on name field when typing
 package com.ums.controller;
 
 import com.ums.database.DatabaseManager;
@@ -32,6 +33,11 @@ public class AddStudent extends EditFaculty {
             tuitionField.setText(calculateTuition(newVal));
         });
 
+        nameField.textProperty().addListener((obs, oldVal, newVal) -> {
+            emailField.setText(generateEmailFromName(newVal));
+            emailField.setEditable(false);
+        });
+
         getFacultyData("", "");
     }
 
@@ -48,18 +54,45 @@ public class AddStudent extends EditFaculty {
         });
 
         super.btnsave.setOnAction(e -> {
-            String name = nameField.getText();
+            String name = formatTextInput(nameField.getText());
             String ID = IDField.getText();
-            String email = formatEmail(emailField.getText());
             String telephone = telephoneField.getText();
-            String currentSemester = currentSemesterField.getText();
-            String Alevel = academicLevelField.getText();
-            String address = addressField.getText();
-            String subject = subjectsRegisteredField.getText();
-            String thesisTitle = thesisTitleField.getText();
-            String progress = progressField.getText();
+            String currentSemester = formatTextInput(currentSemesterField.getText());
+            String Alevel = formatTextInput(academicLevelField.getText());
+            String address = formatTextInput(addressField.getText());
+            String subject = formatTextInput(subjectsRegisteredField.getText());
+            String thesisTitle = formatTextInput(thesisTitleField.getText());
+            String progressRaw = progressField.getText().trim();
             String tuition = calculateTuition(Alevel);
+            String email = emailField.getText().trim();
             String password = "default123";
+
+            if (!isValidName(name)) {
+                showValidationAlert("Please enter the full name (first and last).");
+                return;
+            }
+            if (!isValidPhone(telephone)) {
+                showValidationAlert("Phone number must be in the format 123-4567.");
+                return;
+            }
+            if (!isValidAcademicLevel(Alevel)) {
+                showValidationAlert("Academic Level must be either 'Undergraduate' or 'Graduate'.");
+                return;
+            }
+            if (!isValidSemester(currentSemester)) {
+                showValidationAlert("Semester must be in format 'Fall YYYY' or 'Winter YYYY'.");
+                return;
+            }
+            if (Alevel.equalsIgnoreCase("Graduate") && (thesisTitle == null || thesisTitle.trim().isEmpty() || thesisTitle.equals("-"))) {
+                showValidationAlert("Graduate students must enter a thesis title.");
+                return;
+            }
+            if (!isValidProgress(progressRaw)) {
+                showValidationAlert("Progress must be a number between 0 and 100.");
+                return;
+            }
+
+            String progress = progressRaw + "%";
 
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Confirm");
@@ -68,10 +101,8 @@ public class AddStudent extends EditFaculty {
             Optional<ButtonType> result = alert.showAndWait();
 
             if (result.isPresent() && result.get() == ButtonType.OK) {
-                String sql = "INSERT INTO students_info (StudentId, Name, Address, Telephone, Email, AcademicLevel, " +
-                        "CurrentSemester, SubjectsRegistered, ThesisTitle, Progress, Password, Tuition) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                 try (Connection connection = DatabaseManager.getConnection();
-                     var ps = connection.prepareStatement(sql)) {
+                     var ps = connection.prepareStatement("INSERT INTO students_info (StudentId, Name, Address, Telephone, Email, AcademicLevel, CurrentSemester, SubjectsRegistered, ThesisTitle, Progress, Password, Tuition) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
 
                     ps.setString(1, ID);
                     ps.setString(2, name);
@@ -86,20 +117,16 @@ public class AddStudent extends EditFaculty {
                     ps.setString(11, password);
                     ps.setString(12, tuition);
                     ps.executeUpdate();
-
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
 
                 try (Connection connection = DatabaseManager.getConnection();
-                     var login = connection.prepareStatement(
-                             "INSERT INTO loginInfo (username, password, role) VALUES (?, ?, ?)")) {
-
+                     var login = connection.prepareStatement("INSERT INTO loginInfo (username, password, role) VALUES (?, ?, ?)") ) {
                     login.setString(1, ID);
                     login.setString(2, password);
                     login.setString(3, "Student");
                     login.executeUpdate();
-
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -133,7 +160,24 @@ public class AddStudent extends EditFaculty {
             e.printStackTrace();
         }
 
-        return base + String.format("%03d", nextNumber); // e.g., S2025001
+        return base + String.format("%03d", nextNumber);
+    }
+
+    private String formatTextInput(String input) {
+        if (input == null || input.trim().isEmpty()) return "-";
+
+        String[] words = input.trim().toLowerCase().split("\\s+");
+        StringBuilder capitalized = new StringBuilder();
+
+        for (String word : words) {
+            if (word.length() > 0) {
+                capitalized.append(Character.toUpperCase(word.charAt(0)))
+                        .append(word.substring(1))
+                        .append(" ");
+            }
+        }
+
+        return capitalized.toString().trim();
     }
 
     private String calculateTuition(String level) {
@@ -141,20 +185,44 @@ public class AddStudent extends EditFaculty {
         if ("Graduate".equalsIgnoreCase(level)) return "$4000";
         return "0";
     }
-    private String formatEmail(String emailInput) {
-        if (emailInput == null || emailInput.trim().isEmpty()) return "";
 
-        emailInput = emailInput.trim();
+    private String generateEmailFromName(String nameInput) {
+        if (nameInput == null || nameInput.trim().isEmpty()) return "-@example.edu";
+        String[] parts = nameInput.trim().split("\\s+");
+        String shorter = parts.length >= 2 ? (parts[0].length() <= parts[1].length() ? parts[0] : parts[1]) : parts[0];
+        return shorter.toLowerCase() + "@example.edu";
+    }
 
-        // Check if it already ends with "@example.edu"
-        if (!emailInput.toLowerCase().endsWith("@example.edu")) {
-            // Remove any existing domain part and append
-            if (emailInput.contains("@")) {
-                emailInput = emailInput.substring(0, emailInput.indexOf("@"));
-            }
-            emailInput += "@example.edu";
+    private boolean isValidName(String name) {
+        return name != null && name.trim().split("\\s+").length >= 2;
+    }
+
+    private boolean isValidPhone(String phone) {
+        return phone.matches("\\d{3}-\\d{4}");
+    }
+
+    private boolean isValidAcademicLevel(String level) {
+        return level.equalsIgnoreCase("Undergraduate") || level.equalsIgnoreCase("Graduate");
+    }
+
+    private boolean isValidSemester(String semester) {
+        return semester.matches("(?i)(Fall|Winter)\\s\\d{4}");
+    }
+
+    private boolean isValidProgress(String progress) {
+        try {
+            int val = Integer.parseInt(progress);
+            return val >= 0 && val <= 100;
+        } catch (NumberFormatException e) {
+            return false;
         }
+    }
 
-        return emailInput;
+    private void showValidationAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Input Error");
+        alert.setHeaderText("Invalid Input Detected");
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

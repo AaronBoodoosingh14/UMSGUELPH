@@ -8,15 +8,18 @@ public class Student {
     private String email;
     private String academicLevel;
     private String currentSemester;
-    private String profilePhotoPath;
     private String subjectsRegistered;
     private String thesisTitle;
     private String progress;
     private String password;
     private String tuition;
 
+    // ✅ New fields
+    private String grades;
+    private String courses;
+
     public Student() {
-        this.profilePhotoPath = "";
+        // No profilePhotoPath anymore
     }
 
     public Student(String tuition, String studentId, String name, String address, String telephone, String email,
@@ -34,29 +37,13 @@ public class Student {
         this.progress = progress;
         this.password = password;
         this.tuition = tuition;
-        this.profilePhotoPath = "";
     }
 
-    public Student(String studentId, String name, String address, String telephone, String email,
-                   String academicLevel, String currentSemester, String subjectsRegistered,
-                   String thesisTitle, String progress, String password, String tuition, String profilePhotoPath) {
-        this.studentId = studentId;
-        this.name = name;
-        this.address = address;
-        this.telephone = telephone;
-        this.email = email;
-        this.academicLevel = academicLevel;
-        this.currentSemester = currentSemester;
-        this.subjectsRegistered = subjectsRegistered;
-        this.thesisTitle = thesisTitle;
-        this.progress = progress;
-        this.password = password;
-        this.tuition = tuition;
-        this.profilePhotoPath = profilePhotoPath;
-    }
+    public String getGrades() { return grades; }
+    public void setGrades(String grades) { this.grades = grades; }
 
-    public String getProfilePhotoPath() { return profilePhotoPath; }
-    public void setProfilePhotoPath(String profilePhotoPath) { this.profilePhotoPath = profilePhotoPath; }
+    public String getCourses() { return courses; }
+    public void setCourses(String courses) { this.courses = courses; }
 
     public String getStudentId() { return studentId; }
     public void setStudentId(String studentId) { this.studentId = studentId; }
@@ -104,11 +91,12 @@ public class Student {
                 ", email='" + email + '\'' +
                 ", academicLevel='" + academicLevel + '\'' +
                 ", currentSemester='" + currentSemester + '\'' +
-                ", profilePhotoPath='" + profilePhotoPath + '\'' +
                 ", subjectsRegistered='" + subjectsRegistered + '\'' +
                 ", thesisTitle='" + thesisTitle + '\'' +
                 ", progress='" + progress + '\'' +
                 ", tuition='" + tuition + '\'' +
+                ", grades='" + grades + '\'' +
+                ", courses='" + courses + '\'' +
                 '}';
     }
 }
