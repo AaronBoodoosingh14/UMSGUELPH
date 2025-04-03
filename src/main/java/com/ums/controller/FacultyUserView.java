@@ -108,9 +108,9 @@ public class FacultyUserView {
         progress.setText(studentinfo.get(8));
 
         if (studentinfo.get(5).equalsIgnoreCase("Undergraduate")) {
-            tuition.setText("$4000");
-        } else {
             tuition.setText("$5000");
+        } else {
+            tuition.setText("$4000");
         }
     }
 
