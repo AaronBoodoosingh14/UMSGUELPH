@@ -41,6 +41,8 @@ public class CourseUserController {
     private void loadRegisteredCourses() {
         String email = UMSApplication.getLoggedInUsername();
 
+        Set<String> addedCourseNames = new HashSet<>();
+
         if (email == null || email.isEmpty()) {
             System.out.println("No user logged in.");
             return;
@@ -48,8 +50,7 @@ public class CourseUserController {
 
         try (Connection conn = DatabaseManager.getConnection()) {
 
-            // Step 1: Get registered subjects from student table
-            String studentQuery = "SELECT SubjectsRegistered FROM students WHERE Email = ?";
+            String studentQuery = "SELECT SubjectsRegistered FROM students_info WHERE StudentId = ?";
             PreparedStatement studentStmt = conn.prepareStatement(studentQuery);
             studentStmt.setString(1, email);
             ResultSet studentRs = studentStmt.executeQuery();
@@ -60,8 +61,6 @@ public class CourseUserController {
                     System.out.println("No registered subjects found.");
                     return;
                 }
-
-                // Convert "CS201, ENG101" to ["CS201", "ENG101"]
                 List<String> subjectCodes = Arrays.stream(subjectsStr.split(","))
                         .map(String::trim)
                         .filter(s -> !s.isEmpty())
@@ -78,17 +77,27 @@ public class CourseUserController {
                     ResultSet courseRs = courseStmt.executeQuery();
 
                     while (courseRs.next()) {
-                        Course course = new Course();
-                        course.setCourseCode(courseRs.getInt("CourseCode"));
-                        course.setCourseName(courseRs.getString("CourseName"));
-                        course.setSubjectName(courseRs.getString("SubjectCode"));
-                        course.setSectionNumber(courseRs.getString("SectionNumber"));
-                        course.setCapacity(courseRs.getInt("Capacity"));
-                        course.setLectureTime(courseRs.getString("LectureTime"));
-                        course.setFinalExam(courseRs.getString("FinalExamDate"));
-                        course.setLocation(courseRs.getString("Location"));
-                        course.setTeacherName(courseRs.getString("TeacherName"));
-                        registeredCourses.add(course);
+                        String courseName = courseRs.getString("CourseName");
+
+                        // Check if we've already added this course name
+                        if (!addedCourseNames.contains(courseName)) {
+                            Course course = new Course();
+                            course.setCourseCode(courseRs.getInt("CourseCode"));
+                            course.setCourseName(courseName);
+                            course.setSubjectName(courseRs.getString("SubjectCode"));
+                            course.setSectionNumber(courseRs.getString("SectionNumber"));
+                            course.setCapacity(courseRs.getInt("Capacity"));
+                            course.setLectureTime(courseRs.getString("LectureTime"));
+                            course.setFinalExam(courseRs.getString("FinalExamDate"));
+                            course.setLocation(courseRs.getString("Location"));
+                            course.setTeacherName(courseRs.getString("TeacherName"));
+                            registeredCourses.add(course);
+
+                            // Add the course name to our tracking set
+                            addedCourseNames.add(courseName);
+                        } else {
+                            System.out.println("Skipping duplicate course: " + courseName);
+                        }
                     }
 
                     courseTable.setItems(registeredCourses);

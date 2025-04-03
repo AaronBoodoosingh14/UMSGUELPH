@@ -137,6 +137,7 @@ public class FacultyStudent {
         card.setPrefHeight(300);
         card.setPadding(new Insets(15));
 
+        //more bs
         if (UMSApplication.isDarkMode()) {
             card.getStyleClass().add("faculty-card-dark");
             card.setStyle("-fx-background-color: #2d333b; -fx-border-color: #444c56; -fx-border-radius: 8; -fx-background-radius: 8;");
